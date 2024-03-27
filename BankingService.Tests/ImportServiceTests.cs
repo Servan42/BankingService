@@ -17,6 +17,7 @@ namespace BankingService.Tests
         {
             fileSystemService = new Mock<IFileSystemService>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
+            bankDatabaseService.Setup(x => x.GetOperationTypes()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
@@ -45,6 +46,42 @@ namespace BankingService.Tests
                     Flow = expectedFlow,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
                     Treasury = 766.87m
+                }
+            };
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+        }
+
+        [Test]
+        public void Should_import_banking_file_line_with_resolved_type()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("bankFilePath.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
+                });
+            bankDatabaseService
+                .Setup(x => x.GetOperationTypes())
+                .Returns(new Dictionary<string, string>
+                {
+                    { "PSC", "Sans Contact" }
+                });
+
+            // WHEN
+            importService_sut.ImportBankFile("bankFilePath.csv");
+
+            // THEN
+            var expected = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2023,11,21),
+                    Flow = -20.47m,
+                    Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
+                    Treasury = 766.87m,
+                    Type = "Sans Contact"
                 }
             };
             bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());

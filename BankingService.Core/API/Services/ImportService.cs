@@ -25,8 +25,8 @@ namespace BankingService.Core.API.Services
         {
             var csvOperations = this.fileSystemService.ReadAllLines(bankFilePath);
             var operations = new List<OperationDto>();
-            
-            foreach(var csvOperation in csvOperations)
+
+            foreach (var csvOperation in csvOperations)
             {
                 if (csvOperation == BANK_FILE_HEADER)
                     continue;
@@ -39,6 +39,18 @@ namespace BankingService.Core.API.Services
                     Label = splitedOperation[4],
                     Treasury = decimal.Parse(splitedOperation[5])
                 });
+            }
+
+            var operationTypes = bankDatabaseService.GetOperationTypes();
+            foreach (var operation in operations)
+            {
+                foreach(var operationType in  operationTypes)
+                {
+                    if(operation.Label.Contains(operationType.Key))
+                    {
+                        operation.Type = operationType.Value;
+                    }
+                }
             }
 
             bankDatabaseService.InsertOperationsIfNew(operations);

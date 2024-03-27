@@ -1,5 +1,4 @@
-﻿using BankingService.Core.API.DTOs;
-using BankingService.Core.API.Interfaces;
+﻿using BankingService.Core.API.Interfaces;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using System;
@@ -22,7 +21,7 @@ namespace BankingService.Core.API.Services
             this.bankDatabaseService = bankDatabaseService;
         }
 
-        public ImportReportDto ImportBankFile(string bankFilePath)
+        public void ImportBankFile(string bankFilePath)
         {
             var csvOperations = this.fileSystemService.ReadAllLines(bankFilePath);
             var operations = new List<OperationDto>();
@@ -42,9 +41,7 @@ namespace BankingService.Core.API.Services
                 });
             }
 
-            bankDatabaseService.InsertOperationIfNew(operations);
-
-            return new ImportReportDto();
+            bankDatabaseService.InsertOperationsIfNew(operations);
         }
 
         private decimal GetFlow(string[] splitedOperation)

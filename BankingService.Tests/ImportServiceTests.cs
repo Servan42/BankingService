@@ -34,7 +34,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var _ = importService_sut.ImportBankFile("bankFilePath.csv");
+            importService_sut.ImportBankFile("bankFilePath.csv");
 
             // THEN
             var expected = new List<OperationDto>
@@ -47,7 +47,7 @@ namespace BankingService.Tests
                     Treasury = 766.87m
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
         }
 
         private bool CheckOperation(List<OperationDto> actual, List<OperationDto> expected)

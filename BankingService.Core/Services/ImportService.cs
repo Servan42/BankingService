@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingService.Core.API.Services
+namespace BankingService.Core.Services
 {
     public class ImportService : IImportService
     {
@@ -23,7 +23,7 @@ namespace BankingService.Core.API.Services
 
         public void ImportBankFile(string bankFilePath)
         {
-            var csvOperations = this.fileSystemService.ReadAllLines(bankFilePath);
+            var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetOperationsFromCSV(csvOperations);
             ResolveOperationsAutoFields(operations);
             bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());

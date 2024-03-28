@@ -1,5 +1,5 @@
 using BankingService.Core.API.Interfaces;
-using BankingService.Core.API.Services;
+using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using Moq;

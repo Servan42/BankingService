@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingService.Infra.Database.API.Services
+namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
@@ -40,7 +40,7 @@ namespace BankingService.Infra.Database.API.Services
         public Dictionary<string, string> GetOperationTypes()
         {
             var result = new Dictionary<string, string>();
-            foreach(var type in fileSystemService.ReadAllLines(TYPES_FILE).Skip(1))
+            foreach (var type in fileSystemService.ReadAllLines(TYPES_FILE).Skip(1))
             {
                 var splittedLine = type.Split(";");
                 result.Add(splittedLine[0], splittedLine[1]);
@@ -54,7 +54,7 @@ namespace BankingService.Infra.Database.API.Services
             var header = csv.First();
             var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
 
-            foreach(var newOperation in operationsDto.Select(Operation.Map))
+            foreach (var newOperation in operationsDto.Select(Operation.Map))
             {
                 if (storedOperations.ContainsKey(newOperation.GetKey()))
                     continue;

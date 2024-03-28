@@ -1,6 +1,6 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
-using BankingService.Infra.Database.API.Services;
+using BankingService.Infra.Database.Services;
 using Moq;
 using NUnit.Framework;
 using System;

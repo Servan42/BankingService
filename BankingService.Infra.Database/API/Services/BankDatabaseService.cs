@@ -24,7 +24,13 @@ namespace BankingService.Infra.Database.API.Services
 
         public Dictionary<string, string> GetOperationCategories()
         {
-            throw new NotImplementedException();
+            var result = new Dictionary<string, string>();
+            foreach (var type in fileSystemService.ReadAllLines("Database/category.csv").Skip(1))
+            {
+                var splittedLine = type.Split(";");
+                result.Add(splittedLine[0], splittedLine[1]);
+            }
+            return result;
         }
 
         public Dictionary<string, string> GetOperationTypes()

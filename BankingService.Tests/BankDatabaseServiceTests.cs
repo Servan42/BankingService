@@ -43,5 +43,27 @@ namespace BankingService.Tests
             Assert.That(result["VIR"], Is.EqualTo("Virement"));
             Assert.That(result["PAYPAL"], Is.EqualTo("Paypal"));
         }
+
+        [Test]
+        public void Should_get_operation_Categories()
+        {
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(It.IsAny<string>()))
+                .Returns(new List<string>
+                {
+                    "StringToScan;AssociatedType",
+                    "AUCHAN;Nourriture",
+                    "SNCF;Voyage/Deplacement"
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetOperationCategories();
+
+            // GIVEN
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result["AUCHAN"], Is.EqualTo("Nourriture"));
+            Assert.That(result["SNCF"], Is.EqualTo("Voyage/Deplacement"));
+        }
     }
 }

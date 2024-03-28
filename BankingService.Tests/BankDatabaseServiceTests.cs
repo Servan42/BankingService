@@ -65,5 +65,27 @@ namespace BankingService.Tests
             Assert.That(result["AUCHAN"], Is.EqualTo("Nourriture"));
             Assert.That(result["SNCF"], Is.EqualTo("Voyage/Deplacement"));
         }
+
+        [Test]
+        public void Should_get_operation_AutoComment()
+        {
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(It.IsAny<string>()))
+                .Returns(new List<string>
+                {
+                    "StringToScan;AssociatedCommentAuto",
+                    "AUCHAN;Courses (Auchan)",
+                    "SNCF;Train"
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetOperationAutoComments();
+
+            // GIVEN
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result["AUCHAN"], Is.EqualTo("Courses (Auchan)"));
+            Assert.That(result["SNCF"], Is.EqualTo("Train"));
+        }
     }
 }

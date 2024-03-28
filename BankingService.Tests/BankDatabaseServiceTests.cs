@@ -71,5 +71,58 @@ namespace BankingService.Tests
                 Assert.That(result["SNCF"].AutoComment, Is.EqualTo("Train"));
             });
         }
+
+        [Test]
+        public void Should_insert_line_if_new()
+        {
+            // GIVEN
+            var operations = new List<OperationDto>
+            {
+                new OperationDto 
+                {
+                    Date = new DateTime(2024,03,24),
+                    Flow = -10.01m,
+                    Label = "label1",
+                    Treasury = 20m
+                },
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,24),
+                    Flow = -10.01m,
+                    Label = "label2",
+                    Treasury = 20m
+                },
+            };
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;;;;"
+                });
+
+            // WHEN
+            bankDatabaseService_sut.InsertOperationsIfNew(operations);
+
+            // THEN
+            var expected = new List<string>
+            {
+                "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                "2024-03-24;-10,01;20,00;label1;;;;",
+                "2024-03-24;-10,01;20,00;label2;;;;"
+            };
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => CheckOperations(o, expected))));
+        }
+
+        private bool CheckOperations(List<string> operations, List<string> expected)
+        {
+            Assert.That(operations.Count, Is.EqualTo(expected.Count));
+            for (int i = 0; i < operations.Count; i++)
+            {
+                Assert.That(operations[i], Is.EqualTo(expected[i]), $"index:{i}");
+            }
+            return true;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BankingService.Core.SPI.DTOs;
+using BankingService.Infra.Database.Model;
 using BankingService.Infra.Database.SPI.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace BankingService.Infra.Database.API.Services
     {
         private const string TYPES_FILE = "Database/types.csv";
         private const string CAT_AND_AUTOCOMMENT_FILE = "Database/CategoriesAndAutoComments.csv";
+        private const string OPERATIONS_FILE = "Database/Operations.csv";
 
         private readonly IFileSystemService fileSystemService;
 
@@ -46,9 +48,23 @@ namespace BankingService.Infra.Database.API.Services
             return result;
         }
 
-        public void InsertOperationsIfNew(List<OperationDto> operations)
+        public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
-            throw new NotImplementedException();
+            var csv = fileSystemService.ReadAllLines(OPERATIONS_FILE);
+            var header = csv.First();
+            var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
+
+            foreach(var newOperation in operationsDto.Select(Operation.Map))
+            {
+                if (storedOperations.ContainsKey(newOperation.GetKey()))
+                    continue;
+
+                storedOperations.Add(newOperation.GetKey(), newOperation);
+            }
+
+            List<string> operationsToWrite = [header];
+            operationsToWrite.AddRange(storedOperations.Select(o => o.Value.GetCSV()));
+            fileSystemService.WriteAllLinesOverride(OPERATIONS_FILE, operationsToWrite);
         }
     }
 }

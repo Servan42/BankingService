@@ -9,7 +9,7 @@ namespace BankingService.Core.SPI.Interfaces
 {
     public interface IBankDatabaseService
     {
-        public void InsertOperationsIfNew(List<OperationDto> operations);
+        public void InsertOperationsIfNew(List<OperationDto> operationsDto);
         public Dictionary<string, string> GetOperationTypes();
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment();
     }

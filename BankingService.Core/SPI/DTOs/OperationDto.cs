@@ -11,10 +11,10 @@ namespace BankingService.Core.SPI.DTOs
         public DateTime Date { get; set; }
         public decimal Flow { get; set; }
         public decimal Treasury { get; set; }
-        public string Type { get; set; }
-        public string Comment { get; set; }
-        public string AutoComment { get; set; }
-        public string Category { get; set; }
         public string Label { get; set; }
+        public string Type { get; set; }
+        public string Category { get; set; }
+        public string AutoComment { get; set; }
+        public string Comment { get; set; }
     }
 }

@@ -12,11 +12,11 @@ namespace BankingService.Core.Model
         public DateTime Date { get; set; }
         public decimal Flow { get; set; }
         public decimal Treasury { get; set; }
-        public string Type { get; set; }
-        public string Comment { get; set; }
-        public string AutoComment { get; set; }
-        public string Category { get; set; }
         public string Label { get; set; }
+        public string Type { get; set; }
+        public string Category { get; set; }
+        public string AutoComment { get; set; }
+        public string Comment { get; set; }
 
         public OperationDto MapToDto()
         {
@@ -25,11 +25,11 @@ namespace BankingService.Core.Model
                 Date = Date,
                 Flow = Flow,
                 Treasury = Treasury,
-                AutoComment = AutoComment,
-                Category = Category,
-                Comment = Comment,
                 Label = Label,
-                Type = Type
+                Type = Type,
+                Category = Category,
+                AutoComment = AutoComment,
+                Comment = Comment,
             };
         }
 

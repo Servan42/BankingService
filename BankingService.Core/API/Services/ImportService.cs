@@ -51,13 +51,11 @@ namespace BankingService.Core.API.Services
         private void ResolveOperationsAutoFields(List<Operation> operations)
         {
             var operationTypes = bankDatabaseService.GetOperationTypes();
-            var operationCategories = bankDatabaseService.GetOperationCategories();
-            var operationAutoComment = bankDatabaseService.GetOperationAutoComments();
+            var operationCategoriesAndAutoComment = bankDatabaseService.GetOperationCategoriesAndAutoComment();
             foreach (var operation in operations)
             {
                 operation.ResolveType(operationTypes);
-                operation.ResolveCategory(operationCategories);
-                operation.ResolveAutoComment(operationAutoComment);
+                operation.ResolveCategoryAndAutoComment(operationCategoriesAndAutoComment);
             }
         }
 

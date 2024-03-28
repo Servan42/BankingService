@@ -1,4 +1,5 @@
-﻿using BankingService.Core.SPI.Interfaces;
+﻿using BankingService.Core.SPI.DTOs;
+using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.API.Services;
 using Moq;
 using NUnit.Framework;
@@ -45,47 +46,30 @@ namespace BankingService.Tests
         }
 
         [Test]
-        public void Should_get_operation_Categories()
+        public void Should_get_operation_Categories_and_autoComment()
         {
             // GIVEN
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(It.IsAny<string>()))
+                .Setup(x => x.ReadAllLines("Database/CategoriesAndAutoComments.csv"))
                 .Returns(new List<string>
                 {
-                    "StringToScan;AssociatedType",
-                    "AUCHAN;Nourriture",
-                    "SNCF;Voyage/Deplacement"
+                    "StringToScan;AssociatedType;AssociatedCommentAuto",
+                    "AUCHAN;Nourriture;Courses (Auchan)",
+                    "SNCF;Voyage/Deplacement;Train"
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationCategories();
+            var result = bankDatabaseService_sut.GetOperationCategoriesAndAutoComment();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
-            Assert.That(result["AUCHAN"], Is.EqualTo("Nourriture"));
-            Assert.That(result["SNCF"], Is.EqualTo("Voyage/Deplacement"));
-        }
-
-        [Test]
-        public void Should_get_operation_AutoComment()
-        {
-            // GIVEN
-            mockFileSystemService
-                .Setup(x => x.ReadAllLines(It.IsAny<string>()))
-                .Returns(new List<string>
-                {
-                    "StringToScan;AssociatedCommentAuto",
-                    "AUCHAN;Courses (Auchan)",
-                    "SNCF;Train"
-                });
-
-            // WHEN
-            var result = bankDatabaseService_sut.GetOperationAutoComments();
-
-            // GIVEN
-            Assert.That(result.Count, Is.EqualTo(2));
-            Assert.That(result["AUCHAN"], Is.EqualTo("Courses (Auchan)"));
-            Assert.That(result["SNCF"], Is.EqualTo("Train"));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result["AUCHAN"].Category, Is.EqualTo("Nourriture"));
+                Assert.That(result["AUCHAN"].AutoComment, Is.EqualTo("Courses (Auchan)"));
+                Assert.That(result["SNCF"].Category, Is.EqualTo("Voyage/Deplacement"));
+                Assert.That(result["SNCF"].AutoComment, Is.EqualTo("Train"));
+            });
         }
     }
 }

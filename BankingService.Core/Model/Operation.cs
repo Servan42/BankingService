@@ -33,14 +33,10 @@ namespace BankingService.Core.Model
             };
         }
 
-        internal void ResolveAutoComment(Dictionary<string, string> operationAutoComment)
+        internal void ResolveCategoryAndAutoComment(Dictionary<string, OperationCategoryAndAutoCommentDto> operationCategoriesAndAutoComment)
         {
-            this.AutoComment = ResolveOperationKeyValue(operationAutoComment);
-        }
-
-        internal void ResolveCategory(Dictionary<string, string> operationCategories)
-        {
-            this.Category = ResolveOperationKeyValue(operationCategories);
+            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category));
+            this.AutoComment = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment));
         }
 
         internal void ResolveType(Dictionary<string, string> operationTypes)

@@ -11,7 +11,6 @@ namespace BankingService.Core.SPI.Interfaces
     {
         public void InsertOperationsIfNew(List<OperationDto> operations);
         public Dictionary<string, string> GetOperationTypes();
-        public Dictionary<string, string> GetOperationCategories();
-        public Dictionary<string, string> GetOperationAutoComments();
+        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment();
     }
 }

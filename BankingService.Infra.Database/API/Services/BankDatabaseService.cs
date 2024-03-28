@@ -10,6 +10,9 @@ namespace BankingService.Infra.Database.API.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
+        private const string TYPES_FILE = "Database/types.csv";
+        private const string CAT_AND_AUTOCOMMENT_FILE = "Database/CategoriesAndAutoComments.csv";
+
         private readonly IFileSystemService fileSystemService;
 
         public BankDatabaseService(IFileSystemService fileSystemService)
@@ -17,24 +20,17 @@ namespace BankingService.Infra.Database.API.Services
             this.fileSystemService = fileSystemService;
         }
 
-        public Dictionary<string, string> GetOperationAutoComments()
+        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment()
         {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines("Database/autocomments.csv").Skip(1))
+            var result = new Dictionary<string, OperationCategoryAndAutoCommentDto>();
+            foreach (var type in fileSystemService.ReadAllLines(CAT_AND_AUTOCOMMENT_FILE).Skip(1))
             {
                 var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
-            }
-            return result;
-        }
-
-        public Dictionary<string, string> GetOperationCategories()
-        {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines("Database/categories.csv").Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
+                result.Add(splittedLine[0], new OperationCategoryAndAutoCommentDto
+                {
+                    Category = splittedLine[1],
+                    AutoComment = splittedLine[2]
+                });
             }
             return result;
         }
@@ -42,7 +38,7 @@ namespace BankingService.Infra.Database.API.Services
         public Dictionary<string, string> GetOperationTypes()
         {
             var result = new Dictionary<string, string>();
-            foreach(var type in fileSystemService.ReadAllLines("Database/types.csv").Skip(1))
+            foreach(var type in fileSystemService.ReadAllLines(TYPES_FILE).Skip(1))
             {
                 var splittedLine = type.Split(";");
                 result.Add(splittedLine[0], splittedLine[1]);

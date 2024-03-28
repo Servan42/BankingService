@@ -1,4 +1,5 @@
 ﻿using BankingService.Core.API.Interfaces;
+using BankingService.Core.Model;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using System;
@@ -24,7 +25,14 @@ namespace BankingService.Core.API.Services
         public void ImportBankFile(string bankFilePath)
         {
             var csvOperations = this.fileSystemService.ReadAllLines(bankFilePath);
-            var operations = new List<OperationDto>();
+            List<Operation> operations = GetOperationsFromCSV(csvOperations);
+            ResolveOperationsAutoFields(operations);
+            bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());
+        }
+
+        private List<Operation> GetOperationsFromCSV(List<string> csvOperations)
+        {
+            var operations = new List<Operation>();
 
             foreach (var csvOperation in csvOperations)
             {
@@ -32,7 +40,7 @@ namespace BankingService.Core.API.Services
                     continue;
 
                 var splitedOperation = csvOperation.Split(";");
-                operations.Add(new OperationDto
+                operations.Add(new Operation
                 {
                     Date = DateTime.Parse(splitedOperation[0]),
                     Flow = GetFlow(splitedOperation),
@@ -41,38 +49,20 @@ namespace BankingService.Core.API.Services
                 });
             }
 
+            return operations;
+        }
+
+        private void ResolveOperationsAutoFields(List<Operation> operations)
+        {
             var operationTypes = bankDatabaseService.GetOperationTypes();
-            foreach (var operation in operations)
-            {
-                operation.Type = ResolveOperationKeyValue(operation, operationTypes);
-            }
-
             var operationCategories = bankDatabaseService.GetOperationCategories();
-            foreach (var operation in operations)
-            {
-                operation.Category = ResolveOperationKeyValue(operation, operationCategories);
-            }
-
             var operationAutoComment = bankDatabaseService.GetOperationAutoComments();
             foreach (var operation in operations)
             {
-                operation.AutoComment = ResolveOperationKeyValue(operation, operationAutoComment);
+                operation.ResolveType(operationTypes);
+                operation.ResolveCategory(operationCategories);
+                operation.ResolveAutoComment(operationAutoComment);
             }
-
-            bankDatabaseService.InsertOperationsIfNew(operations);
-        }
-
-        // TODO remove feature envy
-        private string ResolveOperationKeyValue(OperationDto operation, Dictionary<string, string> dict)
-        {
-            foreach (var kvp in dict)
-            {
-                if (operation.Label.Contains(kvp.Key))
-                {
-                    return kvp.Value;
-                }
-            }
-            return "TODO";
         }
 
         private decimal GetFlow(string[] splitedOperation)

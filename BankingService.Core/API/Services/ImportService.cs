@@ -53,6 +53,12 @@ namespace BankingService.Core.API.Services
                 operation.Category = ResolveOperationKeyValue(operation, operationCategories);
             }
 
+            var operationAutoComment = bankDatabaseService.GetOperationAutoComments();
+            foreach (var operation in operations)
+            {
+                operation.AutoComment = ResolveOperationKeyValue(operation, operationAutoComment);
+            }
+
             bankDatabaseService.InsertOperationsIfNew(operations);
         }
 

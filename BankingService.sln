@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankingService.Tests", "Ban
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingService.Infra.Database", "BankingService.Infra.Database\BankingService.Infra.Database.csproj", "{6A73843D-E464-4D74-A0AF-751B79A258CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingService.Infra.FileSystem", "BankingService.Infra.FileSystem\BankingService.Infra.FileSystem.csproj", "{017AF519-2F0A-4E78-B5AA-372A97843571}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6A73843D-E464-4D74-A0AF-751B79A258CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A73843D-E464-4D74-A0AF-751B79A258CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A73843D-E464-4D74-A0AF-751B79A258CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{017AF519-2F0A-4E78-B5AA-372A97843571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017AF519-2F0A-4E78-B5AA-372A97843571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017AF519-2F0A-4E78-B5AA-372A97843571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017AF519-2F0A-4E78-B5AA-372A97843571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

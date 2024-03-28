@@ -12,7 +12,6 @@ namespace BankingService.Core.API.Services
 {
     public class ImportService : IImportService
     {
-        private const string BANK_FILE_HEADER = "Date;Date de valeur;Débit;Crédit;Libellé;Solde";
         private readonly IFileSystemService fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
 
@@ -34,11 +33,8 @@ namespace BankingService.Core.API.Services
         {
             var operations = new List<Operation>();
 
-            foreach (var csvOperation in csvOperations)
+            foreach (var csvOperation in csvOperations.Skip(1))
             {
-                if (csvOperation == BANK_FILE_HEADER)
-                    continue;
-
                 var splitedOperation = csvOperation.Split(";");
                 operations.Add(new Operation
                 {

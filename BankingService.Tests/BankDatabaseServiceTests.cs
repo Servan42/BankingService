@@ -28,7 +28,7 @@ namespace BankingService.Tests
         {
             // GIVEN
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(It.IsAny<string>()))
+                .Setup(x => x.ReadAllLines("Database/types.csv"))
                 .Returns(new List<string>
                 {
                     "StringToScan;AssociatedType",
@@ -53,7 +53,7 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLines("Database/CategoriesAndAutoComments.csv"))
                 .Returns(new List<string>
                 {
-                    "StringToScan;AssociatedType;AssociatedCommentAuto",
+                    "StringToScan;AssociatedCategory;AssociatedCommentAuto",
                     "AUCHAN;Nourriture;Courses (Auchan)",
                     "SNCF;Voyage/Deplacement;Train"
                 });

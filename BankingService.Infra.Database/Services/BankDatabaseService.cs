@@ -63,7 +63,7 @@ namespace BankingService.Infra.Database.Services
             }
 
             List<string> operationsToWrite = [header];
-            operationsToWrite.AddRange(storedOperations.Select(o => o.Value.GetCSV()));
+            operationsToWrite.AddRange(storedOperations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
             fileSystemService.WriteAllLinesOverride(OPERATIONS_FILE, operationsToWrite);
         }
     }

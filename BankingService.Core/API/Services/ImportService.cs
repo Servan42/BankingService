@@ -44,16 +44,29 @@ namespace BankingService.Core.API.Services
             var operationTypes = bankDatabaseService.GetOperationTypes();
             foreach (var operation in operations)
             {
-                foreach(var operationType in  operationTypes)
-                {
-                    if(operation.Label.Contains(operationType.Key))
-                    {
-                        operation.Type = operationType.Value;
-                    }
-                }
+                operation.Type = ResolveOperationKeyValue(operation, operationTypes);
+            }
+
+            var operationCategories = bankDatabaseService.GetOperationCategories();
+            foreach (var operation in operations)
+            {
+                operation.Category = ResolveOperationKeyValue(operation, operationCategories);
             }
 
             bankDatabaseService.InsertOperationsIfNew(operations);
+        }
+
+        // TODO remove feature envy
+        private string ResolveOperationKeyValue(OperationDto operation, Dictionary<string, string> dict)
+        {
+            foreach (var kvp in dict)
+            {
+                if (operation.Label.Contains(kvp.Key))
+                {
+                    return kvp.Value;
+                }
+            }
+            return "TODO";
         }
 
         private decimal GetFlow(string[] splitedOperation)

@@ -18,6 +18,7 @@ namespace BankingService.Tests
             fileSystemService = new Mock<IFileSystemService>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             bankDatabaseService.Setup(x => x.GetOperationTypes()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetOperationCategories()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
@@ -45,7 +46,9 @@ namespace BankingService.Tests
                     Date = new DateTime(2023,11,21),
                     Flow = expectedFlow,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
-                    Treasury = 766.87m
+                    Treasury = 766.87m,
+                    Type = "TODO",
+                    Category = "TODO"
                 }
             };
             bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
@@ -81,7 +84,45 @@ namespace BankingService.Tests
                     Flow = -20.47m,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
                     Treasury = 766.87m,
-                    Type = "Sans Contact"
+                    Type = "Sans Contact",
+                    Category = "TODO"
+                }
+            };
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+        }
+
+        [Test]
+        public void Should_import_banking_file_line_with_resolved_category()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("bankFilePath.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
+                });
+            bankDatabaseService
+                .Setup(x => x.GetOperationCategories())
+                .Returns(new Dictionary<string, string>
+                {
+                    { "AUCHAN", "Nourriture" }
+                });
+
+            // WHEN
+            importService_sut.ImportBankFile("bankFilePath.csv");
+
+            // THEN
+            var expected = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2023,11,21),
+                    Flow = -20.47m,
+                    Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
+                    Treasury = 766.87m,
+                    Type = "TODO",
+                    Category = "Nourriture"
                 }
             };
             bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());

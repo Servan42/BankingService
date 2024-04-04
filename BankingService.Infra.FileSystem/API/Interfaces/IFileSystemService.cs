@@ -8,6 +8,7 @@ namespace BankingService.Infra.FileSystem.API.Interfaces
 {
     public interface IFileSystemService
     {
+        void ArchiveFile(string filePath, string archiveFolder);
         public List<string> ReadAllLines(string filePath);
         public void WriteAllLinesOverride(string filePath, List<string> lines);
     }

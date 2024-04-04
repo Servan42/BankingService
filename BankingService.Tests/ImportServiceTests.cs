@@ -3,6 +3,7 @@ using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using Moq;
+using System.Diagnostics;
 
 namespace BankingService.Tests
 {
@@ -53,6 +54,25 @@ namespace BankingService.Tests
                 }
             };
             bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+        }
+
+        [Test]
+        public void Should_archive_import()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("folder/bankFilePath.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    $"21/11/2023;22/11/2023;-20,00;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
+                });
+
+            // WHEN
+            importService_sut.ImportBankFile("folder/bankFilePath.csv");
+
+            // THEN
+            fileSystemService.Verify(x => x.ArchiveFile("folder/bankFilePath.csv", "Archive/CM_Import"), Times.Once());
         }
 
         [Test]

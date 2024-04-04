@@ -10,5 +10,6 @@ namespace BankingService.Infra.Database.SPI.Interfaces
     {
         public List<string> ReadAllLines(string filePath);
         public void WriteAllLinesOverride(string filePath, List<string> lines);
+        void ZipBackupFilesToFolder(List<string> filesToBackup, string backupFolder);
     }
 }

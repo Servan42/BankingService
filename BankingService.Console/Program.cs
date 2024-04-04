@@ -16,6 +16,7 @@ internal class Program
         var bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase);
         IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
 
+        bankDataBaseService.BackupDatabase();
         importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
         importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Mar.csv");
     }

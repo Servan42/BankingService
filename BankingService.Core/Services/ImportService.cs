@@ -12,6 +12,8 @@ namespace BankingService.Core.Services
 {
     public class ImportService : IImportService
     {
+        private const string IMPORT_ARCHIVE_FOLDER = "Archive/CM_Import";
+
         private readonly IFileSystemService fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
 
@@ -23,7 +25,7 @@ namespace BankingService.Core.Services
 
         public void ImportBankFile(string bankFilePath)
         {
-            fileSystemService.ArchiveFile(bankFilePath, "Archive/CM_Import");
+            fileSystemService.ArchiveFile(bankFilePath, IMPORT_ARCHIVE_FOLDER);
             var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetOperationsFromCSV(csvOperations);
             ResolveOperationsAutoFields(operations);

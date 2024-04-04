@@ -1,6 +1,7 @@
 ﻿using BankingService.Infra.FileSystem.API.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace BankingService.Infra.FileSystem.Services
         {
             var filenameWithoutExtention = Path.GetFileNameWithoutExtension(filePath);
             var extention = Path.GetExtension(filePath);
-            var newFileName = $"{filenameWithoutExtention}-{DateTime.Now:yyyyMMdd}_{DateTime.Now:hhmmss}{extention}";
+            var newFileName = $"{filenameWithoutExtention}-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}{extention}";
 #if DEBUG
             File.Copy(filePath, Path.Combine(archiveFolder, newFileName));
 #else
@@ -29,6 +30,16 @@ namespace BankingService.Infra.FileSystem.Services
         public void WriteAllLinesOverride(string filePath, List<string> lines)
         {
             File.WriteAllLines(filePath, lines);
+        }
+
+        public void ZipBackupFilesToFolder(List<string> filesToBackup, string backupFolder)
+        {
+            Directory.CreateDirectory("temp");
+            filesToBackup.ForEach(f => File.Copy(f, Path.Combine("temp",Path.GetFileName(f))));
+            var zipFileName = $"backupDB-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmss}.zip";
+            ZipFile.CreateFromDirectory("temp", Path.Combine(backupFolder, zipFileName));
+            Directory.GetFiles("temp").ToList().ForEach(File.Delete);
+            Directory.Delete("temp");
         }
     }
 }

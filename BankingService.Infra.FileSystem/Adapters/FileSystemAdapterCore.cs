@@ -16,6 +16,11 @@ namespace BankingService.Infra.FileSystem.Adapters
             this.fileSystemService = fileSystemService;
         }
 
+        public void ArchiveFile(string filePath, string archiveFolder)
+        {
+            this.fileSystemService.ArchiveFile(filePath, archiveFolder);
+        }
+
         public List<string> ReadAllLines(string filePath)
         {
             return fileSystemService.ReadAllLines(filePath);

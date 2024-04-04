@@ -23,6 +23,7 @@ namespace BankingService.Core.Services
 
         public void ImportBankFile(string bankFilePath)
         {
+            fileSystemService.ArchiveFile(bankFilePath, "Archive/CM_Import");
             var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetOperationsFromCSV(csvOperations);
             ResolveOperationsAutoFields(operations);

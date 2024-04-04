@@ -8,6 +8,7 @@ namespace BankingService.Core.SPI.Interfaces
 {
     public interface IFileSystemService
     {
+        void ArchiveFile(string filePath, string archiveFolder);
         public List<string> ReadAllLines(string filePath);
     }
 }

@@ -28,7 +28,7 @@ namespace BankingService.Tests
         {
             // GIVEN
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/types.csv"))
+                .Setup(x => x.ReadAllLines("Database/Types.csv"))
                 .Returns(new List<string>
                 {
                     "StringToScan;AssociatedType",

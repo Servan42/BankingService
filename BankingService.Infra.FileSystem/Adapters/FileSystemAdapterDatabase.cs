@@ -25,5 +25,10 @@ namespace BankingService.Infra.FileSystem.Adapters
         {
             fileSystemService.WriteAllLinesOverride(filePath, lines);
         }
+
+        public void ZipBackupFilesToFolder(List<string> filesToBackup, string backupFolder)
+        {
+            fileSystemService.ZipBackupFilesToFolder(filesToBackup, backupFolder);
+        }
     }
 }

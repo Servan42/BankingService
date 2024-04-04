@@ -11,10 +11,11 @@ namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
-        private const string TYPES_FILE = "Database/types.csv";
-        private const string CAT_AND_AUTOCOMMENT_FILE = "Database/CategoriesAndAutoComments.csv";
-        private const string OPERATIONS_FILE = "Database/Operations.csv";
-
+        private const string FILE_TYPES = "Database/Types.csv";
+        private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
+        private const string FILE_OPERATIONS = "Database/Operations.csv";
+        private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
+        
         private readonly IFileSystemService fileSystemService;
 
         public BankDatabaseService(IFileSystemService fileSystemService)
@@ -22,10 +23,15 @@ namespace BankingService.Infra.Database.Services
             this.fileSystemService = fileSystemService;
         }
 
+        public void BackupDatabase()
+        {
+            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS], DATABASE_BACKUP_FOLDER);
+        }
+
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment()
         {
             var result = new Dictionary<string, OperationCategoryAndAutoCommentDto>();
-            foreach (var type in fileSystemService.ReadAllLines(CAT_AND_AUTOCOMMENT_FILE).Skip(1))
+            foreach (var type in fileSystemService.ReadAllLines(FILE_CAT_AND_AUTOCOMMENT).Skip(1))
             {
                 var splittedLine = type.Split(";");
                 result.Add(splittedLine[0], new OperationCategoryAndAutoCommentDto
@@ -40,7 +46,7 @@ namespace BankingService.Infra.Database.Services
         public Dictionary<string, string> GetOperationTypes()
         {
             var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines(TYPES_FILE).Skip(1))
+            foreach (var type in fileSystemService.ReadAllLines(FILE_TYPES).Skip(1))
             {
                 var splittedLine = type.Split(";");
                 result.Add(splittedLine[0], splittedLine[1]);
@@ -50,7 +56,7 @@ namespace BankingService.Infra.Database.Services
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
-            var csv = fileSystemService.ReadAllLines(OPERATIONS_FILE);
+            var csv = fileSystemService.ReadAllLines(FILE_OPERATIONS);
             var header = csv.First();
             var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
 
@@ -64,7 +70,7 @@ namespace BankingService.Infra.Database.Services
 
             List<string> operationsToWrite = [header];
             operationsToWrite.AddRange(storedOperations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverride(OPERATIONS_FILE, operationsToWrite);
+            fileSystemService.WriteAllLinesOverride(FILE_OPERATIONS, operationsToWrite);
         }
     }
 }

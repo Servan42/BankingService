@@ -1,4 +1,5 @@
 ﻿using BankingService.Core.SPI.DTOs;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,21 @@ namespace BankingService.Core.Model
         public string AutoComment { get; set; }
         public string Comment { get; set; }
 
+        internal static Operation Map(OperationDto dto)
+        {
+            return new Operation
+            {
+                Date = dto.Date,
+                Flow = dto.Flow,
+                Treasury = dto.Treasury,
+                Label = dto.Label,
+                Type = dto.Type,
+                Category = dto.Category,
+                AutoComment = dto.AutoComment,
+                Comment = dto.Comment,
+            };
+        }
+
         public OperationDto MapToDto()
         {
             return new OperationDto
@@ -35,25 +51,34 @@ namespace BankingService.Core.Model
 
         internal void ResolveCategoryAndAutoComment(Dictionary<string, OperationCategoryAndAutoCommentDto> operationCategoriesAndAutoComment)
         {
-            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category));
-            this.AutoComment = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment));
+            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category), this.Label, "TODO");
+            this.AutoComment = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment), this.Label, String.Empty);
         }
 
         internal void ResolveType(Dictionary<string, string> operationTypes)
         {
-            this.Type = ResolveOperationKeyValue(operationTypes);
+            this.Type = ResolveOperationKeyValue(operationTypes, this.Label, "TODO");
         }
 
-        private string ResolveOperationKeyValue(Dictionary<string, string> dict)
+        internal void ResolvePaypalCategory(Dictionary<string, string> paypalCategories)
         {
+            this.Category = ResolveOperationKeyValue(paypalCategories, this.AutoComment, "TODO");
+        }
+
+        private string ResolveOperationKeyValue(Dictionary<string, string> dict, string source, string defaultValue)
+        {
+            if (string.IsNullOrEmpty(source)) 
+                return defaultValue;
+            
             foreach (var kvp in dict)
             {
-                if (this.Label.Contains(kvp.Key))
+                if (source.Contains(kvp.Key))
                 {
                     return kvp.Value;
                 }
             }
-            return "TODO";
+            
+            return defaultValue;
         }
     }
 }

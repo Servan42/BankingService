@@ -5,9 +5,9 @@ using BankingService.Core.SPI.Interfaces;
 using Moq;
 using System.Diagnostics;
 
-namespace BankingService.Tests
+namespace BankingService.Tests.ImportServiceTests
 {
-    public class ImportServiceTests
+    public class ImportBankTests
     {
         Mock<IFileSystemService> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
@@ -23,7 +23,7 @@ namespace BankingService.Tests
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
-        [TestCase("-20,45","", -20.45)]
+        [TestCase("-20,45", "", -20.45)]
         [TestCase("", "10,11", 10.11)]
         public void Should_import_banking_file_line(string debit, string credit, decimal expectedFlow)
         {
@@ -50,14 +50,14 @@ namespace BankingService.Tests
                     Treasury = 766.87m,
                     Type = "TODO",
                     Category = "TODO",
-                    AutoComment = "TODO"
+                    AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
         }
 
         [Test]
-        public void Should_archive_import()
+        public void Should_archive_bank_import()
         {
             // GIVEN
             fileSystemService
@@ -72,7 +72,7 @@ namespace BankingService.Tests
             importService_sut.ImportBankFile("folder/bankFilePath.csv");
 
             // THEN
-            fileSystemService.Verify(x => x.ArchiveFile("folder/bankFilePath.csv", "Archive/CM_Import"), Times.Once());
+            fileSystemService.Verify(x => x.ArchiveFile("folder/bankFilePath.csv", "Archive/Bank_Import"), Times.Once());
         }
 
         [Test]
@@ -107,10 +107,10 @@ namespace BankingService.Tests
                     Treasury = 766.87m,
                     Type = "Sans Contact",
                     Category = "TODO",
-                    AutoComment = "TODO"
+                    AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
         }
 
         [Test]
@@ -148,28 +148,7 @@ namespace BankingService.Tests
                     Category = "Nourriture"
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => CheckOperation(o, expected))), Times.Once());
-        }
-
-        private bool CheckOperation(List<OperationDto> actual, List<OperationDto> expected)
-        {
-            Assert.That(actual.Count, Is.EqualTo(expected.Count), "Not the same amount of elements");
-            for (int i = 0; i < actual.Count; i++)
-            {
-                Assert.Multiple(() =>
-                {
-                    Assert.That(actual[i].Date, Is.EqualTo(expected[i].Date));
-                    Assert.That(actual[i].Flow, Is.EqualTo(expected[i].Flow));
-                    Assert.That(actual[i].Treasury, Is.EqualTo(expected[i].Treasury));
-                    Assert.That(actual[i].Type, Is.EqualTo(expected[i].Type));
-                    Assert.That(actual[i].Comment, Is.EqualTo(expected[i].Comment));
-                    Assert.That(actual[i].AutoComment, Is.EqualTo(expected[i].AutoComment));
-                    Assert.That(actual[i].Category, Is.EqualTo(expected[i].Category));
-                    Assert.That(actual[i].Label, Is.EqualTo(expected[i].Label));
-                });
-            }
-
-            return true;
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
         }
     }
 }

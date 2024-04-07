@@ -75,7 +75,12 @@ namespace BankingService.Infra.Database.Services
 
         public List<OperationDto> GetUnresolvedPaypalOperations()
         {
-            throw new NotImplementedException();
+            return fileSystemService
+                .ReadAllLines(FILE_OPERATIONS)
+                .Skip(1)
+                .Select(csv => Operation.Map(csv).MapToDto())
+                .Where(o => o.Type == "Paypal" && o.Category == "TODO" && o.AutoComment == "")
+                .ToList();
         }
 
         public void UpdateOperations(List<OperationDto> operationsDto)

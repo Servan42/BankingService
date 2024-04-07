@@ -112,17 +112,43 @@ namespace BankingService.Tests
                 "2024-03-24;-10,01;20,00;label1;;;;",
                 "2024-03-24;-10,01;20,00;label2;;;;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => CheckOperations(o, expected))));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
         }
 
-        private bool CheckOperations(List<string> operations, List<string> expected)
+        [Test]
+        public void Should_get_unresolved_paypal_operations()
         {
-            Assert.That(operations.Count, Is.EqualTo(expected.Count));
-            for (int i = 0; i < operations.Count; i++)
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                    "2024-03-23;-10,01;20,00;label0;;;;",
+                    "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
+                    "2024-03-25;-10,01;20,00;label2;Paypal;TODO;;",
+                    "2024-03-26;-10,01;20,00;label3;Paypal;TODO;Spotify;",
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetUnresolvedPaypalOperations();
+
+            // THEN
+            var expected = new List<OperationDto>
             {
-                Assert.That(operations[i], Is.EqualTo(expected[i]), $"index:{i}");
-            }
-            return true;
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,25),
+                    Flow = -10.01m,
+                    Treasury = 20.00m,
+                    Label = "label2",
+                    Type = "Paypal",
+                    Category = "TODO",
+                    AutoComment = "",
+                    Comment = ""
+                }
+            };
+            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
         }
     }
 }

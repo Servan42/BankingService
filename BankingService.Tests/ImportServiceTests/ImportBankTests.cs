@@ -53,7 +53,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
         }
 
         [Test]
@@ -110,7 +110,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
         }
 
         [Test]
@@ -148,7 +148,7 @@ namespace BankingService.Tests.ImportServiceTests
                     Category = "Nourriture"
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => ImportTestHelpers.CheckOperation(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
         }
     }
 }

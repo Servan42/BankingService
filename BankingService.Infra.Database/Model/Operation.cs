@@ -54,6 +54,21 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
+        internal OperationDto MapToDto()
+        {
+            return new OperationDto
+            {
+                Date = Date,
+                Flow = Flow,
+                Treasury = Treasury,
+                Label = Label,
+                Type = Type,
+                Category = Category,
+                AutoComment = AutoComment,
+                Comment = Comment
+            };
+        }
+
         internal string GetCSV()
         {
             return $"{Date:yyyy-MM-dd};{Flow:0.00};{Treasury:0.00};{Label};{Type};{Category};{AutoComment};{Comment}";

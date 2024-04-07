@@ -175,5 +175,46 @@ namespace BankingService.Tests
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
         }
+
+        [Test]
+        public void Should_update_operations()
+        {
+            // GIVEN
+            var operations = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,25),
+                    Flow = -10.01m,
+                    Label = "label1",
+                    Treasury = 30m,
+                    Type = "Paypal",
+                    Category = "Loisir",
+                    AutoComment = "Spotify",
+                    Comment = ""
+                }
+            };
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
+                    "2024-03-25;-10,01;30,00;label1;Paypal;TODO;;"
+                });
+
+            // WHEN
+            bankDatabaseService_sut.UpdateOperations(operations);
+
+            // THEN
+            var expected = new List<string>
+            {
+                "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
+                "2024-03-25;-10,01;30,00;label1;Paypal;Loisir;Spotify;"
+            };
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
+        }
     }
 }

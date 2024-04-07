@@ -57,9 +57,7 @@ namespace BankingService.Infra.Database.Services
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
-            var csv = fileSystemService.ReadAllLines(FILE_OPERATIONS);
-            var header = csv.First();
-            var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
+            (var header, var storedOperations) = GetStoredOperations();
 
             foreach (var newOperation in operationsDto.Select(Operation.Map))
             {
@@ -69,8 +67,21 @@ namespace BankingService.Infra.Database.Services
                 storedOperations.Add(newOperation.GetKey(), newOperation);
             }
 
+            WriteOperationsToFile(header, storedOperations);
+        }
+
+        private (string header, Dictionary<string, Operation> data) GetStoredOperations()
+        {
+            var csv = fileSystemService.ReadAllLines(FILE_OPERATIONS);
+            var header = csv.First();
+            var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
+            return (header, storedOperations);
+        }
+
+        private void WriteOperationsToFile(string header, Dictionary<string, Operation> operations)
+        {
             List<string> operationsToWrite = [header];
-            operationsToWrite.AddRange(storedOperations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
+            operationsToWrite.AddRange(operations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
             fileSystemService.WriteAllLinesOverride(FILE_OPERATIONS, operationsToWrite);
         }
 
@@ -86,7 +97,21 @@ namespace BankingService.Infra.Database.Services
 
         public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            throw new NotImplementedException();
+            (var header, var storedOperations) = GetStoredOperations();
+
+            foreach(var operationToUpdate in operationsDto.Select(Operation.Map))
+            {
+                if (!storedOperations.ContainsKey(operationToUpdate.GetKey()))
+                    throw new Exception($"Operation '{operationToUpdate.GetKey()}' cannot be updated because it is not present in database");
+
+                var storedOperation = storedOperations[operationToUpdate.GetKey()];
+                storedOperation.Type = operationToUpdate.Type;
+                storedOperation.Category = operationToUpdate.Category;
+                storedOperation.AutoComment = operationToUpdate.AutoComment;
+                storedOperation.Comment = operationToUpdate.Comment;
+            }
+
+            WriteOperationsToFile(header, storedOperations);
         }
 
         public Dictionary<string, string> GetPaypalCategories()

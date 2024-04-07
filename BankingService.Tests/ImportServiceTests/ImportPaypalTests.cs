@@ -129,19 +129,23 @@ namespace BankingService.Tests.ImportServiceTests
                 {
                     "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
                     "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
-                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\"\r\n"
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\"",
+                    "\"25/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-22,99\",\"0,00\",\"-22,99\",\"-22,99\",\"5678\",\"steam.com\",\"Steam\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
+                    "\"25/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"22,99\",\"0,00\",\"22,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
                 });
             bankDatabaseService
                 .Setup(x => x.GetUnresolvedPaypalOperations())
                 .Returns(new List<OperationDto>
                 {
-                    new OperationDto { Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
+                    new OperationDto { Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" },
+                    new OperationDto { Date = new DateTime(2024,01,25), Flow = -22.99m, Treasury = 10, Label = "aa", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
                 .Setup(x => x.GetPaypalCategories())
                 .Returns(new Dictionary<string, string>
                 {
-                    { "Spotify", "Loisirs" }
+                    { "Spotify", "Loisirs" },
+                    { "Steam", "Loisirs2" }
                 });
 
             // WHEN
@@ -150,6 +154,7 @@ namespace BankingService.Tests.ImportServiceTests
             // THEN
             var expected = new List<OperationDto>
             {
+                new OperationDto { Date = new DateTime(2024,01,25), Flow = -22.99m, Treasury = 10, Label = "aa", Type = "Paypal", AutoComment = "Steam", Category = "Loisirs2", Comment = "e" },
                 new OperationDto { Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
             bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => TestHelpers.CheckOperationDtos(actual, expected))), Times.Once());

@@ -82,23 +82,22 @@ namespace BankingService.Core.Services
 
         private List<Operation> MatchPaypalDataToExistingOperations(List<string> csvOperations)
         {
-            var offsetDate = 0;
-            var maxOffset = 32;
-
             var operationsQueue = new Queue<PaypalOperation>(GetPaypalOperationsFromCSV(csvOperations).OrderBy(o => o.Date));
             var incompletePaypalOperationsDto = bankDatabaseService.GetUnresolvedPaypalOperations().OrderBy(o => o.Date).ToList();
             var paypalCategories = bankDatabaseService.GetPaypalCategories();
 
             var completeOperations = new List<Operation>();
-            while (operationsQueue.Count > 0 && offsetDate < maxOffset)
+            while (operationsQueue.Count > 0)
             {
                 var paypalOperation = operationsQueue.Dequeue();
                 var operationToCompleteDto = incompletePaypalOperationsDto
-                    .FirstOrDefault(o => o.Date == paypalOperation.Date.AddDays(offsetDate) && o.Flow == paypalOperation.Net);
+                    .FirstOrDefault(o => o.Date == paypalOperation.OffesetedDate() && o.Flow == paypalOperation.Net);
                 
                 if (operationToCompleteDto == null)
                 {
-                    offsetDate++;
+                    paypalOperation.DateOffset++;
+                    if (paypalOperation.DateOffset > 31) 
+                        break;
                     operationsQueue.Enqueue(paypalOperation);
                     continue;
                 }

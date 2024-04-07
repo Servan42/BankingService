@@ -10,12 +10,12 @@
 - Ignore duplicate on import
 - Store in the format `Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment`
 - Get `Type`, `Comment Auto` and `Categorie` rules from `BankCSVParser`
-
-#### TODO
-
 - Import Paypal CSV files to complete the data about the above
 	- Get `Net` when less than 0
 	- Get `Nom`
+
+#### TODO
+
 - Log ducplicates in an import report
 - Think of a way to fill missing data manually
 - Implement a way to import new `Type`, `Comment Auto` and `Categorie`

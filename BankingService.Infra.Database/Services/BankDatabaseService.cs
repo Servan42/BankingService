@@ -72,5 +72,20 @@ namespace BankingService.Infra.Database.Services
             operationsToWrite.AddRange(storedOperations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
             fileSystemService.WriteAllLinesOverride(FILE_OPERATIONS, operationsToWrite);
         }
+
+        public List<OperationDto> GetUnresolvedPaypalOperations()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateOperations(List<OperationDto> operationsDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<string, string> GetPaypalCategories()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

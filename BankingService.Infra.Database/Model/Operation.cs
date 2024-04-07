@@ -23,18 +23,18 @@ namespace BankingService.Infra.Database.Model
             return string.Join(";", csv.Split(";").Take(4));
         }
 
-        internal static Operation Map(OperationDto newOperation)
+        internal static Operation Map(OperationDto operationDto)
         {
             return new Operation
             {
-                Date = newOperation.Date,
-                Flow = newOperation.Flow,
-                Treasury = newOperation.Treasury,
-                Label = newOperation.Label,
-                Type = newOperation.Type,
-                Category = newOperation.Category,
-                AutoComment = newOperation.AutoComment,
-                Comment = newOperation.Comment,
+                Date = operationDto.Date,
+                Flow = operationDto.Flow,
+                Treasury = operationDto.Treasury,
+                Label = operationDto.Label,
+                Type = operationDto.Type,
+                Category = operationDto.Category,
+                AutoComment = operationDto.AutoComment,
+                Comment = operationDto.Comment,
             };
         }
 

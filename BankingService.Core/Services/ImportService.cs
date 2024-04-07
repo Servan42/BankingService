@@ -85,8 +85,8 @@ namespace BankingService.Core.Services
             var offsetDate = 0;
             var maxOffset = 32;
 
-            var operationsQueue = GetPaypalOperationsFromCSV(csvOperations);
-            var incompletePaypalOperationsDto = bankDatabaseService.GetUnresolvedPaypalOperations();
+            var operationsQueue = new Queue<PaypalOperation>(GetPaypalOperationsFromCSV(csvOperations).OrderBy(o => o.Date));
+            var incompletePaypalOperationsDto = bankDatabaseService.GetUnresolvedPaypalOperations().OrderBy(o => o.Date).ToList();
             var paypalCategories = bankDatabaseService.GetPaypalCategories();
 
             var completeOperations = new List<Operation>();
@@ -113,9 +113,9 @@ namespace BankingService.Core.Services
             return completeOperations;
         }
 
-        private Queue<PaypalOperation> GetPaypalOperationsFromCSV(List<string> csvOperations)
+        private List<PaypalOperation> GetPaypalOperationsFromCSV(List<string> csvOperations)
         {
-            var operations = new Queue<PaypalOperation>();
+            var operations = new List<PaypalOperation>();
 
             foreach(var operation in csvOperations.Skip(1))
             {
@@ -127,7 +127,7 @@ namespace BankingService.Core.Services
                     Nom = operationFeilds[11]
                 };
                 if(paypalOperation.Net < 0)
-                    operations.Enqueue(paypalOperation);
+                    operations.Add(paypalOperation);
             }
 
             return operations;

@@ -76,7 +76,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new OperationDto { Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => ImportTestHelpers.CheckOperation(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => TestHelpers.CheckOperationDtos(actual, expected))), Times.Once());
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace BankingService.Tests.ImportServiceTests
                 new OperationDto { Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" },
                 new OperationDto { Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 100, Label = "a", Type = "Paypal", AutoComment = "Spotify AB 2", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => ImportTestHelpers.CheckOperation(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => TestHelpers.CheckOperationDtos(actual, expected))), Times.Once());
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new OperationDto { Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => ImportTestHelpers.CheckOperation(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => TestHelpers.CheckOperationDtos(actual, expected))), Times.Once());
         }
     }
 }

@@ -73,6 +73,31 @@ namespace BankingService.Tests
         }
 
         [Test]
+        public void Should_get_Paypal_Categories()
+        {
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/PaypalCategories.csv"))
+                .Returns(new List<string>
+                {
+                    "StringToScan;AssociatedCategory",
+                    "Spotify;Loisirs",
+                    "Zwift;Sport"
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetPaypalCategories();
+
+            // GIVEN
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result["Spotify"], Is.EqualTo("Loisirs"));
+                Assert.That(result["Zwift"], Is.EqualTo("Sport"));
+            });
+        }
+
+        [Test]
         public void Should_insert_line_if_new()
         {
             // GIVEN

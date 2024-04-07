@@ -12,6 +12,7 @@ namespace BankingService.Infra.Database.Services
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
         private const string FILE_TYPES = "Database/Types.csv";
+        private const string FILE_PAYPAL_CAT = "Database/PaypalCategories.csv";
         private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
         private const string FILE_OPERATIONS = "Database/Operations.csv";
         private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
@@ -25,7 +26,7 @@ namespace BankingService.Infra.Database.Services
 
         public void BackupDatabase()
         {
-            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS], DATABASE_BACKUP_FOLDER);
+            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS, FILE_PAYPAL_CAT], DATABASE_BACKUP_FOLDER);
         }
 
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment()
@@ -90,7 +91,13 @@ namespace BankingService.Infra.Database.Services
 
         public Dictionary<string, string> GetPaypalCategories()
         {
-            throw new NotImplementedException();
+            var result = new Dictionary<string, string>();
+            foreach (var type in fileSystemService.ReadAllLines(FILE_PAYPAL_CAT).Skip(1))
+            {
+                var splittedLine = type.Split(";");
+                result.Add(splittedLine[0], splittedLine[1]);
+            }
+            return result;
         }
     }
 }

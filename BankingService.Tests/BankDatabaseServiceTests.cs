@@ -234,15 +234,66 @@ namespace BankingService.Tests
             var result = bankDatabaseService_sut.GetOperationsThatNeedsManualInput();
 
             // THEN
-            Assert.That(result.Count, Is.EqualTo(1));
-            Assert.That(result[0].Date, Is.EqualTo(DateTime.Parse("2024-03-24")));
-            Assert.That(result[0].Flow, Is.EqualTo(-10.01m));
-            Assert.That(result[0].Treasury, Is.EqualTo(20m));
-            Assert.That(result[0].Label, Is.EqualTo("label1"));
-            Assert.That(result[0].Type, Is.EqualTo("Sans Contact"));
-            Assert.That(result[0].Category, Is.EqualTo("TODO"));
-            Assert.That(result[0].AutoComment, Is.EqualTo(""));
-            Assert.That(result[0].Comment, Is.EqualTo(""));
+            var expected = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,24),
+                    Flow = -10.01m,
+                    Treasury = 20.00m,
+                    Label = "label1",
+                    Type = "Sans Contact",
+                    Category = "TODO",
+                    AutoComment = "",
+                    Comment = ""
+                }
+            };
+            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+        }
+
+        [Test]
+        public void Should_get_operation_all_operations()
+        {
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Returns(new List<string>
+                {
+                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;Sans Contact;TODO;;",
+                    "2024-03-25;-10,01;30,00;label2;Paypal;Loisir;Steam;"
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetAllOperations();
+
+            // THEN
+            var expected = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,24),
+                    Flow = -10.01m,
+                    Treasury = 20.00m,
+                    Label = "label1",
+                    Type = "Sans Contact",
+                    Category = "TODO",
+                    AutoComment = "",
+                    Comment = ""
+                },
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,25),
+                    Flow = -10.01m,
+                    Treasury = 30.00m,
+                    Label = "label2",
+                    Type = "Paypal",
+                    Category = "Loisir",
+                    AutoComment = "Steam",
+                    Comment = ""
+                }
+            };
+            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
         }
     }
 }

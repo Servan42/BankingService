@@ -17,5 +17,6 @@ namespace BankingService.Core.SPI.Interfaces
         public List<OperationDto> GetUnresolvedPaypalOperations();
         public List<OperationDto> GetAllOperations();
         public void UpdateOperations(List<OperationDto> operationsDto);
+        public List<OperationDto> GetOperationsThatNeedsManualInput();
     }
 }

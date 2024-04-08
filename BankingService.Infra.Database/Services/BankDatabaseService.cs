@@ -60,7 +60,7 @@ namespace BankingService.Infra.Database.Services
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
-            (var header, var storedOperations) = GetStoredOperations();
+            (var header, var storedOperations) = GetStoredOperationsWithKey();
             int newOperationCount = 0;
 
             foreach (var newOperation in operationsDto.Select(Operation.Map))
@@ -79,12 +79,20 @@ namespace BankingService.Infra.Database.Services
             WriteOperationsToFile(header, storedOperations);
         }
 
-        private (string header, Dictionary<string, Operation> data) GetStoredOperations()
+        private (string header, Dictionary<string, Operation> data) GetStoredOperationsWithKey()
         {
             var csv = fileSystemService.ReadAllLines(FILE_OPERATIONS);
             var header = csv.First();
             var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
             return (header, storedOperations);
+        }
+
+        private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
+        {
+            return fileSystemService
+                .ReadAllLines(FILE_OPERATIONS)
+                .Skip(1)
+                .Select(csv => Operation.Map(csv).MapToDto());
         }
 
         private void WriteOperationsToFile(string header, Dictionary<string, Operation> operations)
@@ -96,17 +104,14 @@ namespace BankingService.Infra.Database.Services
 
         public List<OperationDto> GetUnresolvedPaypalOperations()
         {
-            return fileSystemService
-                .ReadAllLines(FILE_OPERATIONS)
-                .Skip(1)
-                .Select(csv => Operation.Map(csv).MapToDto())
+            return GetStoredOperationsAsDtos()
                 .Where(o => o.Type == "Paypal" && o.Category == "TODO" && o.AutoComment == "")
                 .ToList();
         }
 
         public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            (var header, var storedOperations) = GetStoredOperations();
+            (var header, var storedOperations) = GetStoredOperationsWithKey();
 
             foreach(var operationToUpdate in operationsDto.Select(Operation.Map))
             {
@@ -137,15 +142,12 @@ namespace BankingService.Infra.Database.Services
 
         public List<OperationDto> GetAllOperations()
         {
-            return GetStoredOperations().data.Values.Select(o => o.MapToDto()).ToList();
+            return GetStoredOperationsAsDtos().ToList();
         }
 
         public List<OperationDto> GetOperationsThatNeedsManualInput()
         {
-            return fileSystemService
-                .ReadAllLines(FILE_OPERATIONS)
-                .Skip(1)
-                .Select(csv => Operation.Map(csv).MapToDto())
+            return GetStoredOperationsAsDtos()
                 .Where(o => o.Category == "TODO")
                 .ToList();
         }

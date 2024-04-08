@@ -124,7 +124,7 @@ namespace BankingService.Core.Services
                 var unmatchedOp = operationsQueue.Dequeue();
                 logger.Debug($"Following paypal operation could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
             }
-            
+
             return completeOperations;
         }
 
@@ -174,6 +174,29 @@ namespace BankingService.Core.Services
             }
 
             return result;
+        }
+
+        public void RecomputeEveryOperationAdditionalData()
+        {
+            logger.Info("Re-computing every operation additional data");
+
+            var operations = bankDatabaseService.GetAllOperations().Select(Operation.Map).ToList();
+            var types = bankDatabaseService.GetOperationTypes();
+            var catAndComments = bankDatabaseService.GetOperationCategoriesAndAutoComment();
+            var paypalCat = bankDatabaseService.GetPaypalCategories();
+
+            foreach (var operation in operations)
+            {
+                operation.ResolveType(types);
+                if (operation.Type == "Paypal")
+                    operation.ResolvePaypalCategory(paypalCat);
+                else
+                    operation.ResolveCategoryAndAutoComment(catAndComments);
+            }
+
+            logger.Info($"{operations.Count(o => o.Type == "TODO" || o.Category == "TODO")} operations still require manual input");
+
+            bankDatabaseService.UpdateOperations(operations.Select(o => o.MapToDto()).ToList());
         }
     }
 }

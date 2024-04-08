@@ -19,5 +19,6 @@ internal class Program
         bankDataBaseService.BackupDatabase();
         importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\00021505101_Jan.csv");
         importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
+        importService.RecomputeEveryOperationAdditionalData();
     }
 }

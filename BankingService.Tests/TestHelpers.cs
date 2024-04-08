@@ -16,14 +16,14 @@ namespace BankingService.Tests
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(actual[i].Date, Is.EqualTo(expected[i].Date));
-                    Assert.That(actual[i].Flow, Is.EqualTo(expected[i].Flow));
-                    Assert.That(actual[i].Treasury, Is.EqualTo(expected[i].Treasury));
-                    Assert.That(actual[i].Type, Is.EqualTo(expected[i].Type));
-                    Assert.That(actual[i].Comment, Is.EqualTo(expected[i].Comment));
-                    Assert.That(actual[i].AutoComment, Is.EqualTo(expected[i].AutoComment));
-                    Assert.That(actual[i].Category, Is.EqualTo(expected[i].Category));
-                    Assert.That(actual[i].Label, Is.EqualTo(expected[i].Label));
+                    Assert.That(actual[i].Date, Is.EqualTo(expected[i].Date), $"index:{i}");
+                    Assert.That(actual[i].Flow, Is.EqualTo(expected[i].Flow), $"index:{i}");
+                    Assert.That(actual[i].Treasury, Is.EqualTo(expected[i].Treasury), $"index:{i}");
+                    Assert.That(actual[i].Label, Is.EqualTo(expected[i].Label), $"index:{i}");
+                    Assert.That(actual[i].Type, Is.EqualTo(expected[i].Type), $"index:{i}");
+                    Assert.That(actual[i].Category, Is.EqualTo(expected[i].Category), $"index:{i}");
+                    Assert.That(actual[i].AutoComment, Is.EqualTo(expected[i].AutoComment), $"index:{i}");
+                    Assert.That(actual[i].Comment, Is.EqualTo(expected[i].Comment), $"index:{i}");
                 });
             }
 

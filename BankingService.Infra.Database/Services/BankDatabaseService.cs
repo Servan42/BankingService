@@ -134,5 +134,10 @@ namespace BankingService.Infra.Database.Services
             }
             return result;
         }
+
+        public List<OperationDto> GetAllOperations()
+        {
+            return GetStoredOperations().data.Values.Select(o => o.MapToDto()).ToList();
+        }
     }
 }

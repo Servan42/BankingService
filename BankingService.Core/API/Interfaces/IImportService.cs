@@ -10,5 +10,6 @@ namespace BankingService.Core.API.Interfaces
     {
         public void ImportBankFile(string bankFilePath);
         public void ImportPaypalFile(string paypalFilePath);
+        public void RecomputeEveryOperationAdditionalData();
     }
 }

@@ -51,7 +51,10 @@ namespace BankingService.Core.Model
 
         internal void ResolveCategoryAndAutoComment(Dictionary<string, OperationCategoryAndAutoCommentDto> operationCategoriesAndAutoComment)
         {
-            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category), this.Label, "TODO");
+            var defaultCategory = "TODO";
+            if(!string.IsNullOrEmpty(this.Category))
+                defaultCategory = this.Category;
+            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category), this.Label, defaultCategory);
             this.AutoComment = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment), this.Label, String.Empty);
         }
 
@@ -67,9 +70,9 @@ namespace BankingService.Core.Model
 
         private string ResolveOperationKeyValue(Dictionary<string, string> dict, string source, string defaultValue)
         {
-            if (string.IsNullOrEmpty(source)) 
+            if (string.IsNullOrEmpty(source))
                 return defaultValue;
-            
+
             foreach (var kvp in dict)
             {
                 if (source.Contains(kvp.Key))
@@ -77,7 +80,7 @@ namespace BankingService.Core.Model
                     return kvp.Value;
                 }
             }
-            
+
             return defaultValue;
         }
     }

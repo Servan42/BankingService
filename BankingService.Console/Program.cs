@@ -17,8 +17,8 @@ internal class Program
         IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
 
         bankDataBaseService.BackupDatabase();
+        importService.RecomputeEveryOperationAdditionalData();
         importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
         importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
-        importService.RecomputeEveryOperationAdditionalData();
     }
 }

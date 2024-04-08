@@ -69,6 +69,7 @@ namespace BankingService.Core.Services
             }
 
             logger.Info($"{operations.Count(o => o.Type != "TODO")}/{operations.Count} operation types resolved");
+            operations.Where(o => o.Type == "TODO").ToList().ForEach(o => logger.Debug($"Operation needs a type: '{o.Date};{o.Flow};{o.Treasury};{o.Label}'"));
             logger.Info($"{operations.Count(o => o.Category != "TODO")}/{operations.Count} operation categories resolved");
         }
 

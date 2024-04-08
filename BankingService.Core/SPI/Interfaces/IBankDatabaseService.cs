@@ -15,6 +15,7 @@ namespace BankingService.Core.SPI.Interfaces
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment();
         public void BackupDatabase();
         public List<OperationDto> GetUnresolvedPaypalOperations();
+        public List<OperationDto> GetAllOperations();
         public void UpdateOperations(List<OperationDto> operationsDto);
     }
 }

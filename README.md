@@ -13,13 +13,13 @@
 - Import Paypal CSV files to complete the data about the above
 	- Get `Net` when less than 0
 	- Get `Nom`
+- Log ducplicates in an import report
+- Implement a way to update all existing lines with `Type`, `Comment Auto` and `Categorie` when this data is updated
 
 #### TODO
 
-- Log ducplicates in an import report
 - Think of a way to fill missing data manually
 - Implement a way to import new `Type`, `Comment Auto` and `Categorie`
-- Implement a way to update all existing lines with `Type`, `Comment Auto` and `Categorie` when this data is updated (think about manual comments)
 
 ### Dashboard
 

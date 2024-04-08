@@ -19,6 +19,7 @@
 #### TODO
 
 - Think of a way to fill missing data manually
+- Make a specific tables for categories
 - Implement a way to import new `Type`, `Comment Auto` and `Categorie`
 
 ### Dashboard

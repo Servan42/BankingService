@@ -139,5 +139,15 @@ namespace BankingService.Infra.Database.Services
         {
             return GetStoredOperations().data.Values.Select(o => o.MapToDto()).ToList();
         }
+
+        public List<OperationDto> GetOperationsThatNeedsManualInput()
+        {
+            return fileSystemService
+                .ReadAllLines(FILE_OPERATIONS)
+                .Skip(1)
+                .Select(csv => Operation.Map(csv).MapToDto())
+                .Where(o => o.Category == "TODO")
+                .ToList();
+        }
     }
 }

@@ -3,6 +3,7 @@ using BankingService.Core.Model;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using Microsoft.VisualBasic.FileIO;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BankingService.Core.Services
         private const string BANK_ARCHIVE_FOLDER = "Archive/Bank_Import";
         private const string PAYPAL_ARCHIVE_FOLDER = "Archive/Paypal_Import";
 
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly IFileSystemService fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
 
@@ -27,6 +30,7 @@ namespace BankingService.Core.Services
 
         public void ImportBankFile(string bankFilePath)
         {
+            logger.Info($"Importing {bankFilePath} bank file");
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
             var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetBankOperationsFromCSV(csvOperations);
@@ -57,11 +61,15 @@ namespace BankingService.Core.Services
         {
             var operationTypes = bankDatabaseService.GetOperationTypes();
             var operationCategoriesAndAutoComment = bankDatabaseService.GetOperationCategoriesAndAutoComment();
+
             foreach (var operation in operations)
             {
                 operation.ResolveType(operationTypes);
                 operation.ResolveCategoryAndAutoComment(operationCategoriesAndAutoComment);
             }
+
+            logger.Info($"{operations.Count(o => o.Type != "TODO")}/{operations.Count} operation types resolved");
+            logger.Info($"{operations.Count(o => o.Category != "TODO")}/{operations.Count} operation categories resolved");
         }
 
         private decimal GetBankFlow(string[] splitedOperation)
@@ -74,6 +82,7 @@ namespace BankingService.Core.Services
 
         public void ImportPaypalFile(string paypalFilePath)
         {
+            logger.Info($"Importing {paypalFilePath} paypal file");
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
             var csvOperations = fileSystemService.ReadAllLines(paypalFilePath);
             List<Operation> completeOperations = MatchPaypalDataToExistingOperations(csvOperations);
@@ -92,11 +101,11 @@ namespace BankingService.Core.Services
                 var paypalOperation = operationsQueue.Dequeue();
                 var operationToCompleteDto = incompletePaypalOperationsDto
                     .FirstOrDefault(o => o.Date == paypalOperation.OffesetedDate() && o.Flow == paypalOperation.Net);
-                
+
                 if (operationToCompleteDto == null)
                 {
                     paypalOperation.DateOffset++;
-                    if (paypalOperation.DateOffset > 31) 
+                    if (paypalOperation.DateOffset > 31)
                         break;
                     operationsQueue.Enqueue(paypalOperation);
                     continue;
@@ -109,6 +118,13 @@ namespace BankingService.Core.Services
                 completeOperations.Add(completeOperation);
             }
 
+            logger.Info(operationsQueue.Count > 0 ? $"{operationsQueue.Count} paypal operations could not be matched" : "All paypal operations were matched to data");
+            while (operationsQueue.Count > 0)
+            {
+                var unmatchedOp = operationsQueue.Dequeue();
+                logger.Debug($"Following paypal operation could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
+            }
+            
             return completeOperations;
         }
 
@@ -116,7 +132,7 @@ namespace BankingService.Core.Services
         {
             var operations = new List<PaypalOperation>();
 
-            foreach(var operation in csvOperations.Skip(1))
+            foreach (var operation in csvOperations.Skip(1))
             {
                 var operationFeilds = GetCSVFeilds(operation, ",");
                 var paypalOperation = new PaypalOperation()
@@ -125,7 +141,7 @@ namespace BankingService.Core.Services
                     Net = decimal.Parse(operationFeilds[7]),
                     Nom = operationFeilds[11]
                 };
-                if(paypalOperation.Net < 0)
+                if (paypalOperation.Net < 0)
                     operations.Add(paypalOperation);
             }
 

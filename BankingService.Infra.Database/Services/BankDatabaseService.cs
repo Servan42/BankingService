@@ -1,6 +1,7 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using BankingService.Infra.Database.Model;
 using BankingService.Infra.Database.SPI.Interfaces;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace BankingService.Infra.Database.Services
         private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
         private const string FILE_OPERATIONS = "Database/Operations.csv";
         private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
-        
+
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystemService fileSystemService;
 
         public BankDatabaseService(IFileSystemService fileSystemService)
@@ -26,6 +28,7 @@ namespace BankingService.Infra.Database.Services
 
         public void BackupDatabase()
         {
+            logger.Info("Backuping database");
             this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS, FILE_PAYPAL_CAT], DATABASE_BACKUP_FOLDER);
         }
 
@@ -58,15 +61,21 @@ namespace BankingService.Infra.Database.Services
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
             (var header, var storedOperations) = GetStoredOperations();
+            int newOperationCount = 0;
 
             foreach (var newOperation in operationsDto.Select(Operation.Map))
             {
                 if (storedOperations.ContainsKey(newOperation.GetKey()))
+                {
+                    logger.Debug($"Following operation will not be imported because it already exists: '{newOperation.GetKey()}'");
                     continue;
+                }
 
+                newOperationCount++;
                 storedOperations.Add(newOperation.GetKey(), newOperation);
             }
 
+            logger.Info($"{newOperationCount} new operations added to database");
             WriteOperationsToFile(header, storedOperations);
         }
 
@@ -111,6 +120,7 @@ namespace BankingService.Infra.Database.Services
                 storedOperation.Comment = operationToUpdate.Comment;
             }
 
+            logger.Info($"{operationsDto.Count} operations updated");
             WriteOperationsToFile(header, storedOperations);
         }
 

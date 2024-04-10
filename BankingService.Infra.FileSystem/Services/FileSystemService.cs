@@ -36,7 +36,7 @@ namespace BankingService.Infra.FileSystem.Services
         {
             Directory.CreateDirectory("temp");
             filesToBackup.ForEach(f => File.Copy(f, Path.Combine("temp",Path.GetFileName(f))));
-            var zipFileName = $"backupDB-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmss}.zip";
+            var zipFileName = $"backupDB-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}.zip";
             ZipFile.CreateFromDirectory("temp", Path.Combine(backupFolder, zipFileName));
             Directory.GetFiles("temp").ToList().ForEach(File.Delete);
             Directory.Delete("temp");

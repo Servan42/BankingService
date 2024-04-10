@@ -97,7 +97,7 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLines(pcFile))
                 .Returns(new List<string>
                 {
-                    "StringToScan;AssociatedCategory",
+                    "StringToScan;AssociatedCategoryId",
                     "Spotify;2",
                     "Zwift;1"
                 });
@@ -129,6 +129,9 @@ namespace BankingService.Tests
         public void Should_insert_line_if_new()
         {
             // GIVEN
+            string opFile = "Database/Operations.csv";
+            var cFile = "Database/Categories.csv";
+
             var operations = new List<OperationDto>
             {
                 new OperationDto 
@@ -136,23 +139,34 @@ namespace BankingService.Tests
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
                     Label = "label1",
-                    Treasury = 20m
+                    Treasury = 20m,
+                    Category = "TODO"
                 },
                 new OperationDto
                 {
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
                     Label = "label2",
-                    Treasury = 20m
+                    Treasury = 20m,
+                    Category = "Loisir"
                 },
             };
 
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Setup(x => x.ReadAllLines(opFile))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;;;;"
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;;1;;"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;TODO",
+                    "2;Loisir",
                 });
 
             // WHEN
@@ -161,26 +175,39 @@ namespace BankingService.Tests
             // THEN
             var expected = new List<string>
             {
-                "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                "2024-03-24;-10,01;20,00;label1;;;;",
-                "2024-03-24;-10,01;20,00;label2;;;;"
+                "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                "2024-03-24;-10,01;20,00;label1;;1;;",
+                "2024-03-24;-10,01;20,00;label2;;2;;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverride(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
+            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
         public void Should_get_unresolved_paypal_operations()
         {
             // GIVEN
+            string opFile = "Database/Operations.csv";
+            var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Setup(x => x.ReadAllLines(opFile))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                    "2024-03-23;-10,01;20,00;label0;;;;",
-                    "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
-                    "2024-03-25;-10,01;20,00;label2;Paypal;TODO;;",
-                    "2024-03-26;-10,01;20,00;label3;Paypal;TODO;Spotify;",
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-23;-10,01;20,00;label0;;2;;",
+                    "2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                    "2024-03-25;-10,01;20,00;label2;Paypal;1;;",
+                    "2024-03-26;-10,01;20,00;label3;Paypal;1;Spotify;",
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;TODO",
+                    "2;Loisir",
                 });
 
             // WHEN
@@ -202,12 +229,17 @@ namespace BankingService.Tests
                 }
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
         public void Should_update_operations()
         {
             // GIVEN
+            string opFile = "Database/Operations.csv";
+            var cFile = "Database/Categories.csv";
+
             var operations = new List<OperationDto>
             {
                 new OperationDto
@@ -224,12 +256,21 @@ namespace BankingService.Tests
             };
 
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Setup(x => x.ReadAllLines(opFile))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
-                    "2024-03-25;-10,01;30,00;label1;Paypal;TODO;;"
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                    "2024-03-25;-10,01;30,00;label1;Paypal;1;;"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;TODO",
+                    "2;Loisir",
                 });
 
             // WHEN
@@ -238,24 +279,37 @@ namespace BankingService.Tests
             // THEN
             var expected = new List<string>
             {
-                "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                "2024-03-24;-10,01;20,00;label1;TODO;TODO;;",
-                "2024-03-25;-10,01;30,00;label1;Paypal;Loisir;Spotify;"
+                "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                "2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                "2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverride("Database/Operations.csv", It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverride(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
+            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
         public void Should_get_operation_that_need_manual_input()
         {
             // GIVEN
+            string opFile = "Database/Operations.csv";
+            var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Setup(x => x.ReadAllLines(opFile))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;Sans Contact;TODO;;",
-                    "2024-03-25;-10,01;30,00;label2;Paypal;Loisir;Steam;"
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
+                    "2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;TODO",
+                    "2;Loisir",
                 });
 
             // WHEN
@@ -277,19 +331,32 @@ namespace BankingService.Tests
                 }
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
         public void Should_get_operation_all_operations()
         {
             // GIVEN
+            string opFile = "Database/Operations.csv";
+            var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Operations.csv"))
+                .Setup(x => x.ReadAllLines(opFile))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;Category;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;Sans Contact;TODO;;",
-                    "2024-03-25;-10,01;30,00;label2;Paypal;Loisir;Steam;"
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
+                    "2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;TODO",
+                    "2;Loisir",
                 });
 
             // WHEN
@@ -321,7 +388,10 @@ namespace BankingService.Tests
                     Comment = ""
                 }
             };
+
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]

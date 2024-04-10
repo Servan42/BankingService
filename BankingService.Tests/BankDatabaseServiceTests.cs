@@ -295,5 +295,25 @@ namespace BankingService.Tests
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
         }
+
+        [Test]
+        public void Should_get_all_categories_names()
+        {
+            // GIVEN
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines("Database/Categories.csv"))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;Income",
+                    "2;Autres",
+                });
+
+            // WHEN
+            var result = this.bankDatabaseService_sut.GetAllCategoriesNames();
+
+            // THEN
+            CollectionAssert.AreEqual(new List<string> { "Income", "Autres" }, result);
+        }
     }
 }

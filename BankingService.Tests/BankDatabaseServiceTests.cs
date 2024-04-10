@@ -27,8 +27,9 @@ namespace BankingService.Tests
         public void Should_get_operation_types()
         {
             // GIVEN
+            var tFile = "Database/Types.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/Types.csv"))
+                .Setup(x => x.ReadAllLines(tFile))
                 .Returns(new List<string>
                 {
                     "StringToScan;AssociatedType",
@@ -37,29 +38,41 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationTypes();
+            var result = bankDatabaseService_sut.GetOperationTypesKvp();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
             Assert.That(result["VIR"], Is.EqualTo("Virement"));
             Assert.That(result["PAYPAL"], Is.EqualTo("Paypal"));
+            mockFileSystemService.Verify(x => x.ReadAllLines(tFile), Times.Once());
         }
 
         [Test]
         public void Should_get_operation_Categories_and_autoComment()
         {
             // GIVEN
+            var caFile = "Database/CategoriesAndAutoComments.csv";
+            var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/CategoriesAndAutoComments.csv"))
+                .Setup(x => x.ReadAllLines(caFile))
                 .Returns(new List<string>
                 {
                     "StringToScan;AssociatedCategory;AssociatedCommentAuto",
-                    "AUCHAN;Nourriture;Courses (Auchan)",
-                    "SNCF;Voyage/Deplacement;Train"
+                    "AUCHAN;2;Courses (Auchan)",
+                    "SNCF;1;Train"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;Voyage/Deplacement",
+                    "2;Nourriture",
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationCategoriesAndAutoComment();
+            var result = bankDatabaseService_sut.GetOperationCategoriesAndAutoCommentKvp();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
@@ -70,23 +83,36 @@ namespace BankingService.Tests
                 Assert.That(result["SNCF"].Category, Is.EqualTo("Voyage/Deplacement"));
                 Assert.That(result["SNCF"].AutoComment, Is.EqualTo("Train"));
             });
+            mockFileSystemService.Verify(x => x.ReadAllLines(caFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
         public void Should_get_Paypal_Categories()
         {
             // GIVEN
+            var pcFile = "Database/PaypalCategories.csv";
+            var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines("Database/PaypalCategories.csv"))
+                .Setup(x => x.ReadAllLines(pcFile))
                 .Returns(new List<string>
                 {
                     "StringToScan;AssociatedCategory",
-                    "Spotify;Loisirs",
-                    "Zwift;Sport"
+                    "Spotify;2",
+                    "Zwift;1"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;Sport",
+                    "2;Loisirs",
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetPaypalCategories();
+            var result = bankDatabaseService_sut.GetPaypalCategoriesKvp();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
@@ -95,6 +121,8 @@ namespace BankingService.Tests
                 Assert.That(result["Spotify"], Is.EqualTo("Loisirs"));
                 Assert.That(result["Zwift"], Is.EqualTo("Sport"));
             });
+            mockFileSystemService.Verify(x => x.ReadAllLines(pcFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]

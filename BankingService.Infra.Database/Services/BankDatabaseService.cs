@@ -15,8 +15,9 @@ namespace BankingService.Infra.Database.Services
         private const string FILE_TYPES = "Database/Types.csv";
         private const string FILE_PAYPAL_CAT = "Database/PaypalCategories.csv";
         private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
-        private const string FILE_OPERATIONS = "Database/Operations.csv";
         private const string FILE_CATEGORIES = "Database/Categories.csv";
+        private const string FILE_OPERATIONS = "Database/Operations.csv";
+
         private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -27,36 +28,31 @@ namespace BankingService.Infra.Database.Services
             this.fileSystemService = fileSystemService;
         }
 
+        private Types types => Types.Load(this.fileSystemService.ReadAllLines(FILE_TYPES).Skip(1));
+        private PaypalCategories paypalCategories => PaypalCategories.Load(this.fileSystemService.ReadAllLines(FILE_PAYPAL_CAT).Skip(1));
+        private CategoriesAndAutoComments categoriesAndAutoComments => CategoriesAndAutoComments.Load(this.fileSystemService.ReadAllLines(FILE_CAT_AND_AUTOCOMMENT).Skip(1));
+        private Categories categories => Categories.Load(this.fileSystemService.ReadAllLines(FILE_CATEGORIES).Skip(1));
+
         public void BackupDatabase()
         {
             logger.Info("Backuping database");
-            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS, FILE_PAYPAL_CAT], DATABASE_BACKUP_FOLDER);
+            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS, FILE_PAYPAL_CAT, FILE_CATEGORIES], DATABASE_BACKUP_FOLDER);
         }
 
-        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment()
+        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp()
         {
-            var result = new Dictionary<string, OperationCategoryAndAutoCommentDto>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_CAT_AND_AUTOCOMMENT).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], new OperationCategoryAndAutoCommentDto
+            return categoriesAndAutoComments.Data
+                .Join(categories.Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
+                .ToDictionary(j => j.ca.Key, j => new OperationCategoryAndAutoCommentDto
                 {
-                    Category = splittedLine[1],
-                    AutoComment = splittedLine[2]
+                    AutoComment = j.ca.Value.AutoComment,
+                    Category = j.c.Value
                 });
-            }
-            return result;
         }
 
-        public Dictionary<string, string> GetOperationTypes()
+        public Dictionary<string, string> GetOperationTypesKvp()
         {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_TYPES).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
-            }
-            return result;
+            return types.Data;
         }
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
@@ -130,15 +126,11 @@ namespace BankingService.Infra.Database.Services
             WriteOperationsToFile(header, storedOperations);
         }
 
-        public Dictionary<string, string> GetPaypalCategories()
+        public Dictionary<string, string> GetPaypalCategoriesKvp()
         {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_PAYPAL_CAT).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
-            }
-            return result;
+            return paypalCategories.Data
+                .Join(categories.Data, pc => pc.Value, c => c.Key, (pc, c) => new { pc.Key, c.Value })
+                .ToDictionary(j => j.Key, j => j.Value);
         }
 
         public List<OperationDto> GetAllOperations()
@@ -155,10 +147,7 @@ namespace BankingService.Infra.Database.Services
 
         public List<string> GetAllCategoriesNames()
         {
-            return fileSystemService.ReadAllLines(FILE_CATEGORIES)
-                .Skip(1)
-                .Select(s => s.Split(";")[1])
-                .ToList();
+            return categories.Data.Values.ToList();
         }
     }
 }

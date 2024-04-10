@@ -18,8 +18,8 @@ namespace BankingService.Tests.ImportServiceTests
         {
             fileSystemService = new Mock<IFileSystemService>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
-            bankDatabaseService.Setup(x => x.GetOperationTypes()).Returns([]);
-            bankDatabaseService.Setup(x => x.GetOperationCategoriesAndAutoComment()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetOperationTypesKvp()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetOperationCategoriesAndAutoCommentKvp()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
@@ -87,7 +87,7 @@ namespace BankingService.Tests.ImportServiceTests
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
-                .Setup(x => x.GetOperationTypes())
+                .Setup(x => x.GetOperationTypesKvp())
                 .Returns(new Dictionary<string, string>
                 {
                     { "PSC", "Sans Contact" }
@@ -125,7 +125,7 @@ namespace BankingService.Tests.ImportServiceTests
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
-                .Setup(x => x.GetOperationCategoriesAndAutoComment())
+                .Setup(x => x.GetOperationCategoriesAndAutoCommentKvp())
                 .Returns(new Dictionary<string, OperationCategoryAndAutoCommentDto>
                 {
                     { "AUCHAN", new OperationCategoryAndAutoCommentDto { Category = "Nourriture", AutoComment = "Courses (Auchan)" } },
@@ -169,17 +169,17 @@ namespace BankingService.Tests.ImportServiceTests
                 new OperationDto { Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "Manually categorized", AutoComment = "", Comment = "jjj" },
                 new OperationDto { Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "Manually categorized paypal", AutoComment = "newMatch", Comment = "kkk" },
             });
-            bankDatabaseService.Setup(x => x.GetOperationTypes()).Returns(new Dictionary<string, string>
+            bankDatabaseService.Setup(x => x.GetOperationTypesKvp()).Returns(new Dictionary<string, string>
             {
                 { "PSC", "Sans Contact" },
                 { "PAYPAL", "Paypal" }
             });
-            bankDatabaseService.Setup(x => x.GetOperationCategoriesAndAutoComment()).Returns(new Dictionary<string, OperationCategoryAndAutoCommentDto>
+            bankDatabaseService.Setup(x => x.GetOperationCategoriesAndAutoCommentKvp()).Returns(new Dictionary<string, OperationCategoryAndAutoCommentDto>
             {
                 { "AUCHAN", new OperationCategoryAndAutoCommentDto { Category = "Nourriture", AutoComment = "Courses (Auchan)" } },
                 { "NEW", new OperationCategoryAndAutoCommentDto { Category = "NewCat", AutoComment = "NewComment" } }
             });
-            bankDatabaseService.Setup(x => x.GetPaypalCategories()).Returns(new Dictionary<string, string>
+            bankDatabaseService.Setup(x => x.GetPaypalCategoriesKvp()).Returns(new Dictionary<string, string>
             {
                 { "Spotify", "Loisirs" },
                 { "newMatch", "NewPaypalCat" }

@@ -16,6 +16,7 @@ namespace BankingService.Infra.Database.Services
         private const string FILE_PAYPAL_CAT = "Database/PaypalCategories.csv";
         private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
         private const string FILE_OPERATIONS = "Database/Operations.csv";
+        private const string FILE_CATEGORIES = "Database/Categories.csv";
         private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -149,6 +150,14 @@ namespace BankingService.Infra.Database.Services
         {
             return GetStoredOperationsAsDtos()
                 .Where(o => o.Category == "TODO")
+                .ToList();
+        }
+
+        public List<string> GetAllCategoriesNames()
+        {
+            return fileSystemService.ReadAllLines(FILE_CATEGORIES)
+                .Skip(1)
+                .Select(s => s.Split(";")[1])
                 .ToList();
         }
     }

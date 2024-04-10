@@ -1,5 +1,6 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace BankingService.Core.SPI.Interfaces
         public List<OperationDto> GetAllOperations();
         public void UpdateOperations(List<OperationDto> operationsDto);
         public List<OperationDto> GetOperationsThatNeedsManualInput();
+        public List<string> GetAllCategoriesNames();
     }
 }

@@ -1,24 +1,24 @@
-﻿using BankingService.Core.SPI.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BankingService.Infra.Database.SPI.Interfaces;
 
 namespace BankingService.Infra.Database.Model
 {
     internal class CategoriesAndAutoComments
     {
+        public static string Path => "Database/CategoriesAndAutoComments.csv";
+        public static string Header => "StringToScan;AssociatedCategoryId;AssociatedCommentAuto";
+
         public Dictionary<string, OperationCategoryAndAutoComment> Data { get; }
         private CategoriesAndAutoComments(Dictionary<string, OperationCategoryAndAutoComment> data)
         {
             this.Data = data;
         }
 
-        public static CategoriesAndAutoComments Load(IEnumerable<string> csvLines)
+        public static CategoriesAndAutoComments Load(IFileSystemService fileSystemService)
         {
             return new CategoriesAndAutoComments(
-                csvLines
+                fileSystemService
+                .ReadAllLines(Path)
+                .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new OperationCategoryAndAutoComment(s[0], int.Parse(s[1]), s[2]))
                 );

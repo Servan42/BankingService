@@ -62,7 +62,7 @@ namespace BankingService.Tests.ImportServiceTests
                     new OperationDto { Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
-                .Setup(x => x.GetPaypalCategories())
+                .Setup(x => x.GetPaypalCategoriesKvp())
                 .Returns(new Dictionary<string, string>
                 {
                     { "Spotify", "Loisirs" }
@@ -101,7 +101,7 @@ namespace BankingService.Tests.ImportServiceTests
                     new OperationDto { Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 100, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
-                .Setup(x => x.GetPaypalCategories())
+                .Setup(x => x.GetPaypalCategoriesKvp())
                 .Returns(new Dictionary<string, string>
                 {
                     { "Spotify", "Loisirs" }
@@ -141,7 +141,7 @@ namespace BankingService.Tests.ImportServiceTests
                     new OperationDto { Date = new DateTime(2024,01,25), Flow = -22.99m, Treasury = 10, Label = "aa", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
-                .Setup(x => x.GetPaypalCategories())
+                .Setup(x => x.GetPaypalCategoriesKvp())
                 .Returns(new Dictionary<string, string>
                 {
                     { "Spotify", "Loisirs" },

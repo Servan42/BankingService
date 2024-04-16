@@ -12,10 +12,6 @@ namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
-        private const string FILE_TYPES = "Database/Types.csv";
-        private const string FILE_PAYPAL_CAT = "Database/PaypalCategories.csv";
-        private const string FILE_CAT_AND_AUTOCOMMENT = "Database/CategoriesAndAutoComments.csv";
-        private const string FILE_OPERATIONS = "Database/Operations.csv";
         private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -29,77 +25,83 @@ namespace BankingService.Infra.Database.Services
         public void BackupDatabase()
         {
             logger.Info("Backuping database");
-            this.fileSystemService.ZipBackupFilesToFolder([FILE_TYPES, FILE_CAT_AND_AUTOCOMMENT, FILE_OPERATIONS, FILE_PAYPAL_CAT], DATABASE_BACKUP_FOLDER);
+            this.fileSystemService.ZipBackupFilesToFolder([Types.Path, CategoriesAndAutoComments.Path, Operations.Path, PaypalCategories.Path, Categories.Path], DATABASE_BACKUP_FOLDER);
         }
 
-        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment()
+        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp()
         {
-            var result = new Dictionary<string, OperationCategoryAndAutoCommentDto>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_CAT_AND_AUTOCOMMENT).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], new OperationCategoryAndAutoCommentDto
+            return CategoriesAndAutoComments.Load(this.fileSystemService).Data
+                .Join(Categories.Load(this.fileSystemService).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
+                .ToDictionary(j => j.ca.Key, j => new OperationCategoryAndAutoCommentDto
                 {
-                    Category = splittedLine[1],
-                    AutoComment = splittedLine[2]
+                    AutoComment = j.ca.Value.AutoComment,
+                    Category = j.c.Value.Name
                 });
-            }
-            return result;
         }
 
-        public Dictionary<string, string> GetOperationTypes()
+        public Dictionary<string, string> GetOperationTypesKvp()
         {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_TYPES).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
-            }
-            return result;
+            return Types.Load(this.fileSystemService).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
         }
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
-            (var header, var storedOperations) = GetStoredOperationsWithKey();
             int newOperationCount = 0;
+            var operations = Operations.Load(this.fileSystemService);
 
-            foreach (var newOperation in operationsDto.Select(Operation.Map))
+            foreach (var newOperation in ResolveOperationDto(operationsDto))
             {
-                if (storedOperations.ContainsKey(newOperation.GetKey()))
+                if (operations.Data.ContainsKey(newOperation.GetKey()))
                 {
                     logger.Debug($"Following operation will not be imported because it already exists: '{newOperation.GetKey()}'");
                     continue;
                 }
 
                 newOperationCount++;
-                storedOperations.Add(newOperation.GetKey(), newOperation);
+                operations.Data.Add(newOperation.GetKey(), newOperation);
             }
 
             logger.Info($"{newOperationCount} new operations added to database");
-            WriteOperationsToFile(header, storedOperations);
+            operations.SaveAll();
         }
 
-        private (string header, Dictionary<string, Operation> data) GetStoredOperationsWithKey()
+        public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            var csv = fileSystemService.ReadAllLines(FILE_OPERATIONS);
-            var header = csv.First();
-            var storedOperations = csv.Skip(1).ToDictionary(Operation.GetKey, Operation.Map);
-            return (header, storedOperations);
+            var storedOperations = Operations.Load(this.fileSystemService);
+
+            foreach(var operationToUpdate in ResolveOperationDto(operationsDto))
+            {
+                if (!storedOperations.Data.ContainsKey(operationToUpdate.GetKey()))
+                    throw new Exception($"Operation '{operationToUpdate.GetKey()}' cannot be updated because it is not present in database");
+
+                var storedOperation = storedOperations.Data[operationToUpdate.GetKey()];
+                storedOperation.Type = operationToUpdate.Type;
+                storedOperation.CategoryId = operationToUpdate.CategoryId;
+                storedOperation.AutoComment = operationToUpdate.AutoComment;
+                storedOperation.Comment = operationToUpdate.Comment;
+            }
+
+            logger.Info($"{operationsDto.Count} operations updated");
+            storedOperations.SaveAll();
         }
 
-        private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
+        private IEnumerable<Operation> ResolveOperationDto(List<OperationDto> operationsDto)
         {
-            return fileSystemService
-                .ReadAllLines(FILE_OPERATIONS)
-                .Skip(1)
-                .Select(csv => Operation.Map(csv).MapToDto());
+            return operationsDto.Join(Categories.Load(this.fileSystemService).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
         }
 
-        private void WriteOperationsToFile(string header, Dictionary<string, Operation> operations)
+        public Dictionary<string, string> GetPaypalCategoriesKvp()
         {
-            List<string> operationsToWrite = [header];
-            operationsToWrite.AddRange(operations.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverride(FILE_OPERATIONS, operationsToWrite);
+            return PaypalCategories.Load(this.fileSystemService).Data
+                .Join(Categories.Load(this.fileSystemService).Data, pc => pc.Value.CategoryId, c => c.Key, (pc, c) => new { pc.Key, c.Value })
+                .ToDictionary(j => j.Key, j => j.Value.Name);
+        }
+
+        public List<string> GetAllCategoriesNames()
+        {
+            return Categories.Load(this.fileSystemService).Data
+                .Select(c => c.Value.Name)
+                .ToList();
         }
 
         public List<OperationDto> GetUnresolvedPaypalOperations()
@@ -109,40 +111,10 @@ namespace BankingService.Infra.Database.Services
                 .ToList();
         }
 
-        public void UpdateOperations(List<OperationDto> operationsDto)
-        {
-            (var header, var storedOperations) = GetStoredOperationsWithKey();
-
-            foreach(var operationToUpdate in operationsDto.Select(Operation.Map))
-            {
-                if (!storedOperations.ContainsKey(operationToUpdate.GetKey()))
-                    throw new Exception($"Operation '{operationToUpdate.GetKey()}' cannot be updated because it is not present in database");
-
-                var storedOperation = storedOperations[operationToUpdate.GetKey()];
-                storedOperation.Type = operationToUpdate.Type;
-                storedOperation.Category = operationToUpdate.Category;
-                storedOperation.AutoComment = operationToUpdate.AutoComment;
-                storedOperation.Comment = operationToUpdate.Comment;
-            }
-
-            logger.Info($"{operationsDto.Count} operations updated");
-            WriteOperationsToFile(header, storedOperations);
-        }
-
-        public Dictionary<string, string> GetPaypalCategories()
-        {
-            var result = new Dictionary<string, string>();
-            foreach (var type in fileSystemService.ReadAllLines(FILE_PAYPAL_CAT).Skip(1))
-            {
-                var splittedLine = type.Split(";");
-                result.Add(splittedLine[0], splittedLine[1]);
-            }
-            return result;
-        }
-
         public List<OperationDto> GetAllOperations()
         {
-            return GetStoredOperationsAsDtos().ToList();
+            return GetStoredOperationsAsDtos()
+                .ToList();
         }
 
         public List<OperationDto> GetOperationsThatNeedsManualInput()
@@ -150,6 +122,12 @@ namespace BankingService.Infra.Database.Services
             return GetStoredOperationsAsDtos()
                 .Where(o => o.Category == "TODO")
                 .ToList();
+        }
+
+        private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
+        {
+            return Operations.Load(this.fileSystemService).Data
+                .Join(Categories.Load(this.fileSystemService).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
     }
 }

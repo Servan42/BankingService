@@ -1,5 +1,6 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,13 +11,14 @@ namespace BankingService.Core.SPI.Interfaces
     public interface IBankDatabaseService
     {
         public void InsertOperationsIfNew(List<OperationDto> operationsDto);
-        public Dictionary<string, string> GetOperationTypes();
-        public Dictionary<string, string> GetPaypalCategories();
-        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoComment();
+        public Dictionary<string, string> GetOperationTypesKvp();
+        public Dictionary<string, string> GetPaypalCategoriesKvp();
+        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp();
         public void BackupDatabase();
         public List<OperationDto> GetUnresolvedPaypalOperations();
         public List<OperationDto> GetAllOperations();
         public void UpdateOperations(List<OperationDto> operationsDto);
         public List<OperationDto> GetOperationsThatNeedsManualInput();
+        public List<string> GetAllCategoriesNames();
     }
 }

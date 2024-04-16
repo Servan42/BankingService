@@ -1,12 +1,42 @@
 ﻿using BankingService.Core.SPI.DTOs;
+using BankingService.Infra.Database.SPI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Model
 {
+    internal class Operations
+    {
+        private readonly IFileSystemService fileSystemService;
+
+        public static string Path => "Database/Operations.csv";
+        public static string Header => "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
+
+        public Dictionary<string, Operation> Data { get; }
+        private Operations(Dictionary<string, Operation> data, IFileSystemService fileSystemService)
+        {
+            this.Data = data;
+            this.fileSystemService = fileSystemService;
+        }
+
+        public static Operations Load(IFileSystemService fileSystemService)
+        {
+            var csvLines = fileSystemService.ReadAllLines(Path);
+            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetKey, Operation.Map), fileSystemService);
+        }
+
+        internal void SaveAll()
+        {
+            List<string> operationsToWrite = [Header];
+            operationsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
+            fileSystemService.WriteAllLinesOverride(Path, operationsToWrite);
+        }
+    }
+
     internal class Operation
     {
         public DateTime Date { get; set; }
@@ -14,7 +44,7 @@ namespace BankingService.Infra.Database.Model
         public decimal Treasury { get; set; }
         public string Label { get; set; }
         public string Type { get; set; }
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
         public string AutoComment { get; set; }
         public string Comment { get; set; }
 
@@ -23,7 +53,7 @@ namespace BankingService.Infra.Database.Model
             return string.Join(";", csv.Split(";").Take(4));
         }
 
-        internal static Operation Map(OperationDto operationDto)
+        internal static Operation Map(OperationDto operationDto, int categoryId)
         {
             return new Operation
             {
@@ -32,7 +62,7 @@ namespace BankingService.Infra.Database.Model
                 Treasury = operationDto.Treasury,
                 Label = operationDto.Label,
                 Type = operationDto.Type,
-                Category = operationDto.Category,
+                CategoryId = categoryId,
                 AutoComment = operationDto.AutoComment,
                 Comment = operationDto.Comment,
             };
@@ -48,13 +78,13 @@ namespace BankingService.Infra.Database.Model
                 Treasury = decimal.Parse(splitted[2]),
                 Label = splitted[3],
                 Type = splitted[4],
-                Category = splitted[5],
+                CategoryId = int.Parse(splitted[5]),
                 AutoComment = splitted[6],
                 Comment = splitted[7],
             };
         }
 
-        internal OperationDto MapToDto()
+        internal OperationDto MapToDto(string resolvedCategory)
         {
             return new OperationDto
             {
@@ -63,7 +93,7 @@ namespace BankingService.Infra.Database.Model
                 Treasury = Treasury,
                 Label = Label,
                 Type = Type,
-                Category = Category,
+                Category = resolvedCategory,
                 AutoComment = AutoComment,
                 Comment = Comment
             };
@@ -71,7 +101,7 @@ namespace BankingService.Infra.Database.Model
 
         internal string GetCSV()
         {
-            return $"{Date:yyyy-MM-dd};{Flow:0.00};{Treasury:0.00};{Label};{Type};{Category};{AutoComment};{Comment}";
+            return $"{Date:yyyy-MM-dd};{Flow:0.00};{Treasury:0.00};{Label};{Type};{CategoryId};{AutoComment};{Comment}";
         }
 
         internal string GetKey()

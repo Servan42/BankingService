@@ -2,7 +2,7 @@
 
 ## Functionalities
 
-### Import and storage
+### Import and storage Interface
 
 #### DONE
 
@@ -18,10 +18,11 @@
 
 #### TODO
 
-- Think of a way to fill missing data manually
 - Implement a way to import new `Type`, `Comment Auto` and `Categorie`
 
-### Dashboard
+### Dashboard Interface
+
+#### TODO
 
 - Get Sum(€) per categorie (Inputs: Month)
 - Get balance +/- (Inputs: Month)
@@ -30,3 +31,14 @@
 - Get Sum(€) + (Inputs: Month)
 - Get highest operations (Inputs: Month, minAmount)
 - Get `Date,Treasury` list for graph (Inputs: Month)
+
+### Console UI
+
+#### DONE
+
+- Think of a way to fill missing data manually
+
+#### TODO
+
+- Implement a way to import data files.
+- Implement a way to review lines that need manual commentary and add new categories, types, and autocomment before recalculating the db.

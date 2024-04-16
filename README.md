@@ -18,8 +18,6 @@
 
 #### TODO
 
-- Merge tables `Categories` and `CategoriesAndAutoComments` and `PaypalCategories`
-- Get `Type` table an Id
 - Think of a way to fill missing data manually
 - Implement a way to import new `Type`, `Comment Auto` and `Categorie`
 

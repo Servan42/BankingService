@@ -59,8 +59,8 @@ namespace BankingService.Core.Services
 
         private void ResolveOperationsAutoFields(List<Operation> operations)
         {
-            var operationTypes = bankDatabaseService.GetOperationTypes();
-            var operationCategoriesAndAutoComment = bankDatabaseService.GetOperationCategoriesAndAutoComment();
+            var operationTypes = bankDatabaseService.GetOperationTypesKvp();
+            var operationCategoriesAndAutoComment = bankDatabaseService.GetOperationCategoriesAndAutoCommentKvp();
 
             foreach (var operation in operations)
             {
@@ -94,7 +94,7 @@ namespace BankingService.Core.Services
         {
             var operationsQueue = new Queue<PaypalOperation>(GetPaypalOperationsFromCSV(csvOperations).OrderBy(o => o.Date));
             var incompletePaypalOperationsDto = bankDatabaseService.GetUnresolvedPaypalOperations().OrderBy(o => o.Date).ToList();
-            var paypalCategories = bankDatabaseService.GetPaypalCategories();
+            var paypalCategories = bankDatabaseService.GetPaypalCategoriesKvp();
 
             var completeOperations = new List<Operation>();
             while (operationsQueue.Count > 0)
@@ -182,9 +182,9 @@ namespace BankingService.Core.Services
             logger.Info("Re-computing every operation additional data");
 
             var operations = bankDatabaseService.GetAllOperations().Select(Operation.Map).ToList();
-            var types = bankDatabaseService.GetOperationTypes();
-            var catAndComments = bankDatabaseService.GetOperationCategoriesAndAutoComment();
-            var paypalCat = bankDatabaseService.GetPaypalCategories();
+            var types = bankDatabaseService.GetOperationTypesKvp();
+            var catAndComments = bankDatabaseService.GetOperationCategoriesAndAutoCommentKvp();
+            var paypalCat = bankDatabaseService.GetPaypalCategoriesKvp();
 
             foreach (var operation in operations)
             {

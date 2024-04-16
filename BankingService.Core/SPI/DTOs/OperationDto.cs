@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.SPI.DTOs
 {
-    public class OperationDto
+    public record OperationDto
     {
-        public DateTime Date { get; set; }
-        public decimal Flow { get; set; }
-        public decimal Treasury { get; set; }
-        public string Label { get; set; }
-        public string Type { get; set; }
-        public string Category { get; set; }
-        public string AutoComment { get; set; }
-        public string Comment { get; set; }
+        public DateTime Date { get; init; }
+        public decimal Flow { get; init; }
+        public decimal Treasury { get; init; }
+        public string Label { get; init; }
+        public string Type { get; init; }
+        public string Category { get; init; }
+        public string AutoComment { get; init; }
+        public string Comment { get; init; }
     }
 }

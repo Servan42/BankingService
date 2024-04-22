@@ -4,7 +4,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class CategoriesAndAutoComments
     {
-        public static string Path => "Database/CategoriesAndAutoComments.csv";
+        public static string TablePath => Path.Combine("Database", "CategoriesAndAutoComments.csv");
         public static string Header => "StringToScan;AssociatedCategoryId;AssociatedCommentAuto";
 
         public Dictionary<string, OperationCategoryAndAutoComment> Data { get; }
@@ -13,11 +13,11 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static CategoriesAndAutoComments Load(IFileSystemService fileSystemService)
+        public static CategoriesAndAutoComments Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             return new CategoriesAndAutoComments(
                 fileSystemService
-                .ReadAllLines(Path)
+                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new OperationCategoryAndAutoComment(s[0], int.Parse(s[1]), s[2]))

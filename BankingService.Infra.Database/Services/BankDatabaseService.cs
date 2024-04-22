@@ -15,25 +15,25 @@ namespace BankingService.Infra.Database.Services
         private readonly string DATABASE_BACKUP_FOLDER;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystemService fileSystemService;
-        private readonly IBankDatabaseConfiguration bankDatabaseConfiguration;
+        private readonly IBankDatabaseConfiguration dbConfig;
 
         public BankDatabaseService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
-            this.bankDatabaseConfiguration = bankDatabaseConfiguration;
-            this.DATABASE_BACKUP_FOLDER = bankDatabaseConfiguration.DatabasePath + "/Database/Backups";
+            this.dbConfig = bankDatabaseConfiguration;
+            this.DATABASE_BACKUP_FOLDER = Path.Combine(bankDatabaseConfiguration.DatabasePath, "Database", "Backups");
         }
 
         public void BackupDatabase()
         {
             logger.Info("Backuping database");
-            this.fileSystemService.ZipBackupFilesToFolder([Types.Path, CategoriesAndAutoComments.Path, Operations.Path, PaypalCategories.Path, Categories.Path], DATABASE_BACKUP_FOLDER);
+            this.fileSystemService.ZipBackupFilesToFolder([Types.TablePath, CategoriesAndAutoComments.TablePath, Operations.TablePath, PaypalCategories.TablePath, Categories.TablePath], DATABASE_BACKUP_FOLDER);
         }
 
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp()
         {
-            return CategoriesAndAutoComments.Load(this.fileSystemService).Data
-                .Join(Categories.Load(this.fileSystemService).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
+            return CategoriesAndAutoComments.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
                 .ToDictionary(j => j.ca.Key, j => new OperationCategoryAndAutoCommentDto
                 {
                     AutoComment = j.ca.Value.AutoComment,
@@ -43,13 +43,13 @@ namespace BankingService.Infra.Database.Services
 
         public Dictionary<string, string> GetOperationTypesKvp()
         {
-            return Types.Load(this.fileSystemService).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
+            return Types.Load(this.fileSystemService, this.dbConfig).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
         }
 
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
             int newOperationCount = 0;
-            var operations = Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey);
+            var operations = Operations.Load(this.fileSystemService, this.dbConfig);
 
             foreach (var newOperation in ResolveOperationDto(operationsDto))
             {
@@ -69,7 +69,7 @@ namespace BankingService.Infra.Database.Services
 
         public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            var storedOperations = Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey);
+            var storedOperations = Operations.Load(this.fileSystemService, this.dbConfig);
 
             foreach(var operationToUpdate in ResolveOperationDto(operationsDto))
             {
@@ -89,19 +89,19 @@ namespace BankingService.Infra.Database.Services
 
         private IEnumerable<Operation> ResolveOperationDto(List<OperationDto> operationsDto)
         {
-            return operationsDto.Join(Categories.Load(this.fileSystemService).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
+            return operationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
         }
 
         public Dictionary<string, string> GetPaypalCategoriesKvp()
         {
-            return PaypalCategories.Load(this.fileSystemService).Data
-                .Join(Categories.Load(this.fileSystemService).Data, pc => pc.Value.CategoryId, c => c.Key, (pc, c) => new { pc.Key, c.Value })
+            return PaypalCategories.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, pc => pc.Value.CategoryId, c => c.Key, (pc, c) => new { pc.Key, c.Value })
                 .ToDictionary(j => j.Key, j => j.Value.Name);
         }
 
         public List<string> GetAllCategoriesNames()
         {
-            return Categories.Load(this.fileSystemService).Data
+            return Categories.Load(this.fileSystemService, this.dbConfig).Data
                 .Select(c => c.Value.Name)
                 .ToList();
         }
@@ -128,8 +128,8 @@ namespace BankingService.Infra.Database.Services
 
         private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
         {
-            return Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey).Data
-                .Join(Categories.Load(this.fileSystemService).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
+            return Operations.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
     }
 }

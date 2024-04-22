@@ -1,28 +1,23 @@
 ﻿using BankingService.Infra.Database.Model;
 using BankingService.Infra.Database.SPI.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Services
 {
     public class MaintenanceService
     {
         private readonly IFileSystemService fileSystemService;
-        private readonly IBankDatabaseConfiguration bankDatabaseConfiguration;
+        private readonly IBankDatabaseConfiguration dbConfig;
 
         public MaintenanceService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
-            this.bankDatabaseConfiguration = bankDatabaseConfiguration;
+            this.dbConfig = bankDatabaseConfiguration;
         }
 
         public void ExportOperationsTable()
         {
-            var csvLines = fileSystemService.ReadAllLinesDecrypt(Operations.Path, bankDatabaseConfiguration.DatabaseKey);
-            File.WriteAllLines(Operations.Path + ".export", csvLines);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, Operations.TablePath), dbConfig.DatabaseKey);
+            File.WriteAllLines(Path.Combine(dbConfig.DatabasePath, Operations.TablePath) + ".export", csvLines);
         }
     }
 }

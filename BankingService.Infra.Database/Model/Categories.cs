@@ -9,7 +9,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class Categories
     {
-        public static string Path => "Database/Categories.csv";
+        public static string TablePath => Path.Combine("Database", "Categories.csv");
         public static string Header => "Id;Name";
 
         public Dictionary<int, Categorie> Data { get; }
@@ -18,11 +18,11 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static Categories Load(IFileSystemService fileSystemService)
+        public static Categories Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             return new Categories(
                 fileSystemService
-                .ReadAllLines(Path)
+                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => int.Parse(s[0]), s => new Categorie(int.Parse(s[0]), s[1]))

@@ -9,7 +9,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class PaypalCategories
     {
-        public static string Path => "Database/PaypalCategories.csv";
+        public static string TablePath => Path.Combine("Database", "PaypalCategories.csv");
         public static string Header => "StringToScan;AssociatedCategoryId";
 
         public Dictionary<string, PaypalCategorie> Data { get; }
@@ -18,11 +18,11 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static PaypalCategories Load(IFileSystemService fileSystemService)
+        public static PaypalCategories Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             return new PaypalCategories(
                 fileSystemService
-                .ReadAllLines(Path)
+                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new PaypalCategorie(s[0], int.Parse(s[1])))

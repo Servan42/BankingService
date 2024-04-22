@@ -1,4 +1,5 @@
-﻿using BankingService.ConsoleApp;
+﻿using BankingService.ConsoleApp.Configuration;
+using BankingService.ConsoleApp.ConsoleStuff;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;

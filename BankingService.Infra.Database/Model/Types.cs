@@ -9,7 +9,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class Types
     {
-        public static string Path => "Database/Types.csv";
+        public static string TablePath => Path.Combine("Database", "Types.csv");
         public static string Header => "StringToScan;AssociatedType";
 
         public Dictionary<string, Type> Data { get; }
@@ -18,10 +18,10 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static Types Load(IFileSystemService fileSystemService)
+        public static Types Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             return new Types(fileSystemService
-                .ReadAllLines(Path)
+                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new Type(s[0], s[1])));

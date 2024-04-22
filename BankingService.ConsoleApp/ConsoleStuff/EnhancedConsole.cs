@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingService.ConsoleApp
+namespace BankingService.ConsoleApp.ConsoleStuff
 {
     internal static class EnhancedConsole
     {
@@ -13,15 +13,15 @@ namespace BankingService.ConsoleApp
         {
             var queue = new Queue<string>(strings);
             var initialLine = Console.GetCursorPosition().Top;
-            var linesPerColumn = (int) Math.Ceiling(strings.Count / (decimal)columnNumbers);
-            
+            var linesPerColumn = (int)Math.Ceiling(strings.Count / (decimal)columnNumbers);
+
             var currentLine = initialLine;
             var colIndent = leftPadding;
             var biggestStringLength = 0;
 
-            while(queue.Count > 0)
+            while (queue.Count > 0)
             {
-                if(currentLine - initialLine >= linesPerColumn)
+                if (currentLine - initialLine >= linesPerColumn)
                 {
                     currentLine = initialLine;
                     colIndent += biggestStringLength + 4;
@@ -43,7 +43,7 @@ namespace BankingService.ConsoleApp
             Console.ForegroundColor = color;
             Console.Write(data);
             Console.ForegroundColor = backup;
-            if(newLine) Console.WriteLine();
+            if (newLine) Console.WriteLine();
         }
     }
 }

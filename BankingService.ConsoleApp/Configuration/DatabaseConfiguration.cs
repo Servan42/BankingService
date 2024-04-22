@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingService.ConsoleApp
+namespace BankingService.ConsoleApp.Configuration
 {
     internal class DatabaseConfiguration : IBankDatabaseConfiguration
     {

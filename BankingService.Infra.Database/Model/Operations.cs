@@ -12,30 +12,30 @@ namespace BankingService.Infra.Database.Model
     internal class Operations
     {
         private readonly IFileSystemService fileSystemService;
-        private readonly string encryptionKey;
+        private readonly IBankDatabaseConfiguration config;
 
-        public static string Path => "Database/Operations.table";
+        public static string TablePath => Path.Combine("Database", "Operations.table");
         public static string Header => "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
         public Dictionary<string, Operation> Data { get; }
-        private Operations(Dictionary<string, Operation> data, IFileSystemService fileSystemService, string encryptionKey)
+        private Operations(Dictionary<string, Operation> data, IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             this.Data = data;
             this.fileSystemService = fileSystemService;
-            this.encryptionKey = encryptionKey;
+            this.config = config;
         }
 
-        public static Operations Load(IFileSystemService fileSystemService, string encryptionKey)
+        public static Operations Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
-            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path, encryptionKey);
-            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetKey, Operation.Map), fileSystemService, encryptionKey);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
+            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetKey, Operation.Map), fileSystemService, config);
         }
 
         internal void SaveAll()
         {
             List<string> operationsToWrite = [Header];
             operationsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverrideEncrypt(Path, operationsToWrite, this.encryptionKey);
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(config.DatabasePath, TablePath), operationsToWrite, this.config.DatabaseKey);
         }
     }
 

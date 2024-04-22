@@ -2,7 +2,7 @@
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 
-namespace BankingService.ConsoleApp
+namespace BankingService.ConsoleApp.ConsoleStuff
 {
     internal class UserInteractionManager
     {
@@ -26,7 +26,7 @@ namespace BankingService.ConsoleApp
                 Console.WriteLine($"--- Filling operation {++operationCount}/{operationsToFill.Count} ---\n");
                 Console.WriteLine("Categories:\n");
                 EnhancedConsole.DisplayStringsOnXColumns(3, 2, consoleCategories.Select(cat => $"[{cat.Key,2}]: {cat.Value}").ToList());
-                
+
                 DisplayOperationToFill(operationToFill);
                 var (category, comment) = PromptCategoryAndComment(consoleCategories);
 
@@ -52,16 +52,16 @@ namespace BankingService.ConsoleApp
                 category = consoleCategories[Console.ReadLine().Trim()];
                 Console.Write("Enter a comment: ");
                 comment = Console.ReadLine().Trim().Replace(";", "_");
-                
+
                 Console.WriteLine("\nAbout to update with:\n");
                 Console.Write("  - Category: ");
                 EnhancedConsole.WriteWithForeGroundColor(category, ConsoleColor.Green, true);
                 Console.Write("  - Comment: ");
                 EnhancedConsole.WriteWithForeGroundColor(comment, ConsoleColor.Green, true);
                 Console.WriteLine("\nPress ENTER to save, press anything else to retry...");
-            } 
+            }
             while (Console.ReadKey().Key != ConsoleKey.Enter);
-            
+
             return (category, comment);
         }
 

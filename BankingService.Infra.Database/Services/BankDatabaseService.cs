@@ -16,10 +16,12 @@ namespace BankingService.Infra.Database.Services
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystemService fileSystemService;
+        private readonly string encryptionKey;
 
-        public BankDatabaseService(IFileSystemService fileSystemService)
+        public BankDatabaseService(IFileSystemService fileSystemService, string encryptionKey)
         {
             this.fileSystemService = fileSystemService;
+            this.encryptionKey = encryptionKey;
         }
 
         public void BackupDatabase()
@@ -47,7 +49,7 @@ namespace BankingService.Infra.Database.Services
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
             int newOperationCount = 0;
-            var operations = Operations.Load(this.fileSystemService);
+            var operations = Operations.Load(this.fileSystemService, encryptionKey);
 
             foreach (var newOperation in ResolveOperationDto(operationsDto))
             {
@@ -67,7 +69,7 @@ namespace BankingService.Infra.Database.Services
 
         public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            var storedOperations = Operations.Load(this.fileSystemService);
+            var storedOperations = Operations.Load(this.fileSystemService, encryptionKey);
 
             foreach(var operationToUpdate in ResolveOperationDto(operationsDto))
             {
@@ -126,7 +128,7 @@ namespace BankingService.Infra.Database.Services
 
         private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
         {
-            return Operations.Load(this.fileSystemService).Data
+            return Operations.Load(this.fileSystemService, encryptionKey).Data
                 .Join(Categories.Load(this.fileSystemService).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
     }

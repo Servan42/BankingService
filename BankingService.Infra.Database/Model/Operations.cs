@@ -12,28 +12,30 @@ namespace BankingService.Infra.Database.Model
     internal class Operations
     {
         private readonly IFileSystemService fileSystemService;
+        private readonly string encryptionKey;
 
-        public static string Path => "Database/Operations.csv";
+        public static string Path => "Database/Operations.table";
         public static string Header => "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
         public Dictionary<string, Operation> Data { get; }
-        private Operations(Dictionary<string, Operation> data, IFileSystemService fileSystemService)
+        private Operations(Dictionary<string, Operation> data, IFileSystemService fileSystemService, string encryptionKey)
         {
             this.Data = data;
             this.fileSystemService = fileSystemService;
+            this.encryptionKey = encryptionKey;
         }
 
-        public static Operations Load(IFileSystemService fileSystemService)
+        public static Operations Load(IFileSystemService fileSystemService, string encryptionKey)
         {
-            var csvLines = fileSystemService.ReadAllLines(Path);
-            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetKey, Operation.Map), fileSystemService);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path, encryptionKey);
+            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetKey, Operation.Map), fileSystemService, encryptionKey);
         }
 
         internal void SaveAll()
         {
             List<string> operationsToWrite = [Header];
             operationsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverride(Path, operationsToWrite);
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path, operationsToWrite, this.encryptionKey);
         }
     }
 

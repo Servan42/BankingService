@@ -21,9 +21,19 @@ namespace BankingService.Infra.FileSystem.Adapters
             return fileSystemService.ReadAllLines(filePath);
         }
 
+        public List<string> ReadAllLinesDecrypt(string filePath, string encryptionKey)
+        {
+            return fileSystemService.ReadAllLinesDecrypt(filePath, encryptionKey);
+        }
+
         public void WriteAllLinesOverride(string filePath, List<string> lines)
         {
             fileSystemService.WriteAllLinesOverride(filePath, lines);
+        }
+
+        public void WriteAllLinesOverrideEncrypt(string filePath, List<string> lines, string encryptionKey)
+        {
+            fileSystemService.WriteAllLinesOverrideEncrypt(filePath, lines, encryptionKey);
         }
 
         public void ZipBackupFilesToFolder(List<string> filesToBackup, string backupFolder)

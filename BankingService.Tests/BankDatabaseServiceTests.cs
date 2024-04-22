@@ -15,12 +15,13 @@ namespace BankingService.Tests
     {
         IBankDatabaseService bankDatabaseService_sut;
         Mock<Infra.Database.SPI.Interfaces.IFileSystemService> mockFileSystemService;
+        private readonly string KEY = "key";
 
         [SetUp]
         public void Setup()
         {
             mockFileSystemService = new();
-            bankDatabaseService_sut = new BankDatabaseService(mockFileSystemService.Object);
+            bankDatabaseService_sut = new BankDatabaseService(mockFileSystemService.Object, KEY);
         }
 
         [Test]
@@ -153,7 +154,7 @@ namespace BankingService.Tests
             };
 
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(opFile))
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
                     "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
@@ -179,8 +180,8 @@ namespace BankingService.Tests
                 "2024-03-24;-10,01;20,00;label1;;1;;",
                 "2024-03-24;-10,01;20,00;label2;;2;;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverride(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
-            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
@@ -191,7 +192,7 @@ namespace BankingService.Tests
             string opFile = "Database/Operations.csv";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(opFile))
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
                     "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
@@ -229,7 +230,7 @@ namespace BankingService.Tests
                 }
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
-            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
@@ -256,7 +257,7 @@ namespace BankingService.Tests
             };
 
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(opFile))
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
                     "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
@@ -283,8 +284,8 @@ namespace BankingService.Tests
                 "2024-03-24;-10,01;20,00;label1;TODO;1;;",
                 "2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverride(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected))));
-            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
@@ -295,7 +296,7 @@ namespace BankingService.Tests
             string opFile = "Database/Operations.csv";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(opFile))
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
                     "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
@@ -331,7 +332,7 @@ namespace BankingService.Tests
                 }
             };
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
-            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
@@ -342,7 +343,7 @@ namespace BankingService.Tests
             string opFile = "Database/Operations.csv";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(opFile))
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
                     "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
@@ -390,7 +391,7 @@ namespace BankingService.Tests
             };
 
             Assert.That(TestHelpers.CheckOperationDtos(result, expected));
-            mockFileSystemService.Verify(x => x.ReadAllLines(opFile), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 

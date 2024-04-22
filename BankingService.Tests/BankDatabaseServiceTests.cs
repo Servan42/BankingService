@@ -1,6 +1,7 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.Services;
+using BankingService.Infra.Database.SPI.Interfaces;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -15,13 +16,16 @@ namespace BankingService.Tests
     {
         IBankDatabaseService bankDatabaseService_sut;
         Mock<Infra.Database.SPI.Interfaces.IFileSystemService> mockFileSystemService;
+        Mock<IBankDatabaseConfiguration> mockDatabaseConfiguration;
         private readonly string KEY = "key";
 
         [SetUp]
         public void Setup()
         {
             mockFileSystemService = new();
-            bankDatabaseService_sut = new BankDatabaseService(mockFileSystemService.Object, KEY);
+            mockDatabaseConfiguration = new();
+            mockDatabaseConfiguration.Setup(x => x.DatabaseKey).Returns(KEY);
+            bankDatabaseService_sut = new BankDatabaseService(mockFileSystemService.Object, mockDatabaseConfiguration.Object);
         }
 
         [Test]
@@ -130,7 +134,7 @@ namespace BankingService.Tests
         public void Should_insert_line_if_new()
         {
             // GIVEN
-            string opFile = "Database/Operations.csv";
+            string opFile = "Database/Operations.table";
             var cFile = "Database/Categories.csv";
 
             var operations = new List<OperationDto>
@@ -189,7 +193,7 @@ namespace BankingService.Tests
         public void Should_get_unresolved_paypal_operations()
         {
             // GIVEN
-            string opFile = "Database/Operations.csv";
+            string opFile = "Database/Operations.table";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -238,7 +242,7 @@ namespace BankingService.Tests
         public void Should_update_operations()
         {
             // GIVEN
-            string opFile = "Database/Operations.csv";
+            string opFile = "Database/Operations.table";
             var cFile = "Database/Categories.csv";
 
             var operations = new List<OperationDto>
@@ -293,7 +297,7 @@ namespace BankingService.Tests
         public void Should_get_operation_that_need_manual_input()
         {
             // GIVEN
-            string opFile = "Database/Operations.csv";
+            string opFile = "Database/Operations.table";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -340,7 +344,7 @@ namespace BankingService.Tests
         public void Should_get_operation_all_operations()
         {
             // GIVEN
-            string opFile = "Database/Operations.csv";
+            string opFile = "Database/Operations.table";
             var cFile = "Database/Categories.csv";
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))

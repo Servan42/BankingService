@@ -12,16 +12,16 @@ namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
-        private const string DATABASE_BACKUP_FOLDER = "Database/Backups";
-
+        private readonly string DATABASE_BACKUP_FOLDER;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystemService fileSystemService;
-        private readonly string encryptionKey;
+        private readonly IBankDatabaseConfiguration bankDatabaseConfiguration;
 
-        public BankDatabaseService(IFileSystemService fileSystemService, string encryptionKey)
+        public BankDatabaseService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
-            this.encryptionKey = encryptionKey;
+            this.bankDatabaseConfiguration = bankDatabaseConfiguration;
+            this.DATABASE_BACKUP_FOLDER = bankDatabaseConfiguration.DatabasePath + "/Database/Backups";
         }
 
         public void BackupDatabase()
@@ -49,7 +49,7 @@ namespace BankingService.Infra.Database.Services
         public void InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
             int newOperationCount = 0;
-            var operations = Operations.Load(this.fileSystemService, encryptionKey);
+            var operations = Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey);
 
             foreach (var newOperation in ResolveOperationDto(operationsDto))
             {
@@ -69,7 +69,7 @@ namespace BankingService.Infra.Database.Services
 
         public void UpdateOperations(List<OperationDto> operationsDto)
         {
-            var storedOperations = Operations.Load(this.fileSystemService, encryptionKey);
+            var storedOperations = Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey);
 
             foreach(var operationToUpdate in ResolveOperationDto(operationsDto))
             {
@@ -128,7 +128,7 @@ namespace BankingService.Infra.Database.Services
 
         private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
         {
-            return Operations.Load(this.fileSystemService, encryptionKey).Data
+            return Operations.Load(this.fileSystemService, bankDatabaseConfiguration.DatabaseKey).Data
                 .Join(Categories.Load(this.fileSystemService).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
     }

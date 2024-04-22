@@ -11,17 +11,17 @@ namespace BankingService.Infra.Database.Services
     public class MaintenanceService
     {
         private readonly IFileSystemService fileSystemService;
-        private string encryptionKey;
+        private readonly IBankDatabaseConfiguration bankDatabaseConfiguration;
 
-        public MaintenanceService(IFileSystemService fileSystemService, string encryptionKey)
+        public MaintenanceService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
-            this.encryptionKey = encryptionKey;
+            this.bankDatabaseConfiguration = bankDatabaseConfiguration;
         }
 
         public void ExportOperationsTable()
         {
-            var csvLines = fileSystemService.ReadAllLinesDecrypt(Operations.Path, encryptionKey);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Operations.Path, bankDatabaseConfiguration.DatabaseKey);
             File.WriteAllLines(Operations.Path + ".export", csvLines);
         }
     }

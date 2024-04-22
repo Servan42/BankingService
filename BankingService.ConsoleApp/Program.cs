@@ -3,6 +3,7 @@ using BankingService.Core.API.Interfaces;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.Services;
+using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
 using BankingService.Infra.FileSystem.Services;
 using Microsoft.Extensions.Configuration;
@@ -19,13 +20,15 @@ internal class Program
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+
             var fileSystemService = new FileSystemService();
             var fileSystemServiceCore = new FileSystemAdapterCore(fileSystemService);
             var fileSystemServiceDatabase = new FileSystemAdapterDatabase(fileSystemService);
-            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, config.GetSection("dbKey").Value ?? "");
+            IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
+            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, dbConfig);
             IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
 
-            //new MaintenanceService(fileSystemServiceDatabase, config.GetSection("dbKey").Value).ExportOperationsTable();
+            new MaintenanceService(fileSystemServiceDatabase, dbConfig).ExportOperationsTable();
 
             //bankDataBaseService.BackupDatabase();
             importService.RecomputeEveryOperationAdditionalData();

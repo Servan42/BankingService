@@ -31,13 +31,13 @@ internal class Program
 
             new MaintenanceService(fileSystemServiceDatabase, dbConfig).ExportOperationsTable();
 
-            //bankDataBaseService.BackupDatabase();
+            Console.WriteLine("Backup database");
+            bankDataBaseService.BackupDatabase();
+            Console.WriteLine("Recompute operations");
             importService.RecomputeEveryOperationAdditionalData();
-            importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
-            importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
 
             var uiManager = new UserInteractionManager(importService, bankDataBaseService);
-            uiManager.ExecuteManualFillLoop();
+            uiManager.RunMenuLoop();
         }
         catch (Exception ex)
         {

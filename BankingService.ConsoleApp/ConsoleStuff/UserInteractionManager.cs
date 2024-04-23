@@ -15,6 +15,31 @@ namespace BankingService.ConsoleApp.ConsoleStuff
             this.bankDataBaseService = bankDataBaseService;
         }
 
+        internal void RunMenuLoop()
+        {
+            while (true)
+            {
+                Console.WriteLine("--------------- MENU ---------------");
+                Console.WriteLine("[1] Import Bank File");
+                Console.WriteLine("[2] Import Paypal File");
+                Console.WriteLine("[3] Manual Operation Categorization");
+                Console.Write("Enter the choice: ");
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        this.PromptImportBankFile();
+                        break;
+                    case "2":
+                        this.PromptImportPaypalFile();
+                        break;
+                    case "3":
+                        this.ExecuteManualFillLoop();
+                        break;
+                }
+            }
+        }
+
         internal void ExecuteManualFillLoop()
         {
             Dictionary<string, string> consoleCategories = LoadCategoriesWithIndexes();
@@ -91,5 +116,25 @@ namespace BankingService.ConsoleApp.ConsoleStuff
             }
             return consoleCategories;
         }
+
+        internal void PromptImportBankFile()
+        {
+            Console.Write("Enter the bank file full path: ");
+            string path = Console.ReadLine();
+            importService.ImportBankFile(path);
+            Console.WriteLine("File imported.");
+            //importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
+        }
+
+        internal void PromptImportPaypalFile()
+        {
+            Console.Write("Enter the bank file full path: ");
+            string path = Console.ReadLine();
+            importService.ImportPaypalFile(path);
+            Console.WriteLine("File imported.");
+            //importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
+        }
+
+
     }
 }

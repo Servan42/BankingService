@@ -37,8 +37,8 @@
 #### DONE
 
 - Think of a way to fill missing data manually
+- Implement a way to import data files.
 
 #### TODO
 
-- Implement a way to import data files.
 - Implement a way to review lines that need manual commentary and add new categories, types, and autocomment before recalculating the db.

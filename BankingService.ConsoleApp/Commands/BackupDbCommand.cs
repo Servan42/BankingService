@@ -1,19 +1,14 @@
-﻿using BankingService.Core.SPI.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BankingService.Infra.Database.Services;
 
 namespace BankingService.ConsoleApp.Commands
 {
     internal class BackupDbCommand : Command
     {
-        private readonly IBankDatabaseService bankDataBaseService;
+        private readonly MaintenanceService maintenanceService;
 
-        public BackupDbCommand(IBankDatabaseService bankDataBaseService)
+        public BackupDbCommand(MaintenanceService maintenanceService)
         {
-            this.bankDataBaseService = bankDataBaseService;
+            this.maintenanceService = maintenanceService;
         }
 
         public override string Name => "backup";
@@ -22,7 +17,7 @@ namespace BankingService.ConsoleApp.Commands
 
         public override void Execute(string[] args)
         {
-            this.bankDataBaseService.BackupDatabase();
+            this.maintenanceService.BackupDatabase();
             Console.WriteLine("Database backed up at the configured location.");
         }
     }

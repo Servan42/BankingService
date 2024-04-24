@@ -32,7 +32,7 @@ internal class Program
             MaintenanceService maintenanceService = new MaintenanceService(fileSystemServiceDatabase, dbConfig);
 
             Console.WriteLine("Backup database");
-            bankDataBaseService.BackupDatabase();
+            maintenanceService.BackupDatabase();
             Console.WriteLine("Recompute operations");
             importService.RecomputeEveryOperationAdditionalData();
 
@@ -41,7 +41,7 @@ internal class Program
             invoker.Register(new ImportFileCommand(importService));
             invoker.Register(new ManualFillCommand(importService, bankDataBaseService));
             invoker.Register(new ExportClearOperationsCommand(maintenanceService));
-            invoker.Register(new BackupDbCommand(bankDataBaseService));
+            invoker.Register(new BackupDbCommand(maintenanceService));
             invoker.Register(new RecomputeCategoriesCommand(importService));
 
             Console.WriteLine("Welcome to BankingService CLI. Type 'help' for more info.\n");

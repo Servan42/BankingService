@@ -21,13 +21,6 @@ namespace BankingService.Infra.Database.Services
         {
             this.fileSystemService = fileSystemService;
             this.dbConfig = bankDatabaseConfiguration;
-            this.DATABASE_BACKUP_FOLDER = Path.Combine(bankDatabaseConfiguration.DatabasePath, "Database", "Backups");
-        }
-
-        public void BackupDatabase()
-        {
-            logger.Info("Backuping database");
-            this.fileSystemService.ZipBackupFilesToFolder([Types.TablePath, CategoriesAndAutoComments.TablePath, Operations.TablePath, PaypalCategories.TablePath, Categories.TablePath], DATABASE_BACKUP_FOLDER);
         }
 
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp()

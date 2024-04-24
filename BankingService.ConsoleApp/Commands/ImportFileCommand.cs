@@ -43,8 +43,5 @@ namespace BankingService.ConsoleApp.Commands
             string[] validArgs = ["-p", "-b"];
             return !validArgs.Contains(option);
         }
-
-        //importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
-        //importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
     }
 }

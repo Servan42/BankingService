@@ -1,5 +1,6 @@
-﻿using BankingService.ConsoleApp.Configuration;
-using BankingService.ConsoleApp.ConsoleStuff;
+﻿using BankingService.ConsoleApp;
+using BankingService.ConsoleApp.Commands;
+using BankingService.ConsoleApp.Configuration;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
@@ -14,10 +15,10 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        ILogger logger = LogManager.GetCurrentClassLogger();
+
         try
         {
-            Console.WriteLine("Hello, World!");
-
             IConfiguration config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
@@ -28,23 +29,56 @@ internal class Program
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
             IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, dbConfig);
             IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
-
-            new MaintenanceService(fileSystemServiceDatabase, dbConfig).ExportOperationsTable();
+            MaintenanceService maintenanceService = new MaintenanceService(fileSystemServiceDatabase, dbConfig);
 
             Console.WriteLine("Backup database");
             bankDataBaseService.BackupDatabase();
             Console.WriteLine("Recompute operations");
             importService.RecomputeEveryOperationAdditionalData();
 
-            var uiManager = new UserInteractionManager(importService, bankDataBaseService);
-            uiManager.RunMenuLoop();
+            var invoker = new CommandInvoker();
+            invoker.Register(new HelpCommand(invoker));
+            invoker.Register(new ImportFileCommand(importService));
+            invoker.Register(new ManualFillCommand(importService, bankDataBaseService));
+            invoker.Register(new ExportClearOperationsCommand(maintenanceService));
+            invoker.Register(new BackupDbCommand(bankDataBaseService));
+            invoker.Register(new RecomputeCategoriesCommand(importService));
+
+            Console.WriteLine("Welcome to BankingService CLI. Type 'help' for more info.\n");
+            while (true)
+            {
+                Console.Write("> ");
+                var input = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(input))
+                    continue;
+
+                var splittedInput = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                var inputCommand = splittedInput[0];
+                string[] inputArgs = Array.Empty<string>();
+                if (splittedInput.Length > 1)
+                    inputArgs = splittedInput.Skip(1).ToArray();
+
+                try
+                {
+                    invoker.Execute(inputCommand, inputArgs);
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: " + ex.Message);
+                    Console.ResetColor();
+                    logger.Error(ex);
+                }
+                Console.WriteLine();
+            }
         }
         catch (Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(ex);
             Console.ResetColor();
-            LogManager.GetCurrentClassLogger().Fatal(ex);
+            logger.Fatal(ex);
         }
     }
 }

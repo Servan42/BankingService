@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingService.ConsoleApp.ConsoleStuff
+namespace BankingService.ConsoleApp
 {
     internal static class EnhancedConsole
     {
@@ -37,7 +37,7 @@ namespace BankingService.ConsoleApp.ConsoleStuff
             Console.SetCursorPosition(0, initialLine + linesPerColumn + 1);
         }
 
-        internal static void WriteWithForeGroundColor(string data, ConsoleColor color, bool newLine)
+        internal static void WriteWithForeGroundColor(string data, ConsoleColor color, bool newLine = false)
         {
             var backup = Console.ForegroundColor;
             Console.ForegroundColor = color;

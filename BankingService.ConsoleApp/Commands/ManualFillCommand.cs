@@ -1,46 +1,30 @@
 ﻿using BankingService.Core.API.Interfaces;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BankingService.ConsoleApp.ConsoleStuff
+namespace BankingService.ConsoleApp.Commands
 {
-    internal class UserInteractionManager
+    internal class ManualFillCommand : Command
     {
         private readonly IImportService importService;
         private readonly IBankDatabaseService bankDataBaseService;
 
-        public UserInteractionManager(IImportService importService, IBankDatabaseService bankDataBaseService)
+        public ManualFillCommand(IImportService importService, IBankDatabaseService bankDataBaseService)
         {
             this.importService = importService;
             this.bankDataBaseService = bankDataBaseService;
         }
 
-        internal void RunMenuLoop()
-        {
-            while (true)
-            {
-                Console.WriteLine("--------------- MENU ---------------");
-                Console.WriteLine("[1] Import Bank File");
-                Console.WriteLine("[2] Import Paypal File");
-                Console.WriteLine("[3] Manual Operation Categorization");
-                Console.Write("Enter the choice: ");
-                var choice = Console.ReadLine();
-                switch (choice)
-                {
-                    case "1":
-                        this.PromptImportBankFile();
-                        break;
-                    case "2":
-                        this.PromptImportPaypalFile();
-                        break;
-                    case "3":
-                        this.ExecuteManualFillLoop();
-                        break;
-                }
-            }
-        }
+        public override string Name => "fill";
 
-        internal void ExecuteManualFillLoop()
+        public override string ShortManual => "Runs a loop that goes through the operations that needs manual categorization.";
+
+        public override void Execute(string[] args)
         {
             Dictionary<string, string> consoleCategories = LoadCategoriesWithIndexes();
 
@@ -81,7 +65,7 @@ namespace BankingService.ConsoleApp.ConsoleStuff
                 Console.WriteLine("\nAbout to update with:\n");
                 Console.Write("  - Category: ");
                 EnhancedConsole.WriteWithForeGroundColor(category, ConsoleColor.Green, true);
-                Console.Write("  - Comment: ");
+                Console.Write("  - Comment:  ");
                 EnhancedConsole.WriteWithForeGroundColor(comment, ConsoleColor.Green, true);
                 Console.WriteLine("\nPress ENTER to save, press anything else to retry...");
             }
@@ -93,13 +77,13 @@ namespace BankingService.ConsoleApp.ConsoleStuff
         private void DisplayOperationToFill(OperationDto operationToFill)
         {
             Console.WriteLine("Operation to complete:\n");
-            Console.Write("  - Date: ");
+            Console.Write("  - Date:  ");
             EnhancedConsole.WriteWithForeGroundColor(operationToFill.Date.ToString("d"), ConsoleColor.Cyan, true);
-            Console.Write("  - Flow: ");
+            Console.Write("  - Flow:  ");
             EnhancedConsole.WriteWithForeGroundColor(operationToFill.Flow.ToString(), ConsoleColor.Cyan, true);
             Console.Write("  - Label: ");
             EnhancedConsole.WriteWithForeGroundColor(operationToFill.Label, ConsoleColor.Cyan, true);
-            Console.Write("  - Type: ");
+            Console.Write("  - Type:  ");
             EnhancedConsole.WriteWithForeGroundColor(operationToFill.Type, ConsoleColor.Cyan, true);
             Console.WriteLine();
         }
@@ -116,25 +100,5 @@ namespace BankingService.ConsoleApp.ConsoleStuff
             }
             return consoleCategories;
         }
-
-        internal void PromptImportBankFile()
-        {
-            Console.Write("Enter the bank file full path: ");
-            string path = Console.ReadLine();
-            importService.ImportBankFile(path);
-            Console.WriteLine("File imported.");
-            //importService.ImportBankFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\***REMOVED***_Jan.csv");
-        }
-
-        internal void PromptImportPaypalFile()
-        {
-            Console.Write("Enter the bank file full path: ");
-            string path = Console.ReadLine();
-            importService.ImportPaypalFile(path);
-            Console.WriteLine("File imported.");
-            //importService.ImportPaypalFile(@"F:\Servan\Autres\Code\C#\BankCSVParser\publish\CSV\TODO\paypa_janvier.CSV");
-        }
-
-
     }
 }

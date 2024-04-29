@@ -31,11 +31,11 @@ namespace BankingService.Core.Services
         public void ImportBankFile(string bankFilePath)
         {
             logger.Info($"Importing {bankFilePath} bank file");
-            fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
             var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetBankOperationsFromCSV(csvOperations);
             ResolveOperationsAutoFields(operations);
             bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());
+            fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
         }
 
         private List<Operation> GetBankOperationsFromCSV(List<string> csvOperations)
@@ -84,10 +84,10 @@ namespace BankingService.Core.Services
         public void ImportPaypalFile(string paypalFilePath)
         {
             logger.Info($"Importing {paypalFilePath} paypal file");
-            fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
             var csvOperations = fileSystemService.ReadAllLines(paypalFilePath);
             List<Operation> completeOperations = MatchPaypalDataToExistingOperations(csvOperations);
             bankDatabaseService.UpdateOperations(completeOperations.Select(o => o.MapToDto()).ToList());
+            fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
         }
 
         private List<Operation> MatchPaypalDataToExistingOperations(List<string> csvOperations)

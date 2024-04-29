@@ -23,7 +23,7 @@ namespace BankingService.ConsoleApp.Commands
         public override void Execute(string[] args)
         {
             this.maintenanceService.ExportOperationsTable();
-            Console.WriteLine("Operation table exported to CSV next to database location.");
+            Console.WriteLine("Operation table exported to CSV next to exe.");
         }
     }
 }

@@ -21,7 +21,7 @@ namespace BankingService.Infra.Database.Services
             logger.Info("Export operations table to CSV");
 
             var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, Operations.TablePath), dbConfig.DatabaseKey);
-            File.WriteAllLines(Path.Combine(dbConfig.DatabasePath, Operations.TablePath) + ".export", csvLines);
+            File.WriteAllLines("operations.export", csvLines);
         }
 
         public void BackupDatabase()

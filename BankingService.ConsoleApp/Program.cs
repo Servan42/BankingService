@@ -43,6 +43,7 @@ internal class Program
             invoker.Register(new ExportClearOperationsCommand(maintenanceService));
             invoker.Register(new BackupDbCommand(maintenanceService));
             invoker.Register(new RecomputeCategoriesCommand(importService));
+            invoker.Register(new ListIncompleteOperationsCommand(bankDataBaseService));
 
             Console.WriteLine("Welcome to BankingService CLI. Type 'help' for more info.\n");
             while (true)

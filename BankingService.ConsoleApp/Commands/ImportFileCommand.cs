@@ -17,12 +17,22 @@ namespace BankingService.ConsoleApp.Commands
 
         public override void Execute(string[] args)
         {
-            if (args.Length != 2
-                || UnkownOption(args[0])
-                || !Path.Exists(args[1]))
+            var hint = "Use option '-b <filePath>' to import a Bank file, or '-p <filePath>' to import a paypal file";
+            if (args.Length != 2)
             {
-                EnhancedConsole.WriteWithForeGroundColor("Input error: Use option '-b <filePath>' to import a Bank file, or '-p <filePath>' to import a paypal file",
-                    ConsoleColor.Red, true);
+                EnhancedConsole.WriteWithForeGroundColor($"Input error (2 args expected): {hint}", ConsoleColor.Red, true);
+                return;
+            }
+
+            if (UnkownOption(args[0]))
+            {
+                EnhancedConsole.WriteWithForeGroundColor($"Input error (option {args[0]} unknown): {hint}", ConsoleColor.Red, true);
+                return;
+            }
+
+            if (!Path.Exists(args[1]))
+            {
+                EnhancedConsole.WriteWithForeGroundColor($"Input error (File specified does not exist): {hint}", ConsoleColor.Red, true);
                 return;
             }
 

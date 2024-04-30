@@ -58,7 +58,7 @@ namespace BankingService.ConsoleApp.Commands
             Console.WriteLine("  Sum per Category:");
             var catPadding = operationsReportDto.SumPerCategory.Keys.Max(c => c.Length);
             var valuePadding = operationsReportDto.SumPerCategory.Values.Max(v => v.ToString().Length);
-            foreach (var spc in operationsReportDto.SumPerCategory)
+            foreach (var spc in operationsReportDto.SumPerCategory.OrderBy(spc => spc.Value))
             {
                 Console.WriteLine($"    {spc.Key.PadRight(catPadding)}  {spc.Value.ToString().PadLeft(valuePadding)} euro");
             }

@@ -28,6 +28,7 @@ internal class Program
             var fileSystemServiceDatabase = new FileSystemAdapterDatabase(fileSystemService);
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
             IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, dbConfig);
+            IReportService reportService = new ReportService(bankDataBaseService);
             IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
             MaintenanceService maintenanceService = new MaintenanceService(fileSystemServiceDatabase, dbConfig);
 
@@ -44,6 +45,7 @@ internal class Program
             invoker.Register(new BackupDbCommand(maintenanceService));
             invoker.Register(new RecomputeCategoriesCommand(importService));
             invoker.Register(new ListIncompleteOperationsCommand(bankDataBaseService));
+            invoker.Register(new ReportCommand(reportService));
 
             Console.WriteLine("Welcome to BankingService CLI. Type 'help' for more info.\n");
             while (true)

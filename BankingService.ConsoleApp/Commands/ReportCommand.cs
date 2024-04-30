@@ -54,14 +54,48 @@ namespace BankingService.ConsoleApp.Commands
         
         private void DisplayReport(OperationsReportDto operationsReportDto, DateTime startDate, DateTime endDate)
         {
-            Console.WriteLine($"Report for {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}");
+            Console.WriteLine($"\nReport for {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}\n");
+            DisplaySumPerCategoryTable(operationsReportDto);
+        }
+
+        private static void DisplaySumPerCategoryTable(OperationsReportDto operationsReportDto)
+        {
             Console.WriteLine("  Sum per Category:");
+
             var catPadding = operationsReportDto.SumPerCategory.Keys.Max(c => c.Length);
             var valuePadding = operationsReportDto.SumPerCategory.Values.Max(v => v.ToString().Length);
-            foreach (var spc in operationsReportDto.SumPerCategory.OrderBy(spc => spc.Value))
+
+            var incomeLines = operationsReportDto.SumPerCategory.Where(x => x.Key == "Income" || x.Key == "Epargne");
+            var expensesLines = operationsReportDto.SumPerCategory.Where(x => x.Key != "Income" && x.Key != "Epargne");
+            var expensesLinesWithoutCosts = expensesLines.Where(x => !x.Key.Contains("Charges"));
+
+            var tableWidht = 2 + catPadding + 2 + 5 + valuePadding + 2 + 2;
+            Console.WriteLine("    " + new string('-', tableWidht));
+
+            foreach (var spc in incomeLines.OrderBy(spc => spc.Value))
             {
-                Console.WriteLine($"    {spc.Key.PadRight(catPadding)}  {spc.Value.ToString().PadLeft(valuePadding)} euro");
+                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}         {spc.Value.ToString().PadLeft(valuePadding)} |");
             }
+
+            Console.WriteLine("    " + new string('-', tableWidht));
+
+
+            var total = expensesLines.Sum(x => x.Value);
+            foreach (var spc in expensesLines.OrderBy(spc => spc.Value))
+            {
+                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}  {(spc.Value / total) * 100,4:.0}%  {spc.Value.ToString().PadLeft(valuePadding)} |");
+            }
+
+            Console.WriteLine("    " + new string('-', tableWidht));
+
+
+            total = expensesLinesWithoutCosts.Sum(x => x.Value);
+            foreach (var spc in expensesLinesWithoutCosts.OrderBy(spc => spc.Value))
+            {
+                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}  {(spc.Value / total) * 100,4:.0}%  {spc.Value.ToString().PadLeft(valuePadding)} |");
+            }
+
+            Console.WriteLine("    " + new string('-', tableWidht));
         }
     }
 }

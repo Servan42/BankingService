@@ -21,18 +21,14 @@ namespace BankingService.Core.Services
 
         public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded)
         {
-            var reportResult = new OperationReport();
+            var reportResult = new OperationReport(startDateIncluded, endDateIncluded);
             
-            decimal balance = 0m;
             foreach (var operation in bankDatabaseService.GetOperationsBetweenDates(startDateIncluded, endDateIncluded))
             {
                 reportResult.AddToSumPerCategory(operation.Category, operation.Flow);
-                balance += operation.Flow;
+                reportResult.AddToBalances(operation.Category, operation.Flow);
+                reportResult.AddToSums(operation.Category, operation.Flow);
             }
-
-            reportResult.Balance = balance;
-            reportResult.StartDate = startDateIncluded;
-            reportResult.EndDate = endDateIncluded;
 
             return reportResult.MapToDto();
         }

@@ -35,7 +35,8 @@ namespace BankingService.Tests
                     new OperationDto { Flow = -10m, Category = "C1" },
                     new OperationDto { Flow = -20m, Category = "C2" },
                     new OperationDto { Flow = -30m, Category = "C1" },
-                    new OperationDto { Flow = 100m, Category = "C3" },
+                    new OperationDto { Flow = 100m, Category = "Epargne" },
+                    new OperationDto { Flow = -10m, Category = "Epargne" },
                 });
         }
 
@@ -59,7 +60,7 @@ namespace BankingService.Tests
             // WHEN
             Assert.That(result.SumPerCategory["C1"], Is.EqualTo(-40m));
             Assert.That(result.SumPerCategory["C2"], Is.EqualTo(-20m));
-            Assert.That(result.SumPerCategory["C3"], Is.EqualTo(100m));
+            Assert.That(result.SumPerCategory["Epargne"], Is.EqualTo(90m));
         }
 
         [Test]
@@ -69,7 +70,21 @@ namespace BankingService.Tests
             var result = reportService_sut.GetOperationsReport(startDate, endDate);
 
             // WHEN
-            Assert.That(result.Balance, Is.EqualTo(40m));
+            Assert.That(result.Balance, Is.EqualTo(30m));
+            Assert.That(result.BalanceWithoutSavings, Is.EqualTo(-60m));
+        }
+
+        [Test]
+        public void Should_get_sums()
+        {
+            // WHEN
+            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+
+            // WHEN
+            Assert.That(result.PositiveSum, Is.EqualTo(100m));
+            Assert.That(result.NegativeSum, Is.EqualTo(-70m));
+            Assert.That(result.PositiveSumWithoutSavings, Is.EqualTo(0m));
+            Assert.That(result.NegativeSumWithoutSavings, Is.EqualTo(-60m));
         }
     }
 }

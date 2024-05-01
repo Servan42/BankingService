@@ -1,4 +1,5 @@
-﻿using BankingService.Core.API.DTOs;
+﻿using BankingService.ConsoleApp.Model;
+using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace BankingService.ConsoleApp.Commands
     internal class ReportCommand : Command
     {
         private readonly IReportService reportService;
+        private OperationsReportDto report;
 
         public ReportCommand(IReportService reportService)
         {
@@ -42,7 +44,8 @@ namespace BankingService.ConsoleApp.Commands
             }
 
             (var startDate, var endDate) = GetStartAndEndDateFromMonthNumber(monthNumber);
-            DisplayReport(reportService.GetOperationsReport(startDate, endDate), startDate, endDate);
+            report = reportService.GetOperationsReport(startDate, endDate);
+            DisplayReport();
         }
         private (DateTime startDate, DateTime endDate) GetStartAndEndDateFromMonthNumber(int monthNumber)
         {
@@ -52,50 +55,76 @@ namespace BankingService.ConsoleApp.Commands
             return (startDate, endDate);
         }
         
-        private void DisplayReport(OperationsReportDto operationsReportDto, DateTime startDate, DateTime endDate)
+        private void DisplayReport()
         {
-            Console.WriteLine($"\nReport for {startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}\n");
-            DisplaySumPerCategoryTable(operationsReportDto);
+            Console.WriteLine($"Report for {report.StartDate:yyyy-MM-dd} to {report.EndDate:yyyy-MM-dd}");
+            Console.WriteLine();
+            DisplaySumPerCategoryTable();
+            Console.WriteLine();
+            DisplayBalanceDataTable();
         }
 
-        private static void DisplaySumPerCategoryTable(OperationsReportDto operationsReportDto)
+        private void DisplayBalanceDataTable()
+        {
+            Console.WriteLine("  Balance Data:");
+
+            var table = new ConsoleTable(2, [true, false], 4);
+            table.AddSeparatorLine();
+            table.AddHeaderLine("Without savings");
+            table.AddSeparatorLine();
+            table.AddLine(["Positive Sum", report.PositiveSumWithoutSavings.ToString()]);
+            table.AddLine(["Negative Sum", report.NegativeSumWithoutSavings.ToString()]);
+            table.AddLine(["Balance", report.BalanceWithoutSavings.ToString()]);
+            table.AddSeparatorLine();
+            table.AddHeaderLine("With savings");
+            table.AddSeparatorLine();
+            table.AddLine(["Positive Sum", report.PositiveSum.ToString()]);
+            table.AddLine(["Negative Sum", report.NegativeSum.ToString()]);
+            table.AddLine(["Balance", report.Balance.ToString()]);
+            table.AddSeparatorLine();
+            table.Display();
+        }
+
+        private void DisplaySumPerCategoryTable()
         {
             Console.WriteLine("  Sum per Category:");
 
-            var catPadding = operationsReportDto.SumPerCategory.Keys.Max(c => c.Length);
-            var valuePadding = operationsReportDto.SumPerCategory.Values.Max(v => v.ToString().Length);
-
-            var incomeLines = operationsReportDto.SumPerCategory.Where(x => x.Key == "Income" || x.Key == "Epargne");
-            var expensesLines = operationsReportDto.SumPerCategory.Where(x => x.Key != "Income" && x.Key != "Epargne");
+            var incomeLines = report.SumPerCategory.Where(x => x.Key == "Income" || x.Key == "Epargne");
+            var expensesLines = report.SumPerCategory.Where(x => x.Key != "Income" && x.Key != "Epargne");
             var expensesLinesWithoutCosts = expensesLines.Where(x => !x.Key.Contains("Charges"));
 
-            var tableWidht = 2 + catPadding + 2 + 5 + valuePadding + 2 + 2;
-            Console.WriteLine("    " + new string('-', tableWidht));
+            var table = new ConsoleTable(3, [true, false, false], 4);
+            table.AddSeparatorLine();
+            table.AddHeaderLine("Income and Savings");
+            table.AddSeparatorLine();
 
             foreach (var spc in incomeLines.OrderBy(spc => spc.Value))
             {
-                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}         {spc.Value.ToString().PadLeft(valuePadding)} |");
+                table.AddLine([spc.Key, "", spc.Value.ToString()]);
             }
 
-            Console.WriteLine("    " + new string('-', tableWidht));
-
+            table.AddSeparatorLine();
+            table.AddHeaderLine("Expenses Categories");
+            table.AddSeparatorLine();
 
             var total = expensesLines.Sum(x => x.Value);
             foreach (var spc in expensesLines.OrderBy(spc => spc.Value))
             {
-                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}  {(spc.Value / total) * 100,4:.0}%  {spc.Value.ToString().PadLeft(valuePadding)} |");
+                table.AddLine([spc.Key, ((spc.Value / total) * 100).ToString(".0") + "%", spc.Value.ToString()]);
             }
 
-            Console.WriteLine("    " + new string('-', tableWidht));
-
+            table.AddSeparatorLine();
+            table.AddHeaderLine("Expenses Categories without Costs");
+            table.AddSeparatorLine();
 
             total = expensesLinesWithoutCosts.Sum(x => x.Value);
             foreach (var spc in expensesLinesWithoutCosts.OrderBy(spc => spc.Value))
             {
-                Console.WriteLine($"    | {spc.Key.PadRight(catPadding)}  {(spc.Value / total) * 100,4:.0}%  {spc.Value.ToString().PadLeft(valuePadding)} |");
+                table.AddLine([spc.Key, ((spc.Value / total) * 100).ToString(".0") + "%", spc.Value.ToString()]);
             }
 
-            Console.WriteLine("    " + new string('-', tableWidht));
+            table.AddSeparatorLine();
+            table.Display();
         }
     }
 }

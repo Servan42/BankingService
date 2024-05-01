@@ -14,22 +14,20 @@ namespace BankingService.Tests
 {
     internal class ReportServiceTests
     {
-        IReportService reportService_sut;
-        Mock<IBankDatabaseService> mockBankDatabaseService;
+        private IReportService reportService_sut;
+        private Mock<IBankDatabaseService> mockBankDatabaseService;
+
+        private DateTime startDate;
+        private DateTime endDate;
 
         [SetUp]
         public void SetUp()
         {
             mockBankDatabaseService = new Mock<IBankDatabaseService>();
             reportService_sut = new ReportService(mockBankDatabaseService.Object);
-        }
 
-        [Test]
-        public void Should_carry_report_dates()
-        {
-            // GIVEN
-            var startDate = new DateTime(2024, 03, 26);
-            var endDate = new DateTime(2024, 03, 27);
+            startDate = new DateTime(2024, 03, 26);
+            endDate = new DateTime(2024, 03, 27);
             mockBankDatabaseService
                 .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
                 .Returns(new List<OperationDto>
@@ -37,8 +35,13 @@ namespace BankingService.Tests
                     new OperationDto { Flow = -10m, Category = "C1" },
                     new OperationDto { Flow = -20m, Category = "C2" },
                     new OperationDto { Flow = -30m, Category = "C1" },
+                    new OperationDto { Flow = 100m, Category = "C3" },
                 });
+        }
 
+        [Test]
+        public void Should_carry_report_dates()
+        {
             // WHEN
             var result = reportService_sut.GetOperationsReport(startDate, endDate);
 
@@ -50,46 +53,23 @@ namespace BankingService.Tests
         [Test]
         public void Should_get_sum_per_categories()
         {
-            // GIVEN
-            var startDate = new DateTime(2024, 03, 26);
-            var endDate = new DateTime(2024, 03, 27);
-            mockBankDatabaseService
-                .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
-                .Returns(new List<OperationDto>
-                {
-                    new OperationDto { Flow = -10m, Category = "C1" },
-                    new OperationDto { Flow = -20m, Category = "C2" },
-                    new OperationDto { Flow = -30m, Category = "C1" },
-                });
-
             // WHEN
             var result = reportService_sut.GetOperationsReport(startDate, endDate);
 
             // WHEN
             Assert.That(result.SumPerCategory["C1"], Is.EqualTo(-40m));
             Assert.That(result.SumPerCategory["C2"], Is.EqualTo(-20m));
+            Assert.That(result.SumPerCategory["C3"], Is.EqualTo(100m));
         }
 
         [Test]
         public void Should_get_balance()
         {
-            // GIVEN
-            var startDate = new DateTime(2024, 03, 26);
-            var endDate = new DateTime(2024, 03, 27);
-            mockBankDatabaseService
-                .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
-                .Returns(new List<OperationDto>
-                {
-                    new OperationDto { Flow = -10m, Category = "C1" },
-                    new OperationDto { Flow = 50m, Category = "C1" },
-                    new OperationDto { Flow = -30m, Category = "C1" },
-                });
-
             // WHEN
             var result = reportService_sut.GetOperationsReport(startDate, endDate);
 
             // WHEN
-            Assert.That(result.Balance, Is.EqualTo(10m));
+            Assert.That(result.Balance, Is.EqualTo(40m));
         }
     }
 }

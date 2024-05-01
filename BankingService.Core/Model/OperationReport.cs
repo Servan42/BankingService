@@ -22,6 +22,7 @@ namespace BankingService.Core.Model
         private decimal negativeSumWithoutSavings;
         private decimal positiveSumWithoutSavings;
         private List<HighestOperationDto> highestOperations = new();
+        private List<(DateTime, decimal)> treasuryGraphData;
 
         public OperationReport(DateTime startDate, DateTime endDate)
         {
@@ -77,6 +78,15 @@ namespace BankingService.Core.Model
             }
         }
 
+        internal void SetTreasuryGraphData(List<OperationDto> operations)
+        {
+            treasuryGraphData = operations
+                .OrderBy(o => o.Date)
+                .ThenByDescending(o => o.Treasury)
+                .Select(o => (o.Date, o.Treasury))
+                .ToList();
+        }
+
         internal OperationsReportDto MapToDto()
         {
             return new OperationsReportDto
@@ -90,7 +100,8 @@ namespace BankingService.Core.Model
                 PositiveSum = positiveSum,
                 NegativeSumWithoutSavings = negativeSumWithoutSavings,
                 PositiveSumWithoutSavings = positiveSumWithoutSavings,
-                HighestOperations = highestOperations
+                HighestOperations = highestOperations,
+                TreasuryGraphData = treasuryGraphData
             };
         }
     }

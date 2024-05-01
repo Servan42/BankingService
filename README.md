@@ -22,7 +22,7 @@
 
 ### Dashboard Interface
 
-#### TODO
+#### DONE
 
 - Get Sum(€) per categorie (Inputs: Month)
 - Get balance +/- (Inputs: Month)

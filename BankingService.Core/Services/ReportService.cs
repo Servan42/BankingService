@@ -22,8 +22,10 @@ namespace BankingService.Core.Services
         public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestOperationMinAmount = -100m)
         {
             var reportResult = new OperationReport(startDateIncluded, endDateIncluded);
-            
-            foreach (var operation in bankDatabaseService.GetOperationsBetweenDates(startDateIncluded, endDateIncluded))
+            var operations = bankDatabaseService.GetOperationsBetweenDates(startDateIncluded, endDateIncluded);
+            reportResult.SetTreasuryGraphData(operations);
+
+            foreach (var operation in operations)
             {
                 reportResult.AddToSumPerCategory(operation.Category, operation.Flow);
                 reportResult.AddToBalances(operation.Category, operation.Flow);

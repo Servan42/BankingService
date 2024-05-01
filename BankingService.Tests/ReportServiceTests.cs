@@ -32,11 +32,11 @@ namespace BankingService.Tests
                 .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
                 .Returns(new List<OperationDto>
                 {
-                    new OperationDto { Flow = -10m, Category = "C1" },
-                    new OperationDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Type = "T", AutoComment = "AC", Comment= "Co" },
-                    new OperationDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Type = "T2", AutoComment = "AC2", Comment= "Co2" },
-                    new OperationDto { Flow = 100m, Category = "Epargne" },
-                    new OperationDto { Flow = -10m, Category = "Epargne" },
+                    new OperationDto { Flow = -10m, Category = "C1", Date = new DateTime(2024, 03, 26), Treasury = 70m },
+                    new OperationDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Treasury = 80m, Type = "T", AutoComment = "AC", Comment= "Co" },
+                    new OperationDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Treasury = 130m, Type = "T2", AutoComment = "AC2", Comment= "Co2" },
+                    new OperationDto { Flow = 100m, Category = "Epargne", Date = new DateTime(2024, 03, 27), Treasury = 160m, },
+                    new OperationDto { Flow = -10m, Category = "Epargne", Date = new DateTime(2024, 03, 26), Treasury = 60m },
                 });
         }
 
@@ -115,6 +115,24 @@ namespace BankingService.Tests
 
             Assert.That(result.HighestOperations[0], Is.EqualTo(expectedHighestOperation1));
             Assert.That(result.HighestOperations[1], Is.EqualTo(expectedHighestOperation2));
+        }
+
+        [Test]
+        public void Should_get_treasury_graph_data()
+        {
+            // WHEN
+            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+
+            // WHEN
+            var expected = new List<(DateTime, decimal)>
+            {
+                (new DateTime(2024,03,26), 80m),
+                (new DateTime(2024,03,26), 70m),
+                (new DateTime(2024,03,26), 60m),
+                (new DateTime(2024,03,27), 160m),
+                (new DateTime(2024,03,27), 130m),
+            };
+            CollectionAssert.AreEqual(expected, result.TreasuryGraphData);
         }
     }
 }

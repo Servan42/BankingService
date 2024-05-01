@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace BankingService.Core.API.DTOs
         public decimal PositiveSumWithoutSavings { get; init; }
         public decimal NegativeSumWithoutSavings { get; init; }
         public List<HighestOperationDto> HighestOperations { get; init; }
+        public List<(DateTime, decimal)> TreasuryGraphData { get; set; }
     }
 }

@@ -10,7 +10,9 @@ namespace BankingService.Core.Model
     internal class OperationReport
     {
         private Dictionary<string, decimal> SumPerCategory = new();
-
+        
+        public DateTime StartDate { get; internal set; }
+        public DateTime EndDate { get; internal set; }
         public decimal Balance { get; internal set; }
 
         internal void AddToSumPerCategory(string category, decimal flow)
@@ -29,6 +31,8 @@ namespace BankingService.Core.Model
         {
             return new OperationsReportDto
             {
+                StartDate = StartDate,
+                EndDate = EndDate,
                 SumPerCategory = SumPerCategory,
                 Balance = Balance
             };

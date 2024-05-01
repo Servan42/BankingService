@@ -25,6 +25,29 @@ namespace BankingService.Tests
         }
 
         [Test]
+        public void Should_carry_report_dates()
+        {
+            // GIVEN
+            var startDate = new DateTime(2024, 03, 26);
+            var endDate = new DateTime(2024, 03, 27);
+            mockBankDatabaseService
+                .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
+                .Returns(new List<OperationDto>
+                {
+                    new OperationDto { Flow = -10m, Category = "C1" },
+                    new OperationDto { Flow = -20m, Category = "C2" },
+                    new OperationDto { Flow = -30m, Category = "C1" },
+                });
+
+            // WHEN
+            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+
+            // WHEN
+            Assert.That(result.StartDate, Is.EqualTo(startDate));
+            Assert.That(result.EndDate, Is.EqualTo(endDate));
+        }
+
+        [Test]
         public void Should_get_sum_per_categories()
         {
             // GIVEN

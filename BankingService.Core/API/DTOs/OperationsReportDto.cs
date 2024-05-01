@@ -8,6 +8,8 @@ namespace BankingService.Core.API.DTOs
 {
     public record OperationsReportDto
     {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public Dictionary<string, decimal> SumPerCategory { get; init; }
         public decimal Balance { get; init; }
     }

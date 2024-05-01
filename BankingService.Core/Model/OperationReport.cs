@@ -1,4 +1,5 @@
 ﻿using BankingService.Core.API.DTOs;
+using BankingService.Core.SPI.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace BankingService.Core.Model
         private decimal positiveSum;
         private decimal negativeSumWithoutSavings;
         private decimal positiveSumWithoutSavings;
+        private List<HighestOperationDto> highestOperations = new();
 
         public OperationReport(DateTime startDate, DateTime endDate)
         {
@@ -35,27 +37,43 @@ namespace BankingService.Core.Model
 
         internal void AddToSumPerCategory(string category, decimal flow)
         {
-            if(SumPerCategory.ContainsKey(category))
+            if (SumPerCategory.ContainsKey(category))
             {
                 SumPerCategory[category] += flow;
             }
             else
             {
                 SumPerCategory.Add(category, flow);
-            }    
+            }
         }
 
         internal void AddToSums(string category, decimal flow)
         {
-            if(flow > 0)
+            if (flow > 0)
             {
                 positiveSum += flow;
-                if(category != SAVINGS_CATEGORY) positiveSumWithoutSavings += flow;
+                if (category != SAVINGS_CATEGORY) positiveSumWithoutSavings += flow;
             }
             else
             {
                 negativeSum += flow;
                 if (category != SAVINGS_CATEGORY) negativeSumWithoutSavings += flow;
+            }
+        }
+
+        internal void AddHighestOperation(OperationDto operation, decimal highestOperationMinAmount)
+        {
+            if (operation.Flow <= highestOperationMinAmount && operation.Category != SAVINGS_CATEGORY)
+            {
+                highestOperations.Add(new HighestOperationDto
+                {
+                    Date = operation.Date,
+                    Flow = operation.Flow,
+                    Type = operation.Type,
+                    Category = operation.Category,
+                    AutoComment = operation.AutoComment,
+                    Comment = operation.Comment
+                });
             }
         }
 
@@ -71,7 +89,8 @@ namespace BankingService.Core.Model
                 NegativeSum = negativeSum,
                 PositiveSum = positiveSum,
                 NegativeSumWithoutSavings = negativeSumWithoutSavings,
-                PositiveSumWithoutSavings = positiveSumWithoutSavings
+                PositiveSumWithoutSavings = positiveSumWithoutSavings,
+                HighestOperations = highestOperations
             };
         }
     }

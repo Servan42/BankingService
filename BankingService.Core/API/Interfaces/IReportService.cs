@@ -9,6 +9,6 @@ namespace BankingService.Core.API.Interfaces
 {
     public interface IReportService
     {
-        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded);
+        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestOperationMinAmount = -100m);
     }
 }

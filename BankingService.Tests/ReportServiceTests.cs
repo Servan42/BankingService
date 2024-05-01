@@ -33,8 +33,8 @@ namespace BankingService.Tests
                 .Returns(new List<OperationDto>
                 {
                     new OperationDto { Flow = -10m, Category = "C1" },
-                    new OperationDto { Flow = -20m, Category = "C2" },
-                    new OperationDto { Flow = -30m, Category = "C1" },
+                    new OperationDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Type = "T", AutoComment = "AC", Comment= "Co" },
+                    new OperationDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Type = "T2", AutoComment = "AC2", Comment= "Co2" },
                     new OperationDto { Flow = 100m, Category = "Epargne" },
                     new OperationDto { Flow = -10m, Category = "Epargne" },
                 });
@@ -85,6 +85,36 @@ namespace BankingService.Tests
             Assert.That(result.NegativeSum, Is.EqualTo(-70m));
             Assert.That(result.PositiveSumWithoutSavings, Is.EqualTo(0m));
             Assert.That(result.NegativeSumWithoutSavings, Is.EqualTo(-60m));
+        }
+
+        [Test]
+        public void Should_get_highest_operation()
+        {
+            // WHEN
+            var result = reportService_sut.GetOperationsReport(startDate, endDate, -20m);
+
+            // WHEN
+            var expectedHighestOperation1 = new HighestOperationDto
+            {
+                Date = new DateTime(2024, 03, 26),
+                Flow = -20m,
+                Type = "T",
+                Category = "C2",
+                AutoComment = "AC",
+                Comment = "Co"
+            };
+            var expectedHighestOperation2 = new HighestOperationDto
+            {
+                Date = new DateTime(2024, 03, 27),
+                Flow = -30m,
+                Type = "T2",
+                Category = "C1",
+                AutoComment = "AC2",
+                Comment = "Co2"
+            };
+
+            Assert.That(result.HighestOperations[0], Is.EqualTo(expectedHighestOperation1));
+            Assert.That(result.HighestOperations[1], Is.EqualTo(expectedHighestOperation2));
         }
     }
 }

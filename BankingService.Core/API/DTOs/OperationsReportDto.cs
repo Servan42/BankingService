@@ -17,5 +17,6 @@ namespace BankingService.Core.API.DTOs
         public decimal NegativeSum { get; init; }
         public decimal PositiveSumWithoutSavings { get; init; }
         public decimal NegativeSumWithoutSavings { get; init; }
+        public List<HighestOperationDto> HighestOperations { get; init; }
     }
 }

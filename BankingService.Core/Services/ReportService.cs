@@ -19,7 +19,7 @@ namespace BankingService.Core.Services
             this.bankDatabaseService = bankDatabaseService;
         }
 
-        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded)
+        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestOperationMinAmount = -100m)
         {
             var reportResult = new OperationReport(startDateIncluded, endDateIncluded);
             
@@ -28,6 +28,7 @@ namespace BankingService.Core.Services
                 reportResult.AddToSumPerCategory(operation.Category, operation.Flow);
                 reportResult.AddToBalances(operation.Category, operation.Flow);
                 reportResult.AddToSums(operation.Category, operation.Flow);
+                reportResult.AddHighestOperation(operation, highestOperationMinAmount);
             }
 
             return reportResult.MapToDto();

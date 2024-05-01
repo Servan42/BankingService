@@ -62,6 +62,31 @@ namespace BankingService.ConsoleApp.Commands
             DisplaySumPerCategoryTable();
             Console.WriteLine();
             DisplayBalanceDataTable();
+            Console.WriteLine();
+            DisplayHighestOperations();
+        }
+
+        private void DisplayHighestOperations()
+        {
+            Console.WriteLine("  Highest operations:");
+            var table = new ConsoleTable(6, [true, true, true, true, true, true], 4, " | ");
+            table.AddSeparatorLine();
+            table.AddLine(["Date", "Flow", "Type", "Category", "AutoComment", "Comment"]);
+            table.AddSeparatorLine();
+            foreach (var line in report.HighestOperations)
+            {
+                table.AddLine(
+                [
+                    line.Date.ToString("yyyy-MM-dd"),
+                    line.Flow.ToString(),
+                    line.Type,
+                    line.Category,
+                    line.AutoComment,
+                    line.Comment
+                ]);
+            }
+            table.AddSeparatorLine();
+            table.Display();
         }
 
         private void DisplayBalanceDataTable()

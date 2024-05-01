@@ -13,14 +13,16 @@ namespace BankingService.ConsoleApp.Model
         private readonly int nbColumns;
         private readonly bool[] columnsRightPadded;
         private readonly int tableLeftPadding;
+        private readonly string columnSeparator;
 
         private int tableWidth;
 
-        public ConsoleTable(int nbColumns, bool[] columnsRightPadded, int tableLeftPadding = 0)
+        public ConsoleTable(int nbColumns, bool[] columnsRightPadded, int tableLeftPadding = 0, string columnSeparator = "  ")
         {
             this.nbColumns = nbColumns;
             this.columnsRightPadded = columnsRightPadded;
             this.tableLeftPadding = tableLeftPadding;
+            this.columnSeparator = columnSeparator;
         }
 
         internal void AddHeaderLine(string headerText)
@@ -84,21 +86,22 @@ namespace BankingService.ConsoleApp.Model
                     paddedColumnData.Add(line.Data[i].PadLeft(columnsMaxLenghs[i]));
                 }
             }
-            Console.WriteLine($"| {string.Join("  ", paddedColumnData)} |");
+            Console.WriteLine($"| {string.Join(columnSeparator, paddedColumnData)} |");
         }
 
         private void CalculateTableAndColumnWidth()
         {
             tableWidth = 0;
             tableWidth += 2; // Pipe and one padding space
-            int maxHeaderWidth = tableLines.Where(l => l.IsHeader)?.Max(h => h.Data[0].Length) ?? 0;
+            var headerLines = tableLines.Where(l => l.IsHeader);
+            int maxHeaderWidth = headerLines.Any() ? headerLines.Max(h => h.Data[0].Length) : 0;
 
             columnsMaxLenghs = new();
             for (int i = 0; i < nbColumns; i++)
             {
                 columnsMaxLenghs.Add(tableLines.Where(c => c.IsClassicLine).Max(c => c.Data[i].Length));
             }
-            int separatorsWidth = (nbColumns - 1) * 2;
+            int separatorsWidth = (nbColumns - 1) * columnSeparator.Length;
             int maxLineWidth = columnsMaxLenghs.Sum() + separatorsWidth;
 
             tableWidth += Math.Max(maxLineWidth, maxHeaderWidth);

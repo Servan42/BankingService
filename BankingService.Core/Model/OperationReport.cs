@@ -11,6 +11,8 @@ namespace BankingService.Core.Model
     {
         private Dictionary<string, decimal> SumPerCategory = new();
 
+        public decimal Balance { get; internal set; }
+
         internal void AddToSumPerCategory(string category, decimal flow)
         {
             if(SumPerCategory.ContainsKey(category))
@@ -27,7 +29,8 @@ namespace BankingService.Core.Model
         {
             return new OperationsReportDto
             {
-                SumPerCategory = SumPerCategory
+                SumPerCategory = SumPerCategory,
+                Balance = Balance
             };
         }
     }

@@ -9,5 +9,6 @@ namespace BankingService.Core.API.DTOs
     public record OperationsReportDto
     {
         public Dictionary<string, decimal> SumPerCategory { get; init; }
+        public decimal Balance { get; init; }
     }
 }

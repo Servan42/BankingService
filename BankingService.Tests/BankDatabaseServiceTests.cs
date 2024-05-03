@@ -420,5 +420,66 @@ namespace BankingService.Tests
             // THEN
             CollectionAssert.AreEqual(new List<string> { "Income", "Autres" }, result);
         }
+
+        [Test]
+        public void Should_get_operations_by_date()
+        {
+            // GIVEN
+            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            mockFileSystemService
+                .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
+                .Returns(new List<string>
+                {
+                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "2024-03-24;-10,01;21,00;label1;Sans Contact;1;;",
+                    "2024-03-25;-10,02;22,00;label2;Paypal;2;Steam;Silksong",
+                    "2024-03-26;-10,03;23,00;label3;Loyer;1;LoyerAutoComment;LoyerComment",
+                    "2024-03-27;-10,04;24,00;label4;Paypal;2;Steam;"
+                });
+
+            mockFileSystemService
+                .Setup(x => x.ReadAllLines(cFile))
+                .Returns(new List<string>
+                {
+                    "Id;Name",
+                    "1;Charges",
+                    "2;Loisir",
+                });
+
+            // WHEN
+            var result = bankDatabaseService_sut.GetOperationsBetweenDates(new DateTime(2024,03,25), new DateTime(2024,03,26));
+
+            // THEN
+            var expected = new List<OperationDto>
+            {
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,25),
+                    Flow = -10.02m,
+                    Treasury = 22.00m,
+                    Label = "label2",
+                    Type = "Paypal",
+                    Category = "Loisir",
+                    AutoComment = "Steam",
+                    Comment = "Silksong"
+                },
+                new OperationDto
+                {
+                    Date = new DateTime(2024,03,26),
+                    Flow = -10.03m,
+                    Treasury = 23.00m,
+                    Label = "label3",
+                    Type = "Loyer",
+                    Category = "Charges",
+                    AutoComment = "LoyerAutoComment",
+                    Comment = "LoyerComment"
+                }
+            };
+
+            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
+            mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
+        }
     }
 }

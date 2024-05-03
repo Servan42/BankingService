@@ -124,5 +124,12 @@ namespace BankingService.Infra.Database.Services
             return Operations.Load(this.fileSystemService, this.dbConfig).Data
                 .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
+
+        public List<OperationDto> GetOperationsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded)
+        {
+            return GetStoredOperationsAsDtos()
+                .Where(o => o.Date >= startDateIncluded && o.Date <= endDateIncluded)
+                .ToList();
+        }
     }
 }

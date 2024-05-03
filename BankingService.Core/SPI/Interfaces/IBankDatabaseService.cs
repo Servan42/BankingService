@@ -19,5 +19,6 @@ namespace BankingService.Core.SPI.Interfaces
         public void UpdateOperations(List<OperationDto> operationsDto);
         public List<OperationDto> GetOperationsThatNeedsManualInput();
         public List<string> GetAllCategoriesNames();
+        List<OperationDto> GetOperationsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded);
     }
 }

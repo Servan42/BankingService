@@ -1,6 +1,3 @@
-/* @import '~@angular/material/theming';
-@import '~@angular/material/theming/prebuilt/deeppurple-amber.css'; */
-
 .main-card {
     margin-top: 20px;
     margin-left: 200px;
@@ -30,6 +27,26 @@
     margin-right: 5px;
 }
 
+::ng-deep .mat-datepicker-toggle-default-icon {
+    color: lightgray !important; 
+}
 
+::ng-deep .mat-mdc-text-field-wrapper {
+    background-color: rgb(42, 42, 42) !important;
+}
 
+::ng-deep .mat-date-range-input-separator{
+    color: lightgray !important;
+}
 
+::ng-deep .mat-date-range-input-wrapper{
+    color: lightgray !important;
+}
+
+/* ::ng-deep .mat-datepicker-content-container{
+    background-color: rgb(42, 42, 42) !important;
+} */
+
+mat-label {
+    color: lightgray !important;
+}

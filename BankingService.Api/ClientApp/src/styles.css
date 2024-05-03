@@ -7,17 +7,17 @@ html, body
     padding: 0;
 }
 
-button {
+.big-button {
     font-family: Ubuntu;
     background-color: #5fc4a2;
     border: 0;
 }
 
-button:hover {
+.big-button:hover {
     background-color: aquamarine;
 }
 
-button:active {
+.big-button:active {
     background-color: #5fc4a2;
 }
 

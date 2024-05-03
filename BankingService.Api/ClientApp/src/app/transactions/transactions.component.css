@@ -1,0 +1,35 @@
+/* @import '~@angular/material/theming';
+@import '~@angular/material/theming/prebuilt/deeppurple-amber.css'; */
+
+.main-card {
+    margin-top: 20px;
+    margin-left: 200px;
+    margin-right: 200px;
+    min-height: 500px;
+}
+
+.inner-section {
+    margin: 10px;
+    padding: 10px;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+}
+
+.import-button-section {
+    text-align: right;
+    padding-right: 15px;
+}
+
+.import-button {
+    font-size: medium;
+    font-weight: 500;
+    padding: 5px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+
+
+

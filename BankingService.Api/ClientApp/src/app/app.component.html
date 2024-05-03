@@ -1,9 +1,9 @@
 <main class="main">
   <div class="header">
-    <button class="header-button" (click)="selectedScreen = 1">
+    <button class="header-button" [ngClass]="{'header-button-current': selectedScreen === 1 }" (click)="selectedScreen = 1">
       Transaction List
     </button>
-    <button class="header-button" (click)="selectedScreen = 2">
+    <button class="header-button" [ngClass]="{'header-button-current': selectedScreen === 2 }" (click)="selectedScreen = 2">
       Dashboard
     </button>
   </div>

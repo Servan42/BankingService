@@ -1,3 +1,23 @@
-<p>
-  Transaction List Screen
-</p>
+<div class="card main-card">
+  <div class="import-button-section">
+    <button class="import-button">Import Bank File</button>
+    <button class="import-button">Import Paypal File</button>
+  </div>
+  <div class="inner-section">
+    <mat-form-field>
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Start date">
+        <input matEndDate placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    
+    <label for="search-transaction">Search:</label>
+    <input id="search-transaction"/>
+  </div>
+  <div class="inner-section">TransactionHeaders</div>
+  <div class="inner-section">Transaction List</div>
+</div>

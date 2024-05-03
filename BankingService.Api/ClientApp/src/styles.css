@@ -9,4 +9,25 @@ html, body
 
 button {
     font-family: Ubuntu;
+    background-color: #5fc4a2;
+    border: 0;
 }
+
+button:hover {
+    background-color: aquamarine;
+}
+
+button:active {
+    background-color: #5fc4a2;
+}
+
+.card {
+    border-style: solid;
+    border-color: #2e2e2e;
+    border-width: 2px;
+    background-color: #181818;
+    border-radius: 15px;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

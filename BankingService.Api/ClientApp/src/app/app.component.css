@@ -9,17 +9,10 @@
     margin-left: 10%;
     margin-right: 10%;
     padding: 10px;
-    border-radius: 5%;
-    border: 0;
-    background-color: #5fc4a2;
     font-weight: 1000;
     font-size: large;
 }
 
-.header-button:hover {
+.header-button-current {
     background-color: aquamarine;
-}
-
-.header-button:active {
-    background-color: rgb(106, 212, 177);
 }

@@ -4,7 +4,14 @@
   <span class="column-center">{{ transaction.treasury }} €</span>
   <span class="column">{{ transaction.label }}</span>
   <span class="column">{{ transaction.type }}</span>
-  <span class="column">{{ transaction.category }}</span>
+  <span class="column" *ngIf="isEditableCommentDisabled; else categoryInput">{{ transaction.category }}</span>
+  <ng-template #categoryInput>
+    <button mat-button [matMenuTriggerFor]="menu">{{ transaction.category }}</button>
+    <mat-menu #menu="matMenu" >
+      <button *ngFor="let c of categories" mat-menu-item (click)="categoryMenuItemClicked(c)">{{ c }}</button>
+    </mat-menu>
+  </ng-template>
+  
   <span class="column">{{ transaction.autoComment }}</span>
 
   <span class="column" *ngIf="isEditableCommentDisabled; else commentInput">{{

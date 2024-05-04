@@ -42,3 +42,11 @@
   font-size: 15px;
   font-weight: 450;
 }
+
+::ng-deep .mat-mdc-menu-content{
+    background-color: rgb(42, 42, 42) !important;
+}
+
+::ng-deep .mat-mdc-menu-item{
+    color: lightgray;
+}

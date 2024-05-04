@@ -1,60 +1,72 @@
-<div class="container">
-  <span class="column">{{ transaction.date.toLocaleDateString() }}</span>
-  <span class="column-center">{{ transaction.flow }} €</span>
-  <span class="column-center">{{ transaction.treasury }} €</span>
-  <span class="column">{{ transaction.label }}</span>
-
-  <span class="column" *ngIf="isEditableCommentDisabled; else typesInput">{{
-    transaction.type
+<div class="container" [ngClass]="{'red-bg': transaction.flow < 0, 'green-bg': transaction.flow >= 0}">
+  <span class="column date-column">{{
+    transaction.date.toLocaleDateString()
   }}</span>
-  <ng-template #typesInput>
-    <button mat-button [matMenuTriggerFor]="menuType">
-      {{ transaction.type }}
-    </button>
-    <mat-menu #menuType="matMenu">
-      <button
-        *ngFor="let t of types"
-        mat-menu-item
-        (click)="typesMenuItemClicked(t)"
-      >
-        {{ t }}
+  <span class="column flow-column">{{ transaction.flow }} €</span>
+  <span class="column treasury-column">{{ transaction.treasury }} €</span>
+  <span class="column label-column">{{ transaction.label }}</span>
+
+  <span class="column type-column">
+    <span *ngIf="isEditableCommentDisabled; else typesInput">{{
+      transaction.type
+    }}</span>
+    <ng-template #typesInput>
+      <button class="dropdown-button" mat-button [matMenuTriggerFor]="menuType">
+        {{ transaction.type }}
       </button>
-    </mat-menu>
-  </ng-template>
+      <mat-menu #menuType="matMenu">
+        <button
+          *ngFor="let t of types"
+          mat-menu-item
+          (click)="typesMenuItemClicked(t)"
+        >
+          {{ t }}
+        </button>
+      </mat-menu>
+    </ng-template>
+  </span>
 
-  <span class="column" *ngIf="isEditableCommentDisabled; else categoryInput">{{
-    transaction.category
-  }}</span>
-  <ng-template #categoryInput>
-    <button mat-button [matMenuTriggerFor]="menuCategory">
-      {{ transaction.category }}
-    </button>
-    <mat-menu #menuCategory="matMenu">
+  <span class="column category-column">
+    <span *ngIf="isEditableCommentDisabled; else categoryInput">{{
+      transaction.category
+    }}</span>
+    <ng-template #categoryInput>
       <button
-        *ngFor="let c of categories"
-        mat-menu-item
-        (click)="categoryMenuItemClicked(c)"
+        class="dropdown-button"
+        mat-button
+        [matMenuTriggerFor]="menuCategory"
       >
-        {{ c }}
+        {{ transaction.category }}
       </button>
-    </mat-menu>
-  </ng-template>
+      <mat-menu #menuCategory="matMenu">
+        <button
+          *ngFor="let c of categories"
+          mat-menu-item
+          (click)="categoryMenuItemClicked(c)"
+        >
+          {{ c }}
+        </button>
+      </mat-menu>
+    </ng-template>
+  </span>
 
-  <span class="column">{{ transaction.autoComment }}</span>
+  <span class="column autoComment-column">{{ transaction.autoComment }}</span>
 
-  <span class="column" *ngIf="isEditableCommentDisabled; else commentInput">{{
-    transaction.comment
-  }}</span>
-  <ng-template #commentInput>
-    <input
-      type="text"
-      class="column editable-text-field"
-      [(ngModel)]="transaction.comment"
-      [disabled]="isEditableCommentDisabled"
-    />
-  </ng-template>
+  <span class="column comment-column">
+    <span *ngIf="isEditableCommentDisabled; else commentInput">{{
+      transaction.comment
+    }}</span>
+    <ng-template #commentInput>
+      <input
+        type="text"
+        class="editable-text-field"
+        [(ngModel)]="transaction.comment"
+        [disabled]="isEditableCommentDisabled"
+      />
+    </ng-template>
+  </span>
 
-  <span class="column-center">
+  <span class="column action-column">
     <button
       class="big-button edit-save-button"
       (click)="onEditTransactionClicked()"

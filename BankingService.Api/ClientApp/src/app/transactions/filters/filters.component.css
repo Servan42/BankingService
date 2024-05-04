@@ -6,7 +6,41 @@
     
     display: flex; 
     align-items: center; 
-    justify-content: space-between;
+    justify-content: left;
+}
+
+.filter-input, .filter-clear {
+    margin: 0 20px;
+}
+
+.filter-clear{
+    margin-left: auto;
+}
+
+.clear-button {
+    font-size: larger;
+    font-weight: 450;
+    padding: 8px;
+}
+
+.dropdown-button {
+    font-size: larger;
+    font-weight: 450;
+    background-color: rgb(180, 180, 180);
+    color: black;
+    font-family: Ubuntu, sans-serif;
+    padding: 8px;
+    border: none;
+}
+
+.search-text-field {
+    background-color: rgb(42, 42, 42);
+    color: lightgray;
+    font-family: Ubuntu, sans-serif;
+    padding: 3px;
+    font-size: larger;
+    border: none;
+    padding: 10px;
 }
 
 ::ng-deep .mat-datepicker-toggle-default-icon {

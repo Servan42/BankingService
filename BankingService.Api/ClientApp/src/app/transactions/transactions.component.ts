@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-transactions',
@@ -13,7 +14,8 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core'
   imports: [
     CommonModule,
     MatFormFieldModule, 
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatMenuModule
   ]
 })
 export class TransactionsComponent implements OnInit {
@@ -21,6 +23,10 @@ export class TransactionsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  menuItemClicked(s: string){
+
   }
 
 }

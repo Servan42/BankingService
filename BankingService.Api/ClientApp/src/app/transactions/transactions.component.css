@@ -43,9 +43,10 @@
     color: lightgray !important;
 }
 
-/* ::ng-deep .mat-datepicker-content-container{
+::ng-deep .mat-mdc-menu-content{
+    color: lightgray;
     background-color: rgb(42, 42, 42) !important;
-} */
+}
 
 mat-label {
     color: lightgray !important;

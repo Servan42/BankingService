@@ -9,8 +9,10 @@ html, body
 
 .big-button {
     font-family: Ubuntu;
+    border-radius: 5px;
     background-color: #5fc4a2;
-    border: 0;
+    border-width: 0px;
+    border-color: #5fc4a2;
 }
 
 .big-button:hover {
@@ -29,5 +31,5 @@ html, body
     border-radius: 15px;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */

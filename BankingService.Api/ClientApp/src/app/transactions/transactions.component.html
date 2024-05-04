@@ -3,7 +3,8 @@
     <button class="import-button big-button">Import Bank File</button>
     <button class="import-button big-button">Import Paypal File</button>
   </div>
-  <div class="inner-section">
+  <div class="inner-section" style="display: flex; align-items: center; justify-content: space-between;">
+    
     <mat-form-field>
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [rangePicker]="picker">
@@ -15,8 +16,24 @@
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
     
-    <label for="search-transaction">Search:</label>
-    <input id="search-transaction"/>
+    <div>
+      <label for="search-transaction">Search:</label><br>
+      <input id="search-transaction"/>
+    </div>
+
+    <button mat-button [matMenuTriggerFor]="menu">Category</button>
+    <mat-menu #menu="matMenu" >
+      <button mat-menu-item (click)="menuItemClicked('Option 1')">Option 1</button>
+      <button mat-menu-item (click)="menuItemClicked('Option 2')">Option 2</button>
+      <button mat-menu-item (click)="menuItemClicked('Option 3')">Option 3</button>
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="menu">Type</button>
+    <mat-menu #menu="matMenu" >
+      <button mat-menu-item (click)="menuItemClicked('Option 1')">Option 1</button>
+      <button mat-menu-item (click)="menuItemClicked('Option 2')">Option 2</button>
+      <button mat-menu-item (click)="menuItemClicked('Option 3')">Option 3</button>
+    </mat-menu>
+    
   </div>
   <div class="inner-section">TransactionHeaders</div>
   <div class="inner-section">Transaction List</div>

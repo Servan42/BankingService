@@ -1,0 +1,5 @@
+<div class="import-button-section">
+  <button class="import-button big-button" (click)="fileInput.click()">Import Bank File</button>
+  <input type="file" #fileInput (change)="onBankFileSelected($event)"/>
+  <button class="import-button big-button">Import Paypal File</button>
+</div>

@@ -1,0 +1,35 @@
+.container {
+    margin: 10px;
+    padding: 10px;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+    
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+}
+
+::ng-deep .mat-datepicker-toggle-default-icon {
+    color: lightgray !important; 
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+    background-color: rgb(42, 42, 42) !important;
+}
+
+::ng-deep .mat-date-range-input-separator{
+    color: lightgray !important;
+}
+
+::ng-deep .mat-date-range-input-wrapper{
+    color: lightgray !important;
+}
+
+::ng-deep .mat-mdc-menu-content{
+    color: lightgray;
+    background-color: rgb(42, 42, 42) !important;
+}
+
+mat-label {
+    color: lightgray !important;
+}

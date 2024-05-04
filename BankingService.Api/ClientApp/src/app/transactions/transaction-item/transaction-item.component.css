@@ -6,8 +6,11 @@
     background-color: rgb(37, 37, 37);
     border-radius: 5px;
 
+    font-family: Ubuntu, sans-serif;
+
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
 }
 
 .column {

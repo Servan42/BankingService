@@ -3,15 +3,43 @@
   <span class="column-center">{{ transaction.flow }} €</span>
   <span class="column-center">{{ transaction.treasury }} €</span>
   <span class="column">{{ transaction.label }}</span>
-  <span class="column">{{ transaction.type }}</span>
-  <span class="column" *ngIf="isEditableCommentDisabled; else categoryInput">{{ transaction.category }}</span>
-  <ng-template #categoryInput>
-    <button mat-button [matMenuTriggerFor]="menu">{{ transaction.category }}</button>
-    <mat-menu #menu="matMenu" >
-      <button *ngFor="let c of categories" mat-menu-item (click)="categoryMenuItemClicked(c)">{{ c }}</button>
+
+  <span class="column" *ngIf="isEditableCommentDisabled; else typesInput">{{
+    transaction.type
+  }}</span>
+  <ng-template #typesInput>
+    <button mat-button [matMenuTriggerFor]="menuType">
+      {{ transaction.type }}
+    </button>
+    <mat-menu #menuType="matMenu">
+      <button
+        *ngFor="let t of types"
+        mat-menu-item
+        (click)="typesMenuItemClicked(t)"
+      >
+        {{ t }}
+      </button>
     </mat-menu>
   </ng-template>
-  
+
+  <span class="column" *ngIf="isEditableCommentDisabled; else categoryInput">{{
+    transaction.category
+  }}</span>
+  <ng-template #categoryInput>
+    <button mat-button [matMenuTriggerFor]="menuCategory">
+      {{ transaction.category }}
+    </button>
+    <mat-menu #menuCategory="matMenu">
+      <button
+        *ngFor="let c of categories"
+        mat-menu-item
+        (click)="categoryMenuItemClicked(c)"
+      >
+        {{ c }}
+      </button>
+    </mat-menu>
+  </ng-template>
+
   <span class="column">{{ transaction.autoComment }}</span>
 
   <span class="column" *ngIf="isEditableCommentDisabled; else commentInput">{{
@@ -27,7 +55,10 @@
   </ng-template>
 
   <span class="column-center">
-    <button class="big-button edit-save-button" (click)="onEditTransactionClicked()">
+    <button
+      class="big-button edit-save-button"
+      (click)="onEditTransactionClicked()"
+    >
       {{ editButtonText }}
     </button>
   </span>

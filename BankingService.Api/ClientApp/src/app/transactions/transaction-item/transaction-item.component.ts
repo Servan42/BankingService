@@ -18,6 +18,7 @@ export class TransactionItemComponent implements OnInit {
   isEditableCommentDisabled: boolean = true;
   editButtonText: string = 'Edit';
   categories: string[] = [];
+  types: string[] = [];
 
   constructor(private dbService: DatabaseService) {}
 
@@ -28,15 +29,22 @@ export class TransactionItemComponent implements OnInit {
       this.dbService
         .getCategoriesNames()
         .subscribe((x) => (this.categories = x));
+      this.dbService
+        .getTypesNames()
+          .subscribe((x) => (this.types = x));
       this.editButtonText = 'Save';
     } else {
       this.editButtonText = 'Edit';
-      // TODO save to db
+      this.dbService.updateTransaction(this.transaction);
     }
     this.isEditableCommentDisabled = !this.isEditableCommentDisabled;
   }
 
   categoryMenuItemClicked(newCategory: string): void {
     this.transaction.category = newCategory;
+  }
+
+  typesMenuItemClicked(newType: string): void {
+    this.transaction.type = newType;
   }
 }

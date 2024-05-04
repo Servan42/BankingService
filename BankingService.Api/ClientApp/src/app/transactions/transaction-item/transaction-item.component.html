@@ -1,11 +1,27 @@
 <div class="container">
   <span class="column">{{ transaction.date.toLocaleDateString() }}</span>
-  <span class="column">{{ transaction.flow }} €</span>
-  <span class="column">{{ transaction.treasury }} €</span>
+  <span class="column-center">{{ transaction.flow }} €</span>
+  <span class="column-center">{{ transaction.treasury }} €</span>
   <span class="column">{{ transaction.label }}</span>
   <span class="column">{{ transaction.type }}</span>
   <span class="column">{{ transaction.category }}</span>
   <span class="column">{{ transaction.autoComment }}</span>
-  <span class="column">{{ transaction.comment }}</span>
-  <button class="column">Edit</button>
+
+  <span class="column" *ngIf="isEditableCommentDisabled; else commentInput">{{
+    transaction.comment
+  }}</span>
+  <ng-template #commentInput>
+    <input
+      type="text"
+      class="column editable-text-field"
+      [(ngModel)]="transaction.comment"
+      [disabled]="isEditableCommentDisabled"
+    />
+  </ng-template>
+
+  <span class="column-center">
+    <button class="big-button edit-save-button" (click)="onEditTransactionClicked()">
+      {{ editButtonText }}
+    </button>
+  </span>
 </div>

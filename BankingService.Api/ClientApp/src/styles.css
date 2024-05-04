@@ -10,17 +10,16 @@ html, body
 .big-button {
     font-family: Ubuntu;
     border-radius: 5px;
-    background-color: #5fc4a2;
+    background-color: #a478db;
     border-width: 0px;
-    border-color: #5fc4a2;
 }
 
 .big-button:hover {
-    background-color: aquamarine;
+    background-color: #cc96f8;
 }
 
 .big-button:active {
-    background-color: #5fc4a2;
+    background-color: #a478db;
 }
 
 .card {

@@ -1,18 +1,44 @@
 .container {
-    margin: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    padding: 10px;
-    background-color: rgb(37, 37, 37);
-    border-radius: 5px;
+  margin: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 10px;
+  background-color: rgb(37, 37, 37);
+  border-radius: 5px;
 
-    font-family: Ubuntu, sans-serif;
+  font-family: Ubuntu, sans-serif;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.column {
-    width: 11%;
+.column,
+.column-center,
+.column-right {
+  width: 11%;
+}
+
+.column-center {
+  text-align: center;
+}
+
+.column-right {
+  text-align: right;
+}
+
+.editable-text-field {
+  background-color: lightgrey;
+  color: rgb(37, 37, 37);
+  font-family: Ubuntu, sans-serif;
+  padding: 5px;
+}
+
+.edit-save-button {
+  padding-top: 5px; 
+  padding-bottom: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+  font-size: 15px;
+  font-weight: 450;
 }

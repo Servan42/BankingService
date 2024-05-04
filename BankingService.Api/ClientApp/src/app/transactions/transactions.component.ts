@@ -4,6 +4,7 @@ import { ImportComponent } from './import/import.component';
 import { FiltersComponent } from './filters/filters.component';
 import { TransactionHeadersComponent } from './transaction-headers/transaction-headers.component';
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
+import { Transaction, mockTransactions } from '../model/transaction';
 
 @Component({
   selector: 'app-transactions',
@@ -19,6 +20,8 @@ import { TransactionItemComponent } from './transaction-item/transaction-item.co
   ]
 })
 export class TransactionsComponent implements OnInit {
+
+  transactions: Transaction[] = mockTransactions;
 
   constructor() { }
 

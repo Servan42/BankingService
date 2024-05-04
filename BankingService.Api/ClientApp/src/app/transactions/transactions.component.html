@@ -3,5 +3,10 @@
   <app-import></app-import>
   <app-filters></app-filters>
   <app-transaction-headers></app-transaction-headers>
-  <app-transaction-item></app-transaction-item>
+  
+  <ul>
+    <li *ngFor="let t of transactions">
+      <app-transaction-item [transaction]="t"></app-transaction-item>
+    </li>
+  </ul>
 </div>

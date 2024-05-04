@@ -1,3 +1,11 @@
 <div class="container">
-  transaction-item works!
+  <span class="column">{{ transaction.date.toLocaleDateString() }}</span>
+  <span class="column">{{ transaction.flow }} €</span>
+  <span class="column">{{ transaction.treasury }} €</span>
+  <span class="column">{{ transaction.label }}</span>
+  <span class="column">{{ transaction.type }}</span>
+  <span class="column">{{ transaction.category }}</span>
+  <span class="column">{{ transaction.autoComment }}</span>
+  <span class="column">{{ transaction.comment }}</span>
+  <button class="column">Edit</button>
 </div>

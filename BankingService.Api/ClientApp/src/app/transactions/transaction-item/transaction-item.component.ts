@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Transaction } from '../../model/transaction';
 
 @Component({
   selector: 'app-transaction-item',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
   standalone: true
 })
 export class TransactionItemComponent implements OnInit {
+
+  @Input() transaction!: Transaction;
 
   constructor() { }
 

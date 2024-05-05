@@ -1,0 +1,13 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.dasboards-container {
+    display: block;
+}
+
+.dashboard-line-container {
+    display: flex;
+}

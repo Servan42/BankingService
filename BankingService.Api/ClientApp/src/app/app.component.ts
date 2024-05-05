@@ -19,5 +19,5 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   title = 'ClientApp';
-  selectedScreen: number = 1;
+  selectedScreen: number = 2;
 }

@@ -1,8 +1,8 @@
 .main-card {
     margin-top: 20px;
-    margin-left: 200px;
-    margin-right: 200px;
-    min-height: 500px;
+    margin-left: 10%;
+    margin-right: 10%;
+    min-height: 50%;
 }
 
 .inner-section {

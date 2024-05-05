@@ -1,6 +1,9 @@
-import { myPieData } from "./pie-data";
-
 export interface MyLinechartData {
     name: string;
-    series: myPieData[];
+    series: DateKeyValueData[];
+}
+
+export interface DateKeyValueData {
+    value: number,
+    name: Date
 }

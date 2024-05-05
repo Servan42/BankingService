@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
       series: []
     };
     for(let lineData of report.treasuryGraphData) {
-      newLineData.series.push({name: lineData[0].toLocaleString(), value: lineData[1]});
+      newLineData.series.push({name: lineData[0], value: lineData[1]});
     }
     this.lineData = [newLineData];
   }

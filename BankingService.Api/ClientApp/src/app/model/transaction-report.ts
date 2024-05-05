@@ -38,8 +38,8 @@ for (let i = 1; i <= 5; i++) {
 const mockTreasuryGraphData: [Date, number][] = [];
 const currentDate = new Date();
 for (let i = 0; i < 12; i++) {
-  const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-  const value = Math.random() * 10000;
+  const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 30-i);
+  const value = Math.random() * 1000;
   mockTreasuryGraphData.push([date, value]);
 }
 

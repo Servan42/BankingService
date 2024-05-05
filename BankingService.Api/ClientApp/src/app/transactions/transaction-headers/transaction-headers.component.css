@@ -1,13 +1,50 @@
 .container {
-    margin: 10px;
-    padding: 10px;
-    background-color: #1f1f1f;
-    border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+  background-color: #1f1f1f;
+  border-radius: 5px;
 
-    font-family: Ubuntu, sans-serif;
-    font-size: large;
-    font-weight: 500;
+  font-family: Ubuntu, sans-serif;
+  font-size: large;
+  font-weight: 500;
 
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.column {
+  margin: 0 6px;
+}
+
+.date-column {
+  min-width: 80px;
+}
+
+.flow-column {
+  font-weight: bold;
+  min-width: 55px;
+}
+
+.treasury-column {
+  min-width: 75px;
+}
+
+.type-column {
+  flex-basis: 25%;
+}
+
+.category-column {
+  flex-basis: 50%;
+}
+
+.autoComment-column,
+.comment-column {
+  flex-basis: 100%;
+}
+
+.action-column,
+.label-column {
+  margin: 0 10px;
+  text-align: center;
 }

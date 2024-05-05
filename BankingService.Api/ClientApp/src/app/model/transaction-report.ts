@@ -47,10 +47,10 @@ for (let i = 0; i < 12; i++) {
 const mockSumPerCategory: Record<string, number> = {
   'Income': Math.random() * 1000,
   'Epargne': Math.random() * 1000,
-  'Category A': Math.random() * 1000,
-  'Category B': Math.random() * 1000,
+  'Cat A': Math.random() * 1000,
   'Charges A': Math.random() * 1000,
   'Charges B': Math.random() * 1000,
+  'Cat B': Math.random() * 1000,
 };
 
 // Generate mock data for the Report object

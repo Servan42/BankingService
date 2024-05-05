@@ -32,19 +32,21 @@ export class DashboardComponent implements OnInit {
   prepareData(report: TransactionReport): void {
     this.report = report;
     const newPieData: myPieData[] = [];
-    const newNoCostPieData: myPieData[] = [];
+    const costData: myPieData[] = [];
     for(let pieData of Object.entries(report.SumPerCategory))
     {
       if(pieData[0].includes('Income') || pieData[0].includes('Epargne'))
         continue;
 
+      if(pieData[0].includes('Charge')) {
+        costData.push({name: pieData[0], value: pieData[1]});
+        continue;
+      }
+      
       newPieData.push({name: pieData[0], value: pieData[1]});
-
-      if(!pieData[0].includes('Charge'))
-        newNoCostPieData.push({name: pieData[0], value: pieData[1]});
     }
-    this.fullPieData = [...newPieData];
-    this.noCostsPieData = [...newNoCostPieData];
+    this.fullPieData = [...newPieData, ...costData];
+    this.noCostsPieData = [...newPieData];
   }
 }
 

@@ -31,6 +31,10 @@ export class TransactionsComponent implements OnInit {
   constructor(private dbService: DatabaseService) { }
 
   ngOnInit() {
+    this.refreshList();
+  }
+
+  refreshList() {
     this.dbService.GetAllTransactions()
       .subscribe(x => this.transactions = x);
   }

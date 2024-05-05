@@ -1,20 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { ImportService } from '../../services/import.service';
 
 @Component({
   selector: 'app-import',
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.css'],
-  standalone: true
+  standalone: true,
+  imports: [MatIconModule],
 })
 export class ImportComponent implements OnInit {
+  constructor(private importService: ImportService) {}
+  
+  @Output() uploadComplete = new EventEmitter();
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   // https://blog.angular-university.io/angular-file-upload/
-  onBankFileSelected($event: any){
-    const file = $event.target.files[0];
+  onBankFileSelected($event: any) {
+    const file: File = $event.target.files[0];
+
+    if (file) {
+      this.importService
+        .importBankFile(file)
+        .subscribe({ complete: () => this.uploadComplete.emit() });
+    }
+  }
+
+  onPayalFileSelected($event: any) {
+    const file: File = $event.target.files[0];
+
+    if (file) {
+      this.importService
+        .importPaypalFile(file)
+        .subscribe({ complete: () => this.uploadComplete.emit() });
+    }
   }
 }

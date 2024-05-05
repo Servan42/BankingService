@@ -4,10 +4,28 @@
     margin-top: 20px;
 }
 
+.dashboard-card {
+    margin: 10px
+}
+
 .dasboards-container {
     display: block;
 }
 
 .dashboard-line-container {
     display: flex;
+}
+
+.chart-title {
+    font-family: Ubuntu;
+    margin-top: 10px;
+    margin-left: 15px;
+    font-size: large;
+    
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin-right: 5px
 }

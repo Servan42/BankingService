@@ -1,0 +1,4 @@
+::ng-deep ngx-charts-pie-chart .pie-label {
+    font-family: Ubuntu;
+    fill: lightgray !important;
+}

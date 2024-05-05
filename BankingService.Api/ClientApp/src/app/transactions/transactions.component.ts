@@ -7,6 +7,7 @@ import { TransactionItemComponent } from './transaction-item/transaction-item.co
 import { Transaction, mockTransactions } from '../model/transaction';
 import { FilterTransactionsPipe } from '../pipe/filter-transactions.pipe';
 import { TransactionFilters } from '../model/transaction-filters';
+import { DatabaseService } from '../services/database.service';
 
 @Component({
   selector: 'app-transactions',
@@ -24,12 +25,14 @@ import { TransactionFilters } from '../model/transaction-filters';
 })
 export class TransactionsComponent implements OnInit {
 
-  transactions: Transaction[] = mockTransactions;
+  transactions: Transaction[] = [];
   filters: TransactionFilters | undefined;
 
-  constructor() { }
+  constructor(private dbService: DatabaseService) { }
 
   ngOnInit() {
+    this.dbService.GetAllTransactions()
+      .subscribe(x => this.transactions = x);
   }
 
   onFiltersChanged(filters: TransactionFilters) {

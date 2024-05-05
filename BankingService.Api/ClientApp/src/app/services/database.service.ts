@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Transaction } from '../model/transaction';
+import { Transaction, mockTransactions } from '../model/transaction';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
-
+  
   constructor() { }
+
+  GetAllTransactions() {
+    console.log('DB CALLED! (GetAllTransactions)');
+    return of(mockTransactions);
+  }
   
   getCategoriesNames(): Observable<string[]> {
     console.log('DB CALLED! (getCategoriesNames)');

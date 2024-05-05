@@ -6,6 +6,7 @@ import { PieComponent } from './pie/pie.component';
 import { myPieData } from '../model/pie-data';
 import { MatIconModule } from '@angular/material/icon';
 import { MyLineChartComponent } from './my-line-chart/my-line-chart.component';
+import { MyLinechartData } from '../model/my-linechart-data';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,8 +24,10 @@ export class DashboardComponent implements OnInit {
 
   constructor(private reportService: ReportService) { }
   report: TransactionReport | undefined;
+
   fullPieData: myPieData[] = [];
   noCostsPieData: myPieData[] = [];
+  lineData: MyLinechartData[] = [];
 
   ngOnInit() {
     this.reportService.GetLastReport()
@@ -49,6 +52,15 @@ export class DashboardComponent implements OnInit {
     }
     this.fullPieData = [...newPieData, ...costData];
     this.noCostsPieData = [...newPieData];
+
+    const newLineData: MyLinechartData = {
+      name: 'Treasury',
+      series: []
+    };
+    for(let lineData of report.treasuryGraphData) {
+      newLineData.series.push({name: lineData[0].toLocaleString(), value: lineData[1]});
+    }
+    this.lineData = [newLineData];
   }
 }
 

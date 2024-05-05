@@ -10,7 +10,7 @@
 }
 
 .filter-input, .filter-clear {
-    margin: 0 20px;
+    margin: 0 15px;
 }
 
 .filter-clear{
@@ -26,8 +26,8 @@
 .dropdown-button {
     font-size: larger;
     font-weight: 450;
-    background-color: rgb(180, 180, 180);
-    color: black;
+    background-color: rgb(42, 42, 42);
+    color: lightgray;
     font-family: Ubuntu, sans-serif;
     padding: 8px;
     border: none;
@@ -66,7 +66,6 @@
 ::ng-deep .mat-mdc-menu-item{
     color: lightgray;
 }
-
 
 mat-label {
     color: lightgray !important;

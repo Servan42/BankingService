@@ -4,10 +4,9 @@
   }}</span>
   <span class="column flow-column">{{ transaction.flow }} €</span>
   <span class="column treasury-column">{{ transaction.treasury }} €</span>
-  <span class="column label-column">{{ transaction.label }}</span>
 
   <span class="column type-column">
-    <span *ngIf="isEditableCommentDisabled; else typesInput">{{
+    <span *ngIf="areEditableFieldsDisabled; else typesInput">{{
       transaction.type
     }}</span>
     <ng-template #typesInput>
@@ -27,7 +26,7 @@
   </span>
 
   <span class="column category-column">
-    <span *ngIf="isEditableCommentDisabled; else categoryInput">{{
+    <span *ngIf="areEditableFieldsDisabled; else categoryInput">{{
       transaction.category
     }}</span>
     <ng-template #categoryInput>
@@ -53,7 +52,7 @@
   <span class="column autoComment-column">{{ transaction.autoComment }}</span>
 
   <span class="column comment-column">
-    <span *ngIf="isEditableCommentDisabled; else commentInput">{{
+    <span *ngIf="areEditableFieldsDisabled; else commentInput">{{
       transaction.comment
     }}</span>
     <ng-template #commentInput>
@@ -61,17 +60,19 @@
         type="text"
         class="editable-text-field"
         [(ngModel)]="transaction.comment"
-        [disabled]="isEditableCommentDisabled"
+        [disabled]="areEditableFieldsDisabled"
       />
     </ng-template>
   </span>
 
-  <span class="column action-column">
-    <button
-      class="big-button edit-save-button"
-      (click)="onEditTransactionClicked()"
-    >
-      {{ editButtonText }}
-    </button>
-  </span>
+  <div class="tooltip label-column">
+    <!-- https://jossef.github.io/material-design-icons-iconfont/ -->
+    <mat-icon fontIcon="info_outline"></mat-icon>
+    <span class="tooltiptext">{{ transaction.label }}</span>
+  </div>
+
+  <div class="column action-column">
+    <mat-icon fontIcon="edit" (click)="onEditTransactionClicked()" *ngIf="areEditableFieldsDisabled; else saveAction"/>
+    <ng-template #saveAction><mat-icon fontIcon="save" class="save-icon" (click)="onSaveTransactionClicked()"/></ng-template>
+  </div>
 </div>

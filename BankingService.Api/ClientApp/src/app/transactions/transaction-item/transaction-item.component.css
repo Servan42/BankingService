@@ -14,11 +14,11 @@
 }
 
 .red-bg {
-    background-color: rgba(20, 0, 0, 0.5);
+  background-color: rgba(20, 0, 0, 0.5);
 }
 
 .green-bg {
-    background-color: rgba(0, 20, 0, 0.5);
+  background-color: rgba(0, 20, 0, 0.5);
 }
 
 .column {
@@ -26,44 +26,39 @@
 }
 
 .date-column {
-    min-width: 80px;
+  min-width: 80px;
 }
 
 .flow-column {
-    text-align: right;
-    min-width: 55px;
+  font-weight: bold;
+  text-align: right;
+  min-width: 55px;
 }
 
 .treasury-column {
-    text-align: right;
-    min-width: 55px;
-}
-
-.label-column {
-    min-width:100px;
-    max-width:100px;
+  text-align: right;
+  min-width: 55px;
 }
 
 .type-column {
-    flex-basis: 50%;
+  flex-basis: 25%;
 }
 
 .category-column {
-    flex-basis: 50%;
+  flex-basis: 50%;
 }
 
 .autoComment-column {
-    flex-basis: 100%;
+  flex-basis: 100%;
 }
 
 .comment-column {
-    flex-basis: 100%;
+  flex-basis: 100%;
 }
 
-.action-column {
-    max-width: 50px;
-    min-width: 50px;
-    text-align: right;
+.label-column, .action-column {
+  margin:0 10px;
+  text-align: center;
 }
 
 .editable-text-field {
@@ -75,28 +70,48 @@
 }
 
 .dropdown-button {
-    background-color: rgb(180, 180, 180);
-    color: black;
-    font-family: Ubuntu, sans-serif;
-    padding: 3px;
-    border: none;
-    width: 100%;
-    text-align: left;
+  background-color: rgb(180, 180, 180);
+  color: black;
+  font-family: Ubuntu, sans-serif;
+  padding: 3px;
+  border: none;
+  width: 100%;
+  text-align: left;
 }
 
-.edit-save-button {
-  padding-top: 5px; 
-  padding-bottom: 5px;
-  padding-left: 7px;
-  padding-right: 7px;
-  font-size: 15px;
-  font-weight: 450;
+.save-icon {
+  color: rgb(0, 175, 0);
 }
 
-::ng-deep .mat-mdc-menu-content{
-    background-color: rgb(42, 42, 42) !important;
+::ng-deep .mat-mdc-menu-content {
+  background-color: rgb(42, 42, 42) !important;
 }
 
-::ng-deep .mat-mdc-menu-item{
-    color: lightgray;
+::ng-deep .mat-mdc-menu-item {
+  color: lightgray;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: lightgray;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

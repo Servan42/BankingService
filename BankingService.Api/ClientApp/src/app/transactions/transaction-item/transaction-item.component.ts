@@ -4,18 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DatabaseService } from '../../services/database.service';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-transaction-item',
   templateUrl: './transaction-item.component.html',
   styleUrls: ['./transaction-item.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, MatMenuModule],
+  imports: [FormsModule, CommonModule, MatMenuModule, MatIconModule],
 })
 export class TransactionItemComponent implements OnInit {
   @Input() transaction!: Transaction;
 
-  isEditableCommentDisabled: boolean = true;
+  areEditableFieldsDisabled: boolean = true;
   editButtonText: string = 'Edit';
   categories: string[] = [];
   types: string[] = [];
@@ -24,20 +25,31 @@ export class TransactionItemComponent implements OnInit {
 
   ngOnInit() {}
 
+  // onEditTransactionClicked(): void {
+  //   if (this.areEditableFieldsDisabled === true) {
+  //     this.dbService
+  //       .getCategoriesNames()
+  //       .subscribe((x) => (this.categories = x));
+  //     this.dbService.getTypesNames().subscribe((x) => (this.types = x));
+  //     this.editButtonText = 'Save';
+  //   } else {
+  //     this.editButtonText = 'Edit';
+  //     this.dbService.updateTransaction(this.transaction);
+  //   }
+  //   this.areEditableFieldsDisabled = !this.areEditableFieldsDisabled;
+  // }
+
   onEditTransactionClicked(): void {
-    if (this.isEditableCommentDisabled === true) {
-      this.dbService
-        .getCategoriesNames()
-        .subscribe((x) => (this.categories = x));
-      this.dbService
-        .getTypesNames()
-          .subscribe((x) => (this.types = x));
-      this.editButtonText = 'Save';
-    } else {
-      this.editButtonText = 'Edit';
-      this.dbService.updateTransaction(this.transaction);
-    }
-    this.isEditableCommentDisabled = !this.isEditableCommentDisabled;
+    this.dbService.getCategoriesNames().subscribe((x) => (this.categories = x));
+    this.dbService.getTypesNames().subscribe((x) => (this.types = x));
+    this.editButtonText = 'Save';
+    this.areEditableFieldsDisabled = false;
+  }
+
+  onSaveTransactionClicked(): void {
+    this.editButtonText = 'Edit';
+    this.dbService.updateTransaction(this.transaction);
+    this.areEditableFieldsDisabled = true;
   }
 
   categoryMenuItemClicked(newCategory: string): void {

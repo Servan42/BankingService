@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { PieComponent } from './pie/pie.component';
 import { myPieData } from '../model/pie-data';
 import { MatIconModule } from '@angular/material/icon';
+import { MyLineChartComponent } from './my-line-chart/my-line-chart.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     PieComponent,
-    MatIconModule
+    MatIconModule,
+    MyLineChartComponent
   ]
 })
 export class DashboardComponent implements OnInit {

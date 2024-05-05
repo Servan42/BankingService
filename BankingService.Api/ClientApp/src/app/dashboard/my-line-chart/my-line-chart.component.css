@@ -1,0 +1,4 @@
+::ng-deep ngx-charts-line-chart text {
+    font-family: Ubuntu;
+    fill: lightgray !important;
+}

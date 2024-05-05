@@ -1,11 +1,10 @@
 <div class="card main-card">
 
   <app-import></app-import>
-  <app-filters></app-filters>
+  <app-filters (filterOutput)="onFiltersChanged($event)"></app-filters>
   <app-transaction-headers></app-transaction-headers>
-  
   <ul>
-    <li *ngFor="let t of transactions">
+    <li *ngFor="let t of transactions | filterTransactions:filters">
       <app-transaction-item [transaction]="t"></app-transaction-item>
     </li>
   </ul>

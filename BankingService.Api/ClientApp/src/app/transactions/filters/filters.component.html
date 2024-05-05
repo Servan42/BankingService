@@ -4,7 +4,9 @@
       class="search-text-field"
       id="search-transaction"
       placeholder="Search..."
-      [(ngModel)]="searchFilter"
+      autocomplete="off"
+      [(ngModel)]="filters.search"
+      (input)="onSearchFilterInput()"
     />
   </div>
 
@@ -15,9 +17,14 @@
         <input
           matStartDate
           placeholder="Start date"
-          [(ngModel)]="startDateFilter"
+          [(ngModel)]="filters.startDate"
         />
-        <input matEndDate placeholder="End date" [(ngModel)]="endDateFilter" />
+        <input
+          matEndDate
+          placeholder="End date"
+          [(ngModel)]="filters.endDate"
+          (dateChange)="onEndDateSelected()"
+        />
       </mat-date-range-input>
       <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { DatabaseService } from '../../services/database.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TransactionFilters } from '../../model/transaction-filters';
 
 @Component({
   selector: 'app-filters',
@@ -28,11 +29,15 @@ import { FormsModule } from '@angular/forms';
   ],
 })
 export class FiltersComponent implements OnInit {
-  selectedCategoryFilter: string | undefined;
-  selectedTypeFilter: string | undefined;
-  searchFilter: string | undefined;
-  startDateFilter: Date | undefined;
-  endDateFilter: Date | undefined;
+  filters: TransactionFilters = {
+    category: undefined,
+    type: undefined,
+    search: undefined,
+    startDate: undefined,
+    endDate: undefined,
+  };
+
+  @Output() filterOutput = new EventEmitter<TransactionFilters>(undefined);
 
   filterCategoryButtonText: string = 'Filter category...';
   filterTypeButtonText: string = 'Filter type...';
@@ -49,25 +54,35 @@ export class FiltersComponent implements OnInit {
       .subscribe((categories) => (this.categories = categories));
   }
 
-  menuItemClicked(s: string) {}
-
   typesMenuItemClicked(type: string): void {
-    this.selectedTypeFilter = type;
+    this.filters.type = type;
+    this.filterOutput.emit({... this.filters });
     this.filterTypeButtonText = 'Filter: ' + type;
   }
 
   categoryMenuItemClicked(category: string): void {
-    this.selectedCategoryFilter = category;
+    this.filters.category = category;
     this.filterCategoryButtonText = 'Filter: ' + category;
+    this.filterOutput.emit({... this.filters });
   }
 
   onClearFilter(): void {
     this.filterCategoryButtonText = 'Filter category...';
     this.filterTypeButtonText = 'Filter type...';
-    this.selectedTypeFilter = undefined;
-    this.selectedCategoryFilter = undefined;
-    this.searchFilter = undefined;
-    this.startDateFilter = undefined;
-    this.endDateFilter = undefined;
+
+    this.filters.type = undefined;
+    this.filters.category = undefined;
+    this.filters.search = undefined;
+    this.filters.startDate = undefined;
+    this.filters.endDate = undefined;
+    this.filterOutput.emit({... this.filters });
+  }
+
+  onSearchFilterInput(): void {
+    this.filterOutput.emit({... this.filters });
+  }
+
+  onEndDateSelected() :void {
+    this.filterOutput.emit({ ...this.filters });
   }
 }

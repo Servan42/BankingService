@@ -5,6 +5,8 @@ import { FiltersComponent } from './filters/filters.component';
 import { TransactionHeadersComponent } from './transaction-headers/transaction-headers.component';
 import { TransactionItemComponent } from './transaction-item/transaction-item.component';
 import { Transaction, mockTransactions } from '../model/transaction';
+import { FilterTransactionsPipe } from '../pipe/filter-transactions.pipe';
+import { TransactionFilters } from '../model/transaction-filters';
 
 @Component({
   selector: 'app-transactions',
@@ -16,16 +18,22 @@ import { Transaction, mockTransactions } from '../model/transaction';
     ImportComponent,
     FiltersComponent,
     TransactionHeadersComponent,
-    TransactionItemComponent
+    TransactionItemComponent,
+    FilterTransactionsPipe
   ]
 })
 export class TransactionsComponent implements OnInit {
 
   transactions: Transaction[] = mockTransactions;
+  filters: TransactionFilters | undefined;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onFiltersChanged(filters: TransactionFilters) {
+    this.filters = filters;
   }
 
 }

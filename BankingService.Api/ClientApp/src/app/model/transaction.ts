@@ -17,7 +17,7 @@ export const mockTransactions: Transaction[] = [
     flow: -500,
     treasury: 5000,
     label: "Grocery Shopping",
-    type: "expense",
+    type: "Expense",
     category: "Food",
     autoComment: "Transaction for weekly groceries",
     comment: "Bought groceries for the week"
@@ -28,7 +28,7 @@ export const mockTransactions: Transaction[] = [
     flow: 1000,
     treasury: 6000,
     label: "Salary Deposit",
-    type: "income",
+    type: "Income",
     category: "Salary",
     autoComment: "Monthly salary deposit",
     comment: "Received monthly salary"
@@ -39,7 +39,7 @@ export const mockTransactions: Transaction[] = [
     flow: -50,
     treasury: 5950,
     label: "Dinner with Friends",
-    type: "expense",
+    type: "Expense",
     category: "Entertainment",
     autoComment: "Spent on dinner with friends",
     comment: "Enjoyed dinner with friends at a local restaurant"
@@ -50,7 +50,7 @@ export const mockTransactions: Transaction[] = [
     flow: -200,
     treasury: 5750,
     label: "Utility Bill Payment",
-    type: "expense",
+    type: "Expense",
     category: "Utilities",
     autoComment: "Monthly utility bill payment",
     comment: "Paid electricity and water bills for the month"
@@ -61,7 +61,7 @@ export const mockTransactions: Transaction[] = [
     flow: 300,
     treasury: 6050,
     label: "Freelance Project Payment",
-    type: "income",
+    type: "Income",
     category: "Freelance",
     autoComment: "Payment received for freelance project",
     comment: "Completed and delivered freelance project"

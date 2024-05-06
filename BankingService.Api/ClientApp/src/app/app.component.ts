@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TransactionsComponent } from './transactions/transactions.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
@@ -10,14 +11,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     TransactionsComponent,
     DashboardComponent,
-    CommonModule
+    CommonModule,
+    MatIconModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'ClientApp';
-  selectedScreen: number = 2;
 }

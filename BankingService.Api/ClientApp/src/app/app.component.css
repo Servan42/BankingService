@@ -1,18 +1,29 @@
 .header {
     background-color: #181818;
-    align-content: center;
-    text-align: center;
     padding: 15px;
+
+    display: flex;
+    align-items: center;
 }
 
-.header-button {
-    margin-left: 10%;
-    margin-right: 10%;
-    padding: 10px;
-    font-weight: 1000;
-    font-size: large;
+.icon {
+  margin-left: 5px;
+  margin-right: 20px;
+  transform: scale(1.5);
 }
 
-.header-button-current {
-    background-color: rgb(108, 191, 216);
+.header-link {
+  text-decoration: none;
+  color: lightgray;
+  font-family: Ubuntu;
+  font-size: large;
+  margin-right: 15px
+}
+
+.header-link-current {
+    font-weight: bold;
+}
+
+.link-active {
+  color: red;
 }

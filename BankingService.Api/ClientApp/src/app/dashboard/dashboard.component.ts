@@ -47,7 +47,7 @@ export class DashboardComponent implements OnInit {
         costData.push({name: pieData[0], value: pieData[1]});
         continue;
       }
-      
+
       newPieData.push({name: pieData[0], value: pieData[1]});
     }
     this.fullPieData = [...newPieData, ...costData];

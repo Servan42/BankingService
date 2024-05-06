@@ -1,14 +1,14 @@
 <main class="main">
   <div class="header">
-    <button class="header-button big-button" [ngClass]="{'header-button-current': selectedScreen === 1 }" (click)="selectedScreen = 1">
+    <!-- https://jossef.github.io/material-design-icons-iconfont/ -->
+    <mat-icon fontIcon="account_balance" class="icon"/>
+    <a routerLink="/list" routerLinkActive="header-link-current" class="header-link">
       Transaction List
-    </button>
-    <button class="header-button big-button" [ngClass]="{'header-button-current': selectedScreen === 2 }" (click)="selectedScreen = 2">
+    </a>
+    <a routerLink="/dashboard" routerLinkActive="header-link-current" class="header-link">
       Dashboard
-    </button>
+    </a>
   </div>
-  <app-transactions *ngIf="selectedScreen === 1"></app-transactions>
-  <app-dashboard *ngIf="selectedScreen === 2"></app-dashboard>
+  <router-outlet />
 </main>
 
-<router-outlet />

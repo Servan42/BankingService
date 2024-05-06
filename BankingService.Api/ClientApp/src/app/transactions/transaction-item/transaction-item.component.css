@@ -32,13 +32,13 @@
 .flow-column {
   font-weight: bold;
   text-align: right;
-  min-width: 55px;
+  min-width: 80px;
   text-align: center;
 }
 
 .treasury-column {
   text-align: center;
-  min-width: 75px;
+  min-width: 80px;
 }
 
 .type-column {

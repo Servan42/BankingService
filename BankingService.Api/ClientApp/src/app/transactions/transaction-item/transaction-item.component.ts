@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common';
 import { DatabaseService } from '../../services/database.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
+import { NumberToMoneyPipe } from '../../pipe/number-to-money.pipe';
 
 @Component({
   selector: 'app-transaction-item',
   templateUrl: './transaction-item.component.html',
   styleUrls: ['./transaction-item.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, MatMenuModule, MatIconModule],
+  imports: [FormsModule, CommonModule, MatMenuModule, MatIconModule, NumberToMoneyPipe],
 })
 export class TransactionItemComponent implements OnInit {
   @Input() transaction!: Transaction;

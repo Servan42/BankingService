@@ -23,11 +23,11 @@
 
 .flow-column {
   font-weight: bold;
-  min-width: 55px;
+  min-width: 80px;
 }
 
 .treasury-column {
-  min-width: 75px;
+  min-width: 80px;
 }
 
 .type-column {

@@ -37,9 +37,7 @@ export class FilterTransactionsPipe implements PipeTransform {
 
     if (filters.startDate !== undefined && filters.endDate !== undefined) {
       newTransactions = newTransactions.filter(
-        (x) =>
-          x.date.toLocaleDateString() >= filters.startDate!.toLocaleDateString() &&
-          x.date.toLocaleDateString() <= filters.endDate!.toLocaleDateString()
+        (x) => x.date >= filters.startDate! && x.date <= filters.endDate!
       );
     }
 

@@ -1,6 +1,6 @@
 <div class="container" [ngClass]="{'red-bg': transaction.flow < 0, 'green-bg': transaction.flow >= 0}">
   <span class="column date-column">{{
-    transaction.date.toLocaleDateString()
+    transaction.date | dateToString
   }}</span>
   <span class="column flow-column">{{ transaction.flow | numberToMoney }}</span>
   <span class="column treasury-column">{{ transaction.treasury | numberToMoney }}</span>

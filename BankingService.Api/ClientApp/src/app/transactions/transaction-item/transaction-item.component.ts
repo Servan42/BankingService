@@ -6,13 +6,14 @@ import { DatabaseService } from '../../services/database.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { NumberToMoneyPipe } from '../../pipe/number-to-money.pipe';
+import { DateToStringPipe } from '../../pipe/date-to-string.pipe';
 
 @Component({
   selector: 'app-transaction-item',
   templateUrl: './transaction-item.component.html',
   styleUrls: ['./transaction-item.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, MatMenuModule, MatIconModule, NumberToMoneyPipe],
+  imports: [FormsModule, CommonModule, MatMenuModule, MatIconModule, NumberToMoneyPipe, DateToStringPipe],
 })
 export class TransactionItemComponent implements OnInit {
   @Input() transaction!: Transaction;
@@ -25,20 +26,6 @@ export class TransactionItemComponent implements OnInit {
   constructor(private dbService: DatabaseService) {}
 
   ngOnInit() {}
-
-  // onEditTransactionClicked(): void {
-  //   if (this.areEditableFieldsDisabled === true) {
-  //     this.dbService
-  //       .getCategoriesNames()
-  //       .subscribe((x) => (this.categories = x));
-  //     this.dbService.getTypesNames().subscribe((x) => (this.types = x));
-  //     this.editButtonText = 'Save';
-  //   } else {
-  //     this.editButtonText = 'Edit';
-  //     this.dbService.updateTransaction(this.transaction);
-  //   }
-  //   this.areEditableFieldsDisabled = !this.areEditableFieldsDisabled;
-  // }
 
   onEditTransactionClicked(): void {
     this.dbService.getCategoriesNames().subscribe((x) => (this.categories = x));

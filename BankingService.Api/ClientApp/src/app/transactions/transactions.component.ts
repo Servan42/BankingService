@@ -35,7 +35,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   refreshList() {
-    this.dbService.GetAllTransactions()
+    this.dbService.getAllTransactions()
       .subscribe(x => this.transactions = x);
   }
 

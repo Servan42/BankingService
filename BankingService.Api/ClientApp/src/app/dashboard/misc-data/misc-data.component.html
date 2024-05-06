@@ -42,7 +42,7 @@
       <table>
         <tbody>
           <tr *ngFor="let t of report?.highestOperations">
-            <td>{{ t.date.toLocaleDateString()}}</td>
+            <td>{{ t.date | dateToString }}</td>
             <td>{{ t.flow | numberToMoney }}</td>
             <td>{{ t.type }}<br>{{ t.category }}</td>
             <td>{{ t.autoComment }}<br>{{ t.comment }}</td>

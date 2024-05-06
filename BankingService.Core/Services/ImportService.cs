@@ -6,6 +6,7 @@ using Microsoft.VisualBasic.FileIO;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ namespace BankingService.Core.Services
                     Date = DateTime.Parse(splitedOperation[0]),
                     Flow = GetBankFlow(splitedOperation),
                     Label = splitedOperation[4],
-                    Treasury = decimal.Parse(splitedOperation[5])
+                    Treasury = decimal.Parse(splitedOperation[5], CultureInfo.GetCultureInfo("fr-FR"))
                 });
             }
 
@@ -76,9 +77,9 @@ namespace BankingService.Core.Services
         private decimal GetBankFlow(string[] splitedOperation)
         {
             if (string.IsNullOrEmpty(splitedOperation[2]))
-                return decimal.Parse(splitedOperation[3]);
+                return decimal.Parse(splitedOperation[3], CultureInfo.GetCultureInfo("fr-FR"));
             else
-                return decimal.Parse(splitedOperation[2]);
+                return decimal.Parse(splitedOperation[2], CultureInfo.GetCultureInfo("fr-FR"));
         }
 
         public void ImportPaypalFile(string paypalFilePath)
@@ -139,7 +140,7 @@ namespace BankingService.Core.Services
                 var paypalOperation = new PaypalOperation()
                 {
                     Date = DateTime.Parse(operationFeilds[0]),
-                    Net = decimal.Parse(operationFeilds[7]),
+                    Net = decimal.Parse(operationFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
                     Nom = operationFeilds[11]
                 };
                 if (paypalOperation.Net < 0)

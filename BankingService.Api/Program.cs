@@ -1,3 +1,10 @@
+using BankingService.Api.Configuration;
+using BankingService.Core.SPI.Interfaces;
+using BankingService.Infra.Database.Services;
+using BankingService.Infra.Database.SPI.Interfaces;
+using BankingService.Infra.FileSystem.Adapters;
+using BankingService.Infra.FileSystem.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +13,23 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var allowSpecificOrigin = builder.Configuration.GetSection("AllowSpecificOrigin").Value ?? "";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+    {
+        builder.WithOrigins(allowSpecificOrigin)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddScoped<BankingService.Infra.FileSystem.API.Interfaces.IFileSystemService, FileSystemService>();
+builder.Services.AddScoped<BankingService.Infra.Database.SPI.Interfaces.IFileSystemService, FileSystemAdapterDatabase>();
+builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
+builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 
 var app = builder.Build();
 
@@ -21,5 +45,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowSpecificOrigin");
 
 app.Run();

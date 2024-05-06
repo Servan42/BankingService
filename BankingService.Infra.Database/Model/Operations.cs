@@ -2,6 +2,7 @@
 using BankingService.Infra.Database.SPI.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -76,8 +77,8 @@ namespace BankingService.Infra.Database.Model
             return new Operation
             {
                 Date = DateTime.Parse(splitted[0]),
-                Flow = decimal.Parse(splitted[1]),
-                Treasury = decimal.Parse(splitted[2]),
+                Flow = decimal.Parse(splitted[1], CultureInfo.GetCultureInfo("fr-FR")),
+                Treasury = decimal.Parse(splitted[2], CultureInfo.GetCultureInfo("fr-FR")),
                 Label = splitted[3],
                 Type = splitted[4],
                 CategoryId = int.Parse(splitted[5]),
@@ -103,12 +104,14 @@ namespace BankingService.Infra.Database.Model
 
         internal string GetCSV()
         {
-            return $"{Date:yyyy-MM-dd};{Flow:0.00};{Treasury:0.00};{Label};{Type};{CategoryId};{AutoComment};{Comment}";
+            var culture = CultureInfo.GetCultureInfo("fr-FR");
+            return $"{Date:yyyy-MM-dd};{Flow.ToString("0.00", culture)};{Treasury.ToString("0.00", culture)};{Label};{Type};{CategoryId};{AutoComment};{Comment}";
         }
 
         internal string GetKey()
         {
-            return $"{Date:yyyy-MM-dd};{Flow:0.00};{Treasury:0.00};{Label}";
+            var culture = CultureInfo.GetCultureInfo("fr-FR");
+            return $"{Date:yyyy-MM-dd};{Flow.ToString("0.00", culture)};{Treasury.ToString("0.00", culture)};{Label}";
         }
     }
 }

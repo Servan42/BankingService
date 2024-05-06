@@ -14,9 +14,9 @@
     <div class="dashboard-line-container">
       <div class="card dashboard-card">
         <div class="chart-title"><mat-icon fontIcon="dashboard" class="icon"/><span>Misc Data</span></div>
-        
+        <app-misc-data [report]="report"/>
       </div>
-      <div class="card dashboard-card" style="flex-basis: 87%;">
+      <div class="card dashboard-card">
         <div class="chart-title"><mat-icon fontIcon="stacked_line_chart" class="icon"/><span>Treasury per date</span></div>
         <!-- https://swimlane.github.io/ngx-charts/#/ngx-charts/line-chart -->
         <app-my-line-chart [inputData]="lineData"/>

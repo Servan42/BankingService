@@ -36,5 +36,26 @@ namespace BankingService.Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetAllCategoriesNames")]
+        [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<IEnumerable<string>> GetAllCategoriesNames()
+        {
+            try
+            {
+                var categories = this.databaseService.GetAllCategoriesNames();
+                if (categories.Any())
+                    return Ok(categories);
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

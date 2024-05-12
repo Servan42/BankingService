@@ -4,7 +4,7 @@ import { Transaction, mockTransactions } from '../model/transaction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 
-const ENDPOINT = '/api/Database/';
+const ENDPOINT = environment.apiUrl + '/api/Database/';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +15,7 @@ export class DatabaseService {
   getAllTransactions(): Observable<Transaction[]> {
     console.log('DB CALLED! (GetAllTransactions)');
     return this.httpClient
-      .get<Transaction[]>(environment.apiUrl + ENDPOINT + 'GetAllOperations')
+      .get<Transaction[]>(ENDPOINT + 'GetAllOperations')
       .pipe(
         // tap((x) => console.log(x)),
         map((transactions) =>
@@ -30,9 +30,10 @@ export class DatabaseService {
 
   getCategoriesNames(): Observable<string[]> {
     console.log('DB CALLED! (getCategoriesNames)');
-    const mockCategories = ['Food', 'Salary', 'Entertainment', 'Utilities'];
-
-    return of(mockCategories);
+    return this.httpClient
+      .get<string[]>(ENDPOINT + "GetAllCategoriesNames");
+    // const mockCategories = ['Food', 'Salary', 'Entertainment', 'Utilities'];
+    // return of(mockCategories);
   }
 
   getTypesNames(): Observable<string[]> {

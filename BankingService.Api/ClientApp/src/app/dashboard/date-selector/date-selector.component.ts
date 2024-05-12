@@ -28,8 +28,8 @@ export class DateSelectorComponent implements OnInit {
 
   setDates() {
     var currentDate = new Date();
-    this.inputFormGroup.get('startDate')?.setValue(currentDate.getFullYear() + '-' + (currentDate.getMonth() - 1).toString().padStart(2, '0') + '-01');
-    this.inputFormGroup.get('endDate')?.setValue(currentDate.getFullYear() + '-' + currentDate.getMonth().toString().padStart(2, '0') + '-01');
+    this.inputFormGroup.get('startDate')?.setValue(currentDate.getFullYear() + '-' + currentDate.getMonth().toString().padStart(2, '0') + '-01');
+    this.inputFormGroup.get('endDate')?.setValue(currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-01');
   }
 
   onSubmit() {

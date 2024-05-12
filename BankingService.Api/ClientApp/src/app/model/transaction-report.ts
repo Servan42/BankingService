@@ -1,9 +1,10 @@
+import { DataTag } from "./data-tag";
 import { Transaction } from "./transaction";
 
 export interface TransactionReport {
   startDate: Date;
   endDate: Date;
-  SumPerCategory: Record<string, number>;
+  sumPerCategory: Record<string, number>;
   balance: number;
   balanceWithoutSavings: number;
   positiveSum: number;
@@ -11,7 +12,7 @@ export interface TransactionReport {
   positiveSumWithoutSavings: number;
   negativeSumWithoutSavings: number;
   highestOperations: Transaction[];
-  treasuryGraphData: [Date, number][];
+  treasuryGraphData: DataTag[];
 }
 
 function generateMockTransaction(id: number): Transaction {
@@ -35,12 +36,12 @@ for (let i = 1; i <= 5; i++) {
 }
 
 // Generate mock data for treasuryGraphData array
-const mockTreasuryGraphData: [Date, number][] = [];
+const mockTreasuryGraphData: DataTag[] = [];
 const currentDate = new Date();
 for (let i = 0; i < 12; i++) {
   const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), 30-i);
   const value = Math.random() * 1000;
-  mockTreasuryGraphData.push([date, value]);
+  mockTreasuryGraphData.push({dateTime: date, value: value});
 }
 
 // Generate mock data for SumPerCategory object
@@ -57,7 +58,7 @@ const mockSumPerCategory: Record<string, number> = {
 export const mockReport: TransactionReport = {
   startDate: new Date(2022, 0, 1),
   endDate: new Date(2022, 11, 31),
-  SumPerCategory: mockSumPerCategory,
+  sumPerCategory: mockSumPerCategory,
   balance: Math.random() * 10000,
   balanceWithoutSavings: Math.random() * 10000,
   positiveSum: Math.random() * 1000,

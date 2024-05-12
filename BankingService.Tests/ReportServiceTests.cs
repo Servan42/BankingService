@@ -124,13 +124,13 @@ namespace BankingService.Tests
             var result = reportService_sut.GetOperationsReport(startDate, endDate);
 
             // WHEN
-            var expected = new List<(DateTime, decimal)>
+            var expected = new List<DataTagDto>
             {
-                (new DateTime(2024,03,26), 80m),
-                (new DateTime(2024,03,26), 70m),
-                (new DateTime(2024,03,26), 60m),
-                (new DateTime(2024,03,27), 160m),
-                (new DateTime(2024,03,27), 130m),
+                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 80m },
+                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 70m },
+                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 60m },
+                new DataTagDto { DateTime = new DateTime(2024,03,27), Value = 160m },
+                new DataTagDto { DateTime = new DateTime(2024,03,27), Value = 130m },
             };
             CollectionAssert.AreEqual(expected, result.TreasuryGraphData);
         }

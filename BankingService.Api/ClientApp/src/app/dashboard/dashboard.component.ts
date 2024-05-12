@@ -40,17 +40,17 @@ export class DashboardComponent implements OnInit {
     this.report = report;
     const newPieData: myPieData[] = [];
     const costData: myPieData[] = [];
-    for(let pieData of Object.entries(report.SumPerCategory))
+    for(let pieData of Object.entries(report.sumPerCategory))
     {
       if(pieData[0].includes('Income') || pieData[0].includes('Epargne'))
         continue;
 
       if(pieData[0].includes('Charge')) {
-        costData.push({name: pieData[0], value: pieData[1]});
+        costData.push({name: pieData[0], value: Math.abs(pieData[1])});
         continue;
       }
 
-      newPieData.push({name: pieData[0], value: pieData[1]});
+      newPieData.push({name: pieData[0], value: Math.abs(pieData[1])});
     }
     this.fullPieData = [...newPieData, ...costData];
     this.noCostsPieData = [...newPieData];
@@ -60,7 +60,7 @@ export class DashboardComponent implements OnInit {
       series: []
     };
     for(let lineData of report.treasuryGraphData) {
-      newLineData.series.push({name: lineData[0], value: lineData[1]});
+      newLineData.series.push({name: lineData.dateTime, value: lineData.value});
     }
     this.lineData = [newLineData];
   }

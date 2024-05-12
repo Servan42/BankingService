@@ -1,4 +1,6 @@
 using BankingService.Api.Configuration;
+using BankingService.Core.API.Interfaces;
+using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
@@ -30,6 +32,7 @@ builder.Services.AddScoped<BankingService.Infra.FileSystem.API.Interfaces.IFileS
 builder.Services.AddScoped<BankingService.Infra.Database.SPI.Interfaces.IFileSystemService, FileSystemAdapterDatabase>();
 builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
 builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 var app = builder.Build();
 

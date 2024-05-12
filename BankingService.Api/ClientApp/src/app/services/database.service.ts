@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { Transaction, mockTransactions } from '../model/transaction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 const ENDPOINT = environment.apiUrl + '/api/Database/';
 

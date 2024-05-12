@@ -14,8 +14,8 @@ export class DateSelectorComponent implements OnInit {
   @Output() reportInput = new EventEmitter<ReportInput>();
 
   inputFormGroup = new FormGroup({
-    startDate: new FormControl(),
-    endDate: new FormControl(),
+    startDate: new FormControl<string>(''),
+    endDate: new FormControl<string>(''),
     minAmount: new FormControl<number>(-100, Validators.max(0))
   })
 
@@ -28,8 +28,8 @@ export class DateSelectorComponent implements OnInit {
 
   setDates() {
     var currentDate = new Date();
-    this.inputFormGroup.get('startDate')?.setValue(new Date(currentDate.getFullYear() + '-' + (currentDate.getMonth() - 1) + '-01'));
-    this.inputFormGroup.get('endDate')?.setValue(new Date(currentDate.getFullYear() + '-' + currentDate.getMonth() + '-01'));
+    this.inputFormGroup.get('startDate')?.setValue(currentDate.getFullYear() + '-' + (currentDate.getMonth() - 1).toString().padStart(2, '0') + '-01');
+    this.inputFormGroup.get('endDate')?.setValue(currentDate.getFullYear() + '-' + currentDate.getMonth().toString().padStart(2, '0') + '-01');
   }
 
   onSubmit() {
@@ -46,10 +46,10 @@ export class DateSelectorComponent implements OnInit {
   }
 
   private getEndDate(): Date {
-    return new Date(this.inputFormGroup.get('endDate')?.value);
+    return new Date(this.inputFormGroup.get('endDate')?.value ?? '');
   }
 
   private getStartDate(): Date {
-    return new Date(this.inputFormGroup.get('startDate')?.value);
+    return new Date(this.inputFormGroup.get('startDate')?.value ?? '');
   }
 }

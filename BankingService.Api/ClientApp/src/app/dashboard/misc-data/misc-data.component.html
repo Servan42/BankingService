@@ -33,7 +33,7 @@
         </div>
         <div class="line-container">
           <div>Balance</div>
-          <div [ngClass]="{'green': isBalancePositive(false), 'red': !isBalancePositive(false)}">{{ report?.balance | numberToMoney }}</div>
+          <div [ngClass]="{'green': isBalancePositive(true), 'red': !isBalancePositive(true)}">{{ report?.balance | numberToMoney }}</div>
         </div>
       </ng-template>
     </div>

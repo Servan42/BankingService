@@ -1,13 +1,15 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ReportInput } from '../../model/report-input';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MonthToTextPipe } from '../../pipe/month-to-text.pipe';
 
 @Component({
   selector: 'app-date-selector',
   templateUrl: './date-selector.component.html',
   styleUrls: ['./date-selector.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, CommonModule, MonthToTextPipe]
 })
 export class DateSelectorComponent implements OnInit {
 
@@ -19,17 +21,33 @@ export class DateSelectorComponent implements OnInit {
     minAmount: new FormControl<number>(-100, Validators.max(0))
   })
 
+  months: number[] = Array.from({length: 12}, (_, index) => index + 1);
+  selectedMonth: number = 0;
+
   constructor() { }
 
   ngOnInit() {
-    this.setDates();
+    this.setDates(new Date());
+  }
+
+  setDates(startDate: Date) {
+    let year = startDate.getFullYear();
+    let month = startDate.getMonth() + 1;
+
+    this.selectedMonth = month;
+
+    this.inputFormGroup.get('startDate')?.setValue(year + '-' + month.toString().padStart(2, '0') + '-01');
+    if(month === 12){
+      year++;
+      month = 0;
+    }
+    this.inputFormGroup.get('endDate')?.setValue(year + '-' + (month + 1).toString().padStart(2, '0') + '-01');
     this.onSubmit();
   }
 
-  setDates() {
-    var currentDate = new Date();
-    this.inputFormGroup.get('startDate')?.setValue(currentDate.getFullYear() + '-' + currentDate.getMonth().toString().padStart(2, '0') + '-01');
-    this.inputFormGroup.get('endDate')?.setValue(currentDate.getFullYear() + '-' + (currentDate.getMonth() + 1).toString().padStart(2, '0') + '-01');
+  onMonthSelected(month: number) {
+    let currentDate = new Date();
+    this.setDates(new Date(currentDate.getFullYear(), month - 1, 1));
   }
 
   onSubmit() {

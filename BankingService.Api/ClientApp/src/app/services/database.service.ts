@@ -38,9 +38,10 @@ export class DatabaseService {
 
   getTypesNames(): Observable<string[]> {
     console.log('DB CALLED! (getTypesNames)');
-    const mockTypes = ['Expense', 'Income'];
-
-    return of(mockTypes);
+    return this.httpClient
+      .get<string[]>(ENDPOINT + "GetAllTypesNames");
+    // const mockTypes = ['Expense', 'Income'];
+    // return of(mockTypes);
   }
 
   updateTransaction(transaction: Transaction): void {

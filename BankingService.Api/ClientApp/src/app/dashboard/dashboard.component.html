@@ -3,7 +3,7 @@
     <div class="chart-title"><mat-icon fontIcon="calendar_month" class="icon"/><span>Date Selection</span></div>
     <app-date-selector (reportInput)="loadReport($event)"/>
   </div>
-  <div class="dasboards-container">
+  <div class="dasboards-container" *ngIf="hasData; else noData">
     <div class="dashboard-line-container">
       <div class="card dashboard-card">
         <div class="chart-title"><mat-icon fontIcon="data_usage" class="icon"/><span>Categories</span></div>
@@ -26,4 +26,5 @@
       </div>
     </div>
   </div>
+  <ng-template #noData><div class="no-data">No data for this period.</div></ng-template>
 </div>

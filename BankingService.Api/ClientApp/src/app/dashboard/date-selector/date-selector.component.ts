@@ -27,7 +27,9 @@ export class DateSelectorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.setDates(new Date());
+    let currentDate = new Date();
+    let month = currentDate.getMonth();
+    this.setDates(new Date(currentDate.getFullYear(), month - 1, 1));
   }
 
   setDates(startDate: Date) {

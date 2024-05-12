@@ -21,11 +21,17 @@
     margin-top: 10px;
     margin-left: 15px;
     font-size: large;
-    
+
     display: flex;
     align-items: center;
 }
 
 .icon {
     margin-right: 5px
+}
+
+.no-data {
+  font-family: Ubuntu;
+  font-size: larger;
+  margin: 20% 20%;
 }

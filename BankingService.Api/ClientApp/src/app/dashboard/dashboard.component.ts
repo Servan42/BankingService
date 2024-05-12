@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
   lineData: MyLinechartData[] = [];
 
   reportInput: ReportInput | undefined;
+  hasData = false;
 
   ngOnInit() {
     // this.loadReport(undefined);
@@ -48,6 +49,12 @@ export class DashboardComponent implements OnInit {
   }
 
   prepareData(report: TransactionReport): void {
+    if(report.treasuryGraphData.length === 0) {
+     this.hasData = false;
+     return;
+    }
+
+    this.hasData = true;
     this.report = report;
     const newPieData: myPieData[] = [];
     const costData: myPieData[] = [];

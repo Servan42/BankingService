@@ -4,6 +4,7 @@ import { Transaction } from '../model/transaction';
 import { TransactionReport, mockReport } from '../model/transaction-report';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { ReportInput } from '../model/report-input';
 
 const ENDPOINT = environment.apiUrl + '/api/Report/';
 
@@ -13,10 +14,9 @@ const ENDPOINT = environment.apiUrl + '/api/Report/';
 export class ReportService {
   constructor(private httpClient: HttpClient) {}
 
-  GetLastReport(): Observable<TransactionReport> {
-    console.log('DB CALLED! (GetLastReport)');
-    let params =
-      '?startDate=2024-03&endDate=2024-04&highestOperationMinAmount=-100';
+  getReport(reportInput: ReportInput): Observable<TransactionReport> {
+    console.log('DB CALLED! (getReport)');
+    let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestOperationMinAmount=' + reportInput.highestOperationMinAmount;
     return this.httpClient
       .get<TransactionReport>(ENDPOINT + params)
       .pipe(

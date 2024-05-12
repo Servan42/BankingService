@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MyLineChartComponent } from './my-line-chart/my-line-chart.component';
 import { MyLinechartData } from '../model/my-linechart-data';
 import { MiscDataComponent } from './misc-data/misc-data.component';
+import { DateSelectorComponent } from './date-selector/date-selector.component';
+import { ReportInput } from '../model/report-input';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,11 +21,11 @@ import { MiscDataComponent } from './misc-data/misc-data.component';
     PieComponent,
     MatIconModule,
     MyLineChartComponent,
-    MiscDataComponent
+    MiscDataComponent,
+    DateSelectorComponent
   ]
 })
 export class DashboardComponent implements OnInit {
-
   constructor(private reportService: ReportService) { }
   report: TransactionReport | undefined;
 
@@ -31,8 +33,17 @@ export class DashboardComponent implements OnInit {
   noCostsPieData: myPieData[] = [];
   lineData: MyLinechartData[] = [];
 
+  reportInput: ReportInput | undefined;
+
   ngOnInit() {
-    this.reportService.GetLastReport()
+    // this.loadReport(undefined);
+  }
+
+  loadReport(reportInput: ReportInput | undefined) {
+    if(!reportInput)
+      return;
+
+    this.reportService.getReport(reportInput)
       .subscribe(report => this.prepareData(report));
   }
 
@@ -64,5 +75,6 @@ export class DashboardComponent implements OnInit {
     }
     this.lineData = [newLineData];
   }
+
 }
 

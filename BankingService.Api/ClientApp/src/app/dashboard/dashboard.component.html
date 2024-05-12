@@ -1,5 +1,7 @@
 <div class="main-container">
-  <div class="card dashboard-card">Date Selection</div>
+  <div class="card dashboard-card">
+    <app-date-selector (reportInput)="loadReport($event)"/>
+  </div>
   <div class="dasboards-container">
     <div class="dashboard-line-container">
       <div class="card dashboard-card">

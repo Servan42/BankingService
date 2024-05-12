@@ -1,0 +1,6 @@
+<form [formGroup]="inputFormGroup" (ngSubmit)="onSubmit()">
+  <div>Start Date: <input formControlName="startDate" type="date"></div>
+  <div>End Date: <input formControlName="endDate" type="date"></div>
+  <div>Min amount: <input formControlName="minAmount" type="number"></div>
+  <div><button type="submit" [disabled]="!inputFormGroup.valid">Submit</button></div>
+</form>

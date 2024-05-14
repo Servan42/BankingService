@@ -10,6 +10,7 @@ namespace BankingService.Core.Model
 {
     internal class Operation
     {
+        public int? Id { get; set; }
         public DateTime Date { get; set; }
         public decimal Flow { get; set; }
         public decimal Treasury { get; set; }
@@ -23,6 +24,7 @@ namespace BankingService.Core.Model
         {
             return new Operation
             {
+                Id = dto.Id,
                 Date = dto.Date,
                 Flow = dto.Flow,
                 Treasury = dto.Treasury,
@@ -38,6 +40,7 @@ namespace BankingService.Core.Model
         {
             return new OperationDto
             {
+                Id = Id,
                 Date = Date,
                 Flow = Flow,
                 Treasury = Treasury,

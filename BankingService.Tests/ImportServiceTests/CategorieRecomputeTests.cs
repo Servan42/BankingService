@@ -31,8 +31,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_left_untouched_a_line_whose_data_does_not_have_to_change()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" },
-                new OperationDto { Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" }
                 );
         }
 
@@ -40,8 +40,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_fill_incomplete_type_category_and_autocomment()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "bbb" },
-                new OperationDto { Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "bbb" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "bbb" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "bbb" }
                 );
         }
 
@@ -49,8 +49,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_update_type_category_and_autocomment_because_they_changed()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "a", Category = "b", AutoComment = "c", Comment = "ccc" },
-                new OperationDto { Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "ccc" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "a", Category = "b", AutoComment = "c", Comment = "ccc" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "ccc" }
                 );
         }
 
@@ -58,8 +58,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_leave_alone_lines_that_still_cannot_be_resolved()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" },
-                new OperationDto { Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" }
                 );
         }
 
@@ -67,8 +67,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_leave_type_untouched_and_not_lose_other_data()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" },
-                new OperationDto { Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" }
                 );
         }
 
@@ -76,8 +76,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_only_update_the_type_and_not_lose_other_data()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Virement", Category = "Special 2", AutoComment = "", Comment = "fff" },
-                new OperationDto { Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Sans Contact", Category = "Special 2", AutoComment = "", Comment = "fff" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Virement", Category = "Special 2", AutoComment = "", Comment = "fff" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Sans Contact", Category = "Special 2", AutoComment = "", Comment = "fff" }
                 );
         }
 
@@ -85,8 +85,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_update_paypal_categorie()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "Spotify AB", Comment = "ggg" },
-                new OperationDto { Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "Loisirs", AutoComment = "Spotify AB", Comment = "ggg" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "Spotify AB", Comment = "ggg" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "Loisirs", AutoComment = "Spotify AB", Comment = "ggg" }
                 );
         }
 
@@ -94,8 +94,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_not_update_paypal_categorie_when_there_is_no_new_match()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" },
-                new OperationDto { Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" }
                 );
         }
 
@@ -103,8 +103,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_not_be_bothered_by_an_empty_paypal_auto_comment()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" },
-                new OperationDto { Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" }
                 );
         }
 
@@ -112,8 +112,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_override_manually_categorized_data_when_a_new_match_is_found()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "Manually categorized", AutoComment = "", Comment = "jjj" },
-                new OperationDto { Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "NewCat", AutoComment = "NewComment", Comment = "jjj" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "Manually categorized", AutoComment = "", Comment = "jjj" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "NewCat", AutoComment = "NewComment", Comment = "jjj" }
                 );
         }
 
@@ -121,8 +121,8 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_override_manually_categorized_paypal_data_when_a_new_match_is_found()
         {
             GenericRecomputeTestCode(
-                new OperationDto { Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "Manually categorized paypal", AutoComment = "newMatch", Comment = "kkk" },
-                new OperationDto { Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "NewPaypalCat", AutoComment = "newMatch", Comment = "kkk" }
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "Manually categorized paypal", AutoComment = "newMatch", Comment = "kkk" },
+                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "NewPaypalCat", AutoComment = "newMatch", Comment = "kkk" }
                 );
         }
 

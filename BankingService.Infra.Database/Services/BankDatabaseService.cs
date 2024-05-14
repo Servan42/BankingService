@@ -12,7 +12,6 @@ namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
-        private readonly string DATABASE_BACKUP_FOLDER;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystemService fileSystemService;
         private readonly IBankDatabaseConfiguration dbConfig;
@@ -43,17 +42,19 @@ namespace BankingService.Infra.Database.Services
         {
             int newOperationCount = 0;
             var operations = Operations.Load(this.fileSystemService, this.dbConfig);
+            var existingOperationsKeys = operations.GetUniqueIdentifiersFromData();
 
-            foreach (var newOperation in ResolveOperationDto(operationsDto))
+            foreach (var newOperation in ResolveOperationDtoCategoryId(operationsDto))
             {
-                if (operations.Data.ContainsKey(newOperation.GetKey()))
+                if (existingOperationsKeys.Contains(newOperation.GetUniqueIdentifier()))
                 {
-                    logger.Debug($"Following operation will not be imported because it already exists: '{newOperation.GetKey()}'");
+                    logger.Debug($"Following operation will not be imported because it already exists: '{newOperation.GetUniqueIdentifier()}'");
                     continue;
                 }
 
                 newOperationCount++;
-                operations.Data.Add(newOperation.GetKey(), newOperation);
+                newOperation.Id = operations.GetNextId();
+                operations.Data.Add(newOperation.Id.Value, newOperation);
             }
 
             logger.Info($"{newOperationCount} new operations added to database");
@@ -64,12 +65,15 @@ namespace BankingService.Infra.Database.Services
         {
             var storedOperations = Operations.Load(this.fileSystemService, this.dbConfig);
 
-            foreach(var operationToUpdate in ResolveOperationDto(operationsDto))
+            foreach(var operationToUpdate in ResolveOperationDtoCategoryId(operationsDto))
             {
-                if (!storedOperations.Data.ContainsKey(operationToUpdate.GetKey()))
-                    throw new Exception($"Operation '{operationToUpdate.GetKey()}' cannot be updated because it is not present in database");
+                if (!operationToUpdate.Id.HasValue)
+                    throw new Exception($"Operation '{operationToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id");
 
-                var storedOperation = storedOperations.Data[operationToUpdate.GetKey()];
+                if (!storedOperations.Data.ContainsKey(operationToUpdate.Id.Value))
+                    throw new Exception($"Operation '{operationToUpdate.Id.Value}' cannot be updated because it is not present in database");
+
+                var storedOperation = storedOperations.Data[operationToUpdate.Id.Value];
                 storedOperation.Type = operationToUpdate.Type;
                 storedOperation.CategoryId = operationToUpdate.CategoryId;
                 storedOperation.AutoComment = operationToUpdate.AutoComment;
@@ -80,7 +84,7 @@ namespace BankingService.Infra.Database.Services
             storedOperations.SaveAll();
         }
 
-        private IEnumerable<Operation> ResolveOperationDto(List<OperationDto> operationsDto)
+        private IEnumerable<Operation> ResolveOperationDtoCategoryId(List<OperationDto> operationsDto)
         {
             return operationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
         }

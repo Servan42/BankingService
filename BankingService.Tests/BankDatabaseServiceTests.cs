@@ -163,8 +163,8 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;;1;;"
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "10;2024-03-24;-10,01;20,00;label1;;1;;"
                 });
 
             mockFileSystemService
@@ -182,9 +182,9 @@ namespace BankingService.Tests
             // THEN
             var expected = new List<string>
             {
-                "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                "2024-03-24;-10,01;20,00;label1;;1;;",
-                "2024-03-24;-10,01;20,00;label2;;2;;"
+                "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                "10;2024-03-24;-10,01;20,00;label1;;1;;",
+                "11;2024-03-24;-10,01;20,00;label2;;2;;"
             };
             mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
@@ -201,11 +201,11 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-23;-10,01;20,00;label0;;2;;",
-                    "2024-03-24;-10,01;20,00;label1;TODO;1;;",
-                    "2024-03-25;-10,01;20,00;label2;Paypal;1;;",
-                    "2024-03-26;-10,01;20,00;label3;Paypal;1;Spotify;",
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "1;2024-03-23;-10,01;20,00;label0;;2;;",
+                    "2;2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                    "3;2024-03-25;-10,01;20,00;label2;Paypal;1;;",
+                    "4;2024-03-26;-10,01;20,00;label3;Paypal;1;Spotify;",
                 });
 
             mockFileSystemService
@@ -225,6 +225,7 @@ namespace BankingService.Tests
             {
                 new OperationDto
                 {
+                    Id = 3,
                     Date = new DateTime(2024,03,25),
                     Flow = -10.01m,
                     Treasury = 20.00m,
@@ -251,6 +252,7 @@ namespace BankingService.Tests
             {
                 new OperationDto
                 {
+                    Id = 2,
                     Date = new DateTime(2024,03,25),
                     Flow = -10.01m,
                     Label = "label1",
@@ -266,9 +268,9 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;TODO;1;;",
-                    "2024-03-25;-10,01;30,00;label1;Paypal;1;;"
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "1;2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                    "2;2024-03-25;-10,01;30,00;label1;Paypal;1;;"
                 });
 
             mockFileSystemService
@@ -286,9 +288,9 @@ namespace BankingService.Tests
             // THEN
             var expected = new List<string>
             {
-                "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                "2024-03-24;-10,01;20,00;label1;TODO;1;;",
-                "2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
+                "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                "1;2024-03-24;-10,01;20,00;label1;TODO;1;;",
+                "2;2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
             };
             mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
@@ -305,9 +307,9 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
-                    "2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "1;2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
+                    "2;2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
                 });
 
             mockFileSystemService
@@ -327,6 +329,7 @@ namespace BankingService.Tests
             {
                 new OperationDto
                 {
+                    Id = 1,
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
                     Treasury = 20.00m,
@@ -352,9 +355,9 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
-                    "2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "1;2024-03-24;-10,01;20,00;label1;Sans Contact;1;;",
+                    "2;2024-03-25;-10,01;30,00;label2;Paypal;2;Steam;"
                 });
 
             mockFileSystemService
@@ -374,6 +377,7 @@ namespace BankingService.Tests
             {
                 new OperationDto
                 {
+                    Id = 1,
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
                     Treasury = 20.00m,
@@ -385,6 +389,7 @@ namespace BankingService.Tests
                 },
                 new OperationDto
                 {
+                    Id = 2,
                     Date = new DateTime(2024,03,25),
                     Flow = -10.01m,
                     Treasury = 30.00m,
@@ -431,11 +436,11 @@ namespace BankingService.Tests
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
                 {
-                    "Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
-                    "2024-03-24;-10,01;21,00;label1;Sans Contact;1;;",
-                    "2024-03-25;-10,02;22,00;label2;Paypal;2;Steam;Silksong",
-                    "2024-03-26;-10,03;23,00;label3;Loyer;1;LoyerAutoComment;LoyerComment",
-                    "2024-03-27;-10,04;24,00;label4;Paypal;2;Steam;"
+                    "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment",
+                    "1;2024-03-24;-10,01;21,00;label1;Sans Contact;1;;",
+                    "2;2024-03-25;-10,02;22,00;label2;Paypal;2;Steam;Silksong",
+                    "3;2024-03-26;-10,03;23,00;label3;Loyer;1;LoyerAutoComment;LoyerComment",
+                    "4;2024-03-27;-10,04;24,00;label4;Paypal;2;Steam;"
                 });
 
             mockFileSystemService
@@ -455,6 +460,7 @@ namespace BankingService.Tests
             {
                 new OperationDto
                 {
+                    Id = 2,
                     Date = new DateTime(2024,03,25),
                     Flow = -10.02m,
                     Treasury = 22.00m,
@@ -466,6 +472,7 @@ namespace BankingService.Tests
                 },
                 new OperationDto
                 {
+                    Id = 3,
                     Date = new DateTime(2024,03,26),
                     Flow = -10.03m,
                     Treasury = 23.00m,

@@ -12,6 +12,7 @@ html, body
     border-radius: 2px;
     background-color: #a478db;
     border-width: 0px;
+    cursor: pointer;
 }
 
 .big-button:hover {

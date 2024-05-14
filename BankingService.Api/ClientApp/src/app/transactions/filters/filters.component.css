@@ -3,9 +3,9 @@
     padding: 10px;
     background-color: #1f1f1f;
     border-radius: 5px;
-    
-    display: flex; 
-    align-items: center; 
+
+    display: flex;
+    align-items: center;
     justify-content: left;
 }
 
@@ -31,6 +31,11 @@
     font-family: Ubuntu, sans-serif;
     padding: 8px;
     border: none;
+    cursor: pointer;
+}
+
+.dropdown-button:hover {
+  background-color: rgb(50, 50, 50);
 }
 
 .search-text-field {
@@ -44,7 +49,7 @@
 }
 
 ::ng-deep .mat-datepicker-toggle-default-icon {
-    color: lightgray !important; 
+    color: lightgray !important;
 }
 
 ::ng-deep .mat-mdc-text-field-wrapper {

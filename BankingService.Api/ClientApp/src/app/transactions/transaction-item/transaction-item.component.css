@@ -91,6 +91,7 @@
 .tooltip {
   position: relative;
   display: inline-block;
+  cursor: help;
 }
 
 .tooltip .tooltiptext {

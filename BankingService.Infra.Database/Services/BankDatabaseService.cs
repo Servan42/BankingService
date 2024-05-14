@@ -53,7 +53,7 @@ namespace BankingService.Infra.Database.Services
                 }
 
                 newOperationCount++;
-                newOperation.Id = operations.GetMaxId() + 1;
+                newOperation.Id = operations.GetNextId();
                 operations.Data.Add(newOperation.Id.Value, newOperation);
             }
 

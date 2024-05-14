@@ -46,9 +46,12 @@ namespace BankingService.Infra.Database.Model
                 .ToList();
         }
 
-        internal int GetMaxId()
+        internal int GetNextId()
         {
-            return this.Data.Keys.Max();
+            if (this.Data.Count == 0)
+                return 1;
+
+            return this.Data.Keys.Max() + 1;
         }
     }
 

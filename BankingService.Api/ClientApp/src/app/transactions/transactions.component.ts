@@ -36,7 +36,7 @@ export class TransactionsComponent implements OnInit {
 
   refreshList() {
     this.dbService.getAllTransactions()
-      .subscribe(x => this.transactions = x);
+      .subscribe(x => this.transactions = x.sort((a,b) => b.date.getTime() - a.date.getTime()));
   }
 
   onFiltersChanged(filters: TransactionFilters) {

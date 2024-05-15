@@ -19,9 +19,9 @@ export class FilterTransactionsPipe implements PipeTransform {
     if (search !== undefined && search !== '') {
       newTransactions = newTransactions.filter(
         (x) =>
-          x.label.includes(search) ||
-          x.comment.includes(search) ||
-          x.autoComment.includes(search)
+          x.label.toLowerCase().includes(search.toLowerCase()) ||
+          x.comment.toLowerCase().includes(search.toLowerCase()) ||
+          x.autoComment.toLowerCase().includes(search.toLowerCase())
       );
     }
 

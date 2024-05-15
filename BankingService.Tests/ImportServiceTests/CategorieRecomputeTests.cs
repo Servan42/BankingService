@@ -32,7 +32,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 20), Flow = 1m, Treasury = 2m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "aaa" }
                 );
         }
 
@@ -41,7 +41,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "bbb" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 21), Flow = 1m, Treasury = 3m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "bbb" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "bbb" }
                 );
         }
 
@@ -50,7 +50,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "a", Category = "b", AutoComment = "c", Comment = "ccc" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 22), Flow = 1m, Treasury = 4m, Label = "PSC AUCHAN", Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "ccc" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "Nourriture", AutoComment = "Courses (Auchan)", Comment = "ccc" }
                 );
         }
 
@@ -59,7 +59,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 23), Flow = 1m, Treasury = 5m, Label = "AAA", Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" }
+                new UpdatableOperationDto { Id = 1, Type = "TODO", Category = "TODO", AutoComment = "", Comment = "ddd" }
                 );
         }
 
@@ -68,7 +68,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 24), Flow = 1m, Treasury = 6m, Label = "PSC BBB", Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "Special", AutoComment = "", Comment = "eee" }
                 );
         }
 
@@ -77,7 +77,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Virement", Category = "Special 2", AutoComment = "", Comment = "fff" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 25), Flow = 1m, Treasury = 7m, Label = "PSC CCC", Type = "Sans Contact", Category = "Special 2", AutoComment = "", Comment = "fff" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "Special 2", AutoComment = "", Comment = "fff" }
                 );
         }
 
@@ -86,7 +86,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "Spotify AB", Comment = "ggg" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 26), Flow = 1m, Treasury = 8m, Label = "PAYPAL", Type = "Paypal", Category = "Loisirs", AutoComment = "Spotify AB", Comment = "ggg" }
+                new UpdatableOperationDto { Id = 1, Type = "Paypal", Category = "Loisirs", AutoComment = "Spotify AB", Comment = "ggg" }
                 );
         }
 
@@ -95,7 +95,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 27), Flow = 1m, Treasury = 9m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" }
+                new UpdatableOperationDto { Id = 1, Type = "Paypal", Category = "TODO", AutoComment = "nomatch", Comment = "hhh" }
                 );
         }
 
@@ -104,7 +104,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 28), Flow = 1m, Treasury = 10m, Label = "PAYPAL", Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" }
+                new UpdatableOperationDto { Id = 1, Type = "Paypal", Category = "TODO", AutoComment = "", Comment = "iii" }
                 );
         }
 
@@ -113,7 +113,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "Manually categorized", AutoComment = "", Comment = "jjj" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 29), Flow = 1m, Treasury = 11m, Label = "PSC NEW", Type = "Sans Contact", Category = "NewCat", AutoComment = "NewComment", Comment = "jjj" }
+                new UpdatableOperationDto { Id = 1, Type = "Sans Contact", Category = "NewCat", AutoComment = "NewComment", Comment = "jjj" }
                 );
         }
 
@@ -122,11 +122,11 @@ namespace BankingService.Tests.ImportServiceTests
         {
             GenericRecomputeTestCode(
                 new OperationDto { Id = 1, Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "Manually categorized paypal", AutoComment = "newMatch", Comment = "kkk" },
-                new OperationDto { Id = 1, Date = new DateTime(2024, 10, 30), Flow = 1m, Treasury = 12m, Label = "PAYPAL", Type = "Paypal", Category = "NewPaypalCat", AutoComment = "newMatch", Comment = "kkk" }
+                new UpdatableOperationDto { Id = 1, Type = "Paypal", Category = "NewPaypalCat", AutoComment = "newMatch", Comment = "kkk" }
                 );
         }
 
-        public void GenericRecomputeTestCode(OperationDto input, OperationDto expected)
+        public void GenericRecomputeTestCode(OperationDto input, UpdatableOperationDto expected)
         {
             // GIVEN
             bankDatabaseService.Setup(x => x.GetAllOperations()).Returns([input]);
@@ -150,7 +150,7 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.RecomputeEveryOperationAdditionalData();
 
             // THEN
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<OperationDto>>(actual => TestHelpers.CheckOperationDtos(actual, new List<OperationDto> { expected }))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<UpdatableOperationDto>>(actual => TestHelpers.CheckUpdatableOperationDtos(actual, new List<UpdatableOperationDto> { expected }))), Times.Once());
         }
     }
 }

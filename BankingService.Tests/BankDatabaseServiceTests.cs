@@ -248,15 +248,11 @@ namespace BankingService.Tests
             string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
 
-            var operations = new List<OperationDto>
+            var operations = new List<UpdatableOperationDto>
             {
-                new OperationDto
+                new UpdatableOperationDto
                 {
                     Id = 2,
-                    Date = new DateTime(2024,03,25),
-                    Flow = -10.01m,
-                    Label = "label1",
-                    Treasury = 30m,
                     Type = "Paypal",
                     Category = "Loisir",
                     AutoComment = "Spotify",

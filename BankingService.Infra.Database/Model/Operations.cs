@@ -88,6 +88,18 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
+        internal static Operation Map(UpdatableOperationDto updatableOperationDto, int categoryId)
+        {
+            return new Operation
+            {
+                Id = updatableOperationDto.Id,
+                Type = updatableOperationDto.Type,
+                CategoryId = categoryId,
+                AutoComment = updatableOperationDto.AutoComment,
+                Comment = updatableOperationDto.Comment
+            };
+        }
+
         internal static Operation Map(string csv)
         {
             var splitted = csv.Split(";");

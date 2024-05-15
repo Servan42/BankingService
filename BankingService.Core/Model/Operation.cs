@@ -52,6 +52,18 @@ namespace BankingService.Core.Model
             };
         }
 
+        public UpdatableOperationDto MapToUpdatableOperationDto()
+        {
+            return new UpdatableOperationDto
+            {
+                Id = Id,
+                Type = Type,
+                Category = Category,
+                AutoComment = AutoComment,
+                Comment = Comment,
+            };
+        }
+
         internal void ResolveCategoryAndAutoComment(Dictionary<string, OperationCategoryAndAutoCommentDto> operationCategoriesAndAutoComment)
         {
             var defaultCategory = "TODO";

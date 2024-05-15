@@ -61,11 +61,11 @@ namespace BankingService.Infra.Database.Services
             operations.SaveAll();
         }
 
-        public void UpdateOperations(List<OperationDto> operationsDto)
+        public void UpdateOperations(List<UpdatableOperationDto> operationsDto)
         {
             var storedOperations = Operations.Load(this.fileSystemService, this.dbConfig);
 
-            foreach(var operationToUpdate in ResolveOperationDtoCategoryId(operationsDto))
+            foreach(var operationToUpdate in ResolveUpdatebleOperationDtoCategoryId(operationsDto))
             {
                 if (!operationToUpdate.Id.HasValue)
                     throw new Exception($"Operation '{operationToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id");
@@ -87,6 +87,11 @@ namespace BankingService.Infra.Database.Services
         private IEnumerable<Operation> ResolveOperationDtoCategoryId(List<OperationDto> operationsDto)
         {
             return operationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
+        }
+
+        private IEnumerable<Operation> ResolveUpdatebleOperationDtoCategoryId(List<UpdatableOperationDto> updatableOperationsDto)
+        {
+            return updatableOperationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
         }
 
         public Dictionary<string, string> GetPaypalCategoriesKvp()

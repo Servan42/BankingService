@@ -87,7 +87,7 @@ namespace BankingService.Core.Services
             logger.Info($"Importing {paypalFilePath} paypal file");
             var csvOperations = fileSystemService.ReadAllLines(paypalFilePath);
             List<Operation> completeOperations = MatchPaypalDataToExistingOperations(csvOperations);
-            bankDatabaseService.UpdateOperations(completeOperations.Select(o => o.MapToDto()).ToList());
+            bankDatabaseService.UpdateOperations(completeOperations.Select(o => o.MapToUpdatableOperationDto()).ToList());
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
         }
 
@@ -198,7 +198,7 @@ namespace BankingService.Core.Services
 
             logger.Info($"{operations.Count(o => o.Type == "TODO" || o.Category == "TODO")} operations still require manual input");
 
-            bankDatabaseService.UpdateOperations(operations.Select(o => o.MapToDto()).ToList());
+            bankDatabaseService.UpdateOperations(operations.Select(o => o.MapToUpdatableOperationDto()).ToList());
         }
     }
 }

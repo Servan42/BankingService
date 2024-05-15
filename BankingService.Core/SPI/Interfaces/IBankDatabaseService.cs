@@ -10,7 +10,7 @@ namespace BankingService.Core.SPI.Interfaces
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp();
         public List<OperationDto> GetUnresolvedPaypalOperations();
         public List<OperationDto> GetAllOperations();
-        public void UpdateOperations(List<OperationDto> operationsDto);
+        public void UpdateOperations(List<UpdatableOperationDto> operationsDto);
         public List<OperationDto> GetOperationsThatNeedsManualInput();
         public List<string> GetAllCategoriesNames();
         List<OperationDto> GetOperationsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded);

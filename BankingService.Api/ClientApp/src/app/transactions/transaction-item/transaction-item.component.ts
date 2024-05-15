@@ -36,7 +36,12 @@ export class TransactionItemComponent implements OnInit {
 
   onSaveTransactionClicked(): void {
     this.editButtonText = 'Edit';
-    this.dbService.updateTransaction(this.transaction);
+    this.dbService
+      .updateTransaction(this.transaction)
+        .subscribe({
+          error: (e) => alert(e.error),
+          complete: () => alert('saved')
+      });
     this.areEditableFieldsDisabled = true;
   }
 

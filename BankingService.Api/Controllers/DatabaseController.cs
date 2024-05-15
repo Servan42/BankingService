@@ -78,5 +78,22 @@ namespace BankingService.Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("UpdateOperations")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateOperations(List<UpdatableOperationDto> operationsToUpdate)
+        {
+            try
+            {
+                this.databaseService.UpdateOperations(operationsToUpdate);
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

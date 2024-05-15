@@ -44,7 +44,16 @@ export class DatabaseService {
     // return of(mockTypes);
   }
 
-  updateTransaction(transaction: Transaction): void {
-    console.log('DB CALLED! (updateTransaction)', transaction);
+  updateTransaction(transaction: Transaction): Observable<any> {
+    console.log('DB CALLED! (updateTransaction)');
+    return this.httpClient.post(ENDPOINT + "UpdateOperations", [
+      {
+        id: transaction.id,
+        type: transaction.type,
+        category: transaction.category,
+        autoComment: transaction.autoComment,
+        comment: transaction.comment
+      }
+    ]);
   }
 }

@@ -4,7 +4,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -23,4 +23,5 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class AppComponent {
   title = 'ClientApp';
+  version = environment.version;
 }

@@ -4,7 +4,7 @@ namespace BankingService.Core.SPI.Interfaces
 {
     public interface IBankDatabaseService
     {
-        public void InsertOperationsIfNew(List<OperationDto> operationsDto);
+        public int InsertOperationsIfNew(List<OperationDto> operationsDto);
         public Dictionary<string, string> GetOperationTypesKvp();
         public Dictionary<string, string> GetPaypalCategoriesKvp();
         public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp();

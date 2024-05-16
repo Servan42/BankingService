@@ -29,14 +29,15 @@ namespace BankingService.Core.Services
             this.bankDatabaseService = bankDatabaseService;
         }
 
-        public void ImportBankFile(string bankFilePath)
+        public int ImportBankFile(string bankFilePath)
         {
             logger.Info($"Importing {bankFilePath} bank file");
             var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
             List<Operation> operations = GetBankOperationsFromCSV(csvOperations);
             ResolveOperationsAutoFields(operations);
-            bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());
+            int nbImported = bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
+            return nbImported;
         }
 
         private List<Operation> GetBankOperationsFromCSV(List<string> csvOperations)

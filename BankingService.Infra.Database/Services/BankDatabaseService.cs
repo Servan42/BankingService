@@ -38,7 +38,7 @@ namespace BankingService.Infra.Database.Services
             return Types.Load(this.fileSystemService, this.dbConfig).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
         }
 
-        public void InsertOperationsIfNew(List<OperationDto> operationsDto)
+        public int InsertOperationsIfNew(List<OperationDto> operationsDto)
         {
             int newOperationCount = 0;
             var operations = Operations.Load(this.fileSystemService, this.dbConfig);
@@ -59,6 +59,7 @@ namespace BankingService.Infra.Database.Services
 
             logger.Info($"{newOperationCount} new operations added to database");
             operations.SaveAll();
+            return newOperationCount;
         }
 
         public void UpdateOperations(List<UpdatableOperationDto> operationsDto)

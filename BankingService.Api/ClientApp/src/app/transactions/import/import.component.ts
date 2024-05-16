@@ -20,11 +20,15 @@ export class ImportComponent implements OnInit {
   onBankFileSelected($event: any) {
     const file: File = $event.target.files[0];
 
+    const inputElement = $event.target as HTMLInputElement;
+    inputElement.value = '';
+
     if (file) {
       this.importService
         .importBankFile(file)
         .subscribe({
-          error: (e) => alert(e.error),
+          next: (s) => alert(s),
+          error: (e) => console.error(e),
           complete: () => this.uploadComplete.emit()
         });
     }
@@ -33,11 +37,14 @@ export class ImportComponent implements OnInit {
   onPayalFileSelected($event: any) {
     const file: File = $event.target.files[0];
 
+    const inputElement = $event.target as HTMLInputElement;
+    inputElement.value = '';
+
     if (file) {
       this.importService
         .importPaypalFile(file)
         .subscribe({
-          error: (e) => alert(e.error),
+          error: (e) => console.error(e),
           complete: () => this.uploadComplete.emit()
         });
     }

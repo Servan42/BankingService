@@ -8,7 +8,7 @@ namespace BankingService.Core.API.Interfaces
 {
     public interface IImportService
     {
-        public void ImportBankFile(string bankFilePath);
+        public int ImportBankFile(string bankFilePath);
         public void ImportPaypalFile(string paypalFilePath);
         public void RecomputeEveryOperationAdditionalData();
     }

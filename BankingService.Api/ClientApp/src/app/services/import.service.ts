@@ -11,18 +11,18 @@ const ENDPOINT = environment.apiUrl + '/api/Import/';
 export class ImportService {
   constructor(private httpClient: HttpClient) {}
 
-  importBankFile(file: File): Observable<any> {
+  importBankFile(file: File): Observable<string> {
     return this.importFile(file, true);
   }
 
-  importPaypalFile(file: File): Observable<any> {
+  importPaypalFile(file: File): Observable<string> {
     return this.importFile(file, false);
   }
 
-  private importFile(file: File, isBankFile: boolean): Observable<any> {
+  private importFile(file: File, isBankFile: boolean): Observable<string> {
     console.log('DB CALLED! (importFile)', file);
     const formData = new FormData();
     formData.append('formFile', file);
-    return this.httpClient.post(ENDPOINT + 'ImportFile?isBankFile=' + isBankFile, formData);
+    return this.httpClient.post(ENDPOINT + 'ImportFile?isBankFile=' + isBankFile, formData, { responseType: 'text'});
   }
 }

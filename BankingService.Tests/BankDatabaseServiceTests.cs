@@ -177,7 +177,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            bankDatabaseService_sut.InsertOperationsIfNew(operations);
+            int count = bankDatabaseService_sut.InsertOperationsIfNew(operations);
 
             // THEN
             var expected = new List<string>
@@ -189,6 +189,7 @@ namespace BankingService.Tests
             mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
+            Assert.That(count, Is.EqualTo(1));
         }
 
         [Test]

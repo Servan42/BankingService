@@ -19,10 +19,10 @@ namespace BankingService.Api.Controllers
 
         [HttpPost]
         [Route("ImportFile")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> ImportFile(IFormFile formFile, bool isBankFile)
+        public async Task<ActionResult<string>> ImportFile(IFormFile formFile, bool isBankFile)
         {
             string tempFilePath = string.Empty;
             try
@@ -39,12 +39,13 @@ namespace BankingService.Api.Controllers
                     await formFile.CopyToAsync(fileStream);
                 }
 
+                string result = string.Empty;
                 if (isBankFile)
-                    this.importService.ImportBankFile(tempFilePath);
+                    result = this.importService.ImportBankFile(tempFilePath) + " new operations imported.";
                 else
                     this.importService.ImportPaypalFile(tempFilePath);
 
-                return StatusCode(204);
+                return Ok(result);
             }
             catch (Exception ex)
             {

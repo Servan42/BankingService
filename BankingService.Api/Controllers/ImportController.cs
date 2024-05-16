@@ -10,7 +10,6 @@ namespace BankingService.Api.Controllers
     public class ImportController : ControllerBase
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         private readonly IImportService importService;
 
         public ImportController(IImportService importService)

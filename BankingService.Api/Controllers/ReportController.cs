@@ -2,6 +2,7 @@
 using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 
 namespace BankingService.Api.Controllers
 {
@@ -9,6 +10,7 @@ namespace BankingService.Api.Controllers
     [ApiController]
     public class ReportController : ControllerBase
     {
+        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IReportService reportService;
 
         public ReportController(IReportService reportService)
@@ -28,6 +30,7 @@ namespace BankingService.Api.Controllers
             }
             catch (Exception ex)
             {
+                logger.Error(ex);
                 return StatusCode(500, ex.Message);
             }
         }

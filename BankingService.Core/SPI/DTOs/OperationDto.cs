@@ -8,6 +8,7 @@ namespace BankingService.Core.SPI.DTOs
 {
     public record OperationDto
     {
+        public int? Id { get; init; }
         public DateTime Date { get; init; }
         public decimal Flow { get; init; }
         public decimal Treasury { get; init; }

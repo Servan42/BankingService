@@ -1,0 +1,19 @@
+.main-card {
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    min-height: 50%;
+}
+
+.inner-section {
+    margin: 10px;
+    padding: 10px;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }

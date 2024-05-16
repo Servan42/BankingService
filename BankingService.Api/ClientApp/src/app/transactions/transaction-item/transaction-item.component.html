@@ -1,0 +1,77 @@
+<div class="container" [ngClass]="{'red-bg': transaction.flow < 0, 'green-bg': transaction.flow >= 0}">
+  <span class="column date-column">{{
+    transaction.date | dateToString
+  }}</span>
+  <span class="column flow-column">{{ transaction.flow | numberToMoney }}</span>
+  <span class="column treasury-column">{{ transaction.treasury | numberToMoney }}</span>
+
+  <span class="column type-column">
+    <span *ngIf="areEditableFieldsDisabled; else typesInput">{{
+      transaction.type
+    }}</span>
+    <ng-template #typesInput>
+      <button class="dropdown-button" mat-button [matMenuTriggerFor]="menuType">
+        {{ transaction.type }}
+      </button>
+      <mat-menu #menuType="matMenu">
+        <button
+          *ngFor="let t of types"
+          mat-menu-item
+          (click)="typesMenuItemClicked(t)"
+        >
+          {{ t }}
+        </button>
+      </mat-menu>
+    </ng-template>
+  </span>
+
+  <span class="column category-column">
+    <span *ngIf="areEditableFieldsDisabled; else categoryInput">{{
+      transaction.category
+    }}</span>
+    <ng-template #categoryInput>
+      <button
+        class="dropdown-button"
+        mat-button
+        [matMenuTriggerFor]="menuCategory"
+      >
+        {{ transaction.category }}
+      </button>
+      <mat-menu #menuCategory="matMenu">
+        <button
+          *ngFor="let c of categories"
+          mat-menu-item
+          (click)="categoryMenuItemClicked(c)"
+        >
+          {{ c }}
+        </button>
+      </mat-menu>
+    </ng-template>
+  </span>
+
+  <span class="column autoComment-column">{{ transaction.autoComment }}</span>
+
+  <span class="column comment-column">
+    <span *ngIf="areEditableFieldsDisabled; else commentInput">{{
+      transaction.comment
+    }}</span>
+    <ng-template #commentInput>
+      <input
+        type="text"
+        class="editable-text-field"
+        [(ngModel)]="transaction.comment"
+        [disabled]="areEditableFieldsDisabled"
+      />
+    </ng-template>
+  </span>
+
+  <div class="tooltip label-column">
+    <mat-icon fontIcon="info_outline"></mat-icon>
+    <span class="tooltiptext">{{ transaction.label }}</span>
+  </div>
+
+  <div class="column action-column">
+    <mat-icon fontIcon="edit" (click)="onEditTransactionClicked()" *ngIf="areEditableFieldsDisabled; else saveAction"/>
+    <ng-template #saveAction><mat-icon fontIcon="save" class="save-icon" (click)="onSaveTransactionClicked()"/></ng-template>
+  </div>
+</div>

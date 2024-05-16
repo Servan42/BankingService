@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="month-selection">
+    <h3>Quick Select Month</h3>
+    <ul>
+      <li *ngFor="let m of months" (click)="onMonthSelected(m)" [id]="m" [ngClass]="{'selected': selectedMonth === m}">{{ m | monthToText }}</li>
+    </ul>
+  </div>
+  <div class="custom-selection">
+    <h3>Custom Settings</h3>
+    <form [formGroup]="inputFormGroup" (ngSubmit)="onSubmit()">
+      <div class="formLine">
+        <label for="startDate">Start Date </label>
+        <input class="date-picker" formControlName="startDate" type="date" id="startDate">
+      </div>
+      <div class="formLine">
+        <label for="endDate">End Date </label>
+        <input class="date-picker" formControlName="endDate" type="date" id="endDate">
+      </div>
+      <div class="formLine">
+        <label for="minAmount">Min amount </label>
+        <input class="textbox" formControlName="minAmount" type="number" id="minAmount">
+      </div>
+      <div class="formLine">
+        <div></div>
+        <button class="big-button" type="submit" [disabled]="!inputFormGroup.valid">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>

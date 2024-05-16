@@ -36,5 +36,33 @@ namespace BankingService.Infra.Database.Services
                     Path.Combine(dbConfig.DatabasePath, Categories.TablePath)
                 ], Path.Combine(dbConfig.DatabasePath, "Database", "Backups"));
         }
+
+        public void OperationTableMigrationToIdVersion()
+        {
+            logger.Info("OperationTableMigrationToIdVersion");
+            List<string> csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, Operations.TablePath), dbConfig.DatabaseKey);
+
+            if (csvLines.Count < 2)
+                throw new Exception("No data to migrate");
+
+            if (csvLines[0].StartsWith("Id;"))
+                throw new Exception("This database was already migrated");
+
+            int id = 1;
+            List<string> operationsToWrite = [Operations.Header];
+            
+            foreach(var operation in csvLines.Skip(1))
+            {
+                operationsToWrite.Add(id + ";" + operation);
+                id++;
+            }
+
+            File.WriteAllLines("operations.export.migrated", operationsToWrite);
+            Console.WriteLine("Review the file operations.export.migrated before pressing enter to migrate the actual database. Kill the program if any anomaly is found");
+            Console.ReadLine();
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(dbConfig.DatabasePath, Operations.TablePath), operationsToWrite, dbConfig.DatabaseKey);
+            Console.WriteLine("DB MIGRATED");
+            logger.Info("DB MIGRATED");
+        }
     }
 }

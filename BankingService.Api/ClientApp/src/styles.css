@@ -1,0 +1,36 @@
+html, body
+{
+    color : lightgray;
+	background-color : #1f1f1f;
+    font-family: Ubuntu;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.big-button {
+    font-family: Ubuntu;
+    border-radius: 2px;
+    background-color: #a478db;
+    border-width: 0px;
+    cursor: pointer;
+}
+
+.big-button:hover {
+    background-color: #cc96f8;
+}
+
+.big-button:active {
+    background-color: #a478db;
+}
+
+.card {
+    border-style: solid;
+    border-color: #2e2e2e;
+    border-width: 2px;
+    background-color: #181818;
+    border-radius: 15px;
+}
+
+/* html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */

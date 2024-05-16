@@ -1,0 +1,40 @@
+.main-container {
+    display: flex;
+    justify-content: left;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20px;
+}
+
+.dashboard-card {
+    margin: 10px
+}
+
+.dasboards-container {
+    display: block;
+}
+
+.dashboard-line-container {
+  display: flex;
+  justify-content: center;
+}
+
+.chart-title {
+    font-family: Ubuntu;
+    margin-top: 10px;
+    margin-left: 15px;
+    font-size: large;
+
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin-right: 5px
+}
+
+.no-data {
+  font-family: Ubuntu;
+  font-size: larger;
+  margin: 20% 30%;
+}

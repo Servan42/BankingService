@@ -1,0 +1,30 @@
+<div class="main-container">
+  <div class="card dashboard-card">
+    <div class="chart-title"><mat-icon fontIcon="calendar_month" class="icon"/><span>Date Selection</span></div>
+    <app-date-selector (reportInput)="loadReport($event)"/>
+  </div>
+  <div class="dasboards-container" *ngIf="hasData; else noData">
+    <div class="dashboard-line-container">
+      <div class="card dashboard-card">
+        <div class="chart-title"><mat-icon fontIcon="data_usage" class="icon"/><span>Categories</span></div>
+        <app-pie [inputData]="fullPieData"/>
+      </div>
+      <div class="card dashboard-card">
+        <div class="chart-title"><mat-icon fontIcon="data_usage" class="icon"/><span>Categories without costs</span></div>
+        <app-pie [inputData]="noCostsPieData"/>
+      </div>
+    </div>
+    <div class="dashboard-line-container">
+      <div class="card dashboard-card">
+        <div class="chart-title"><mat-icon fontIcon="dashboard" class="icon"/><span>Misc Data</span></div>
+        <app-misc-data [report]="report"/>
+      </div>
+      <div class="card dashboard-card">
+        <div class="chart-title"><mat-icon fontIcon="stacked_line_chart" class="icon"/><span>Treasury per date</span></div>
+        <!-- https://swimlane.github.io/ngx-charts/#/ngx-charts/line-chart -->
+        <app-my-line-chart [inputData]="lineData"/>
+      </div>
+    </div>
+  </div>
+  <ng-template #noData><div class="no-data">No data for this period.</div></ng-template>
+</div>

@@ -30,9 +30,11 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<BankingService.Infra.FileSystem.API.Interfaces.IFileSystemService, FileSystemService>();
 builder.Services.AddScoped<BankingService.Infra.Database.SPI.Interfaces.IFileSystemService, FileSystemAdapterDatabase>();
+builder.Services.AddScoped<BankingService.Core.SPI.Interfaces.IFileSystemService, FileSystemAdapterCore>();
 builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
 builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IImportService, ImportService>();
 
 var app = builder.Build();
 

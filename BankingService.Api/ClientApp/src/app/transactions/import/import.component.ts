@@ -11,7 +11,7 @@ import { ImportService } from '../../services/import.service';
 })
 export class ImportComponent implements OnInit {
   constructor(private importService: ImportService) {}
-  
+
   @Output() uploadComplete = new EventEmitter();
 
   ngOnInit() {}
@@ -23,7 +23,10 @@ export class ImportComponent implements OnInit {
     if (file) {
       this.importService
         .importBankFile(file)
-        .subscribe({ complete: () => this.uploadComplete.emit() });
+        .subscribe({
+          error: (e) => alert(e.error),
+          complete: () => this.uploadComplete.emit()
+        });
     }
   }
 
@@ -33,7 +36,10 @@ export class ImportComponent implements OnInit {
     if (file) {
       this.importService
         .importPaypalFile(file)
-        .subscribe({ complete: () => this.uploadComplete.emit() });
+        .subscribe({
+          error: (e) => alert(e.error),
+          complete: () => this.uploadComplete.emit()
+        });
     }
   }
 }

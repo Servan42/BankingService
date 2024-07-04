@@ -1,0 +1,53 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.header {
+    background-color: #181818;
+    padding: 15px;
+
+    display: flex;
+    align-items: center;
+}
+
+.content {
+  flex: 1;
+}
+
+.linebreak {
+  background-color: rgba(255, 255, 255, 0.050);
+  padding-bottom: 1px;
+  margin: 5px 35%;
+}
+
+.footer {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 5px;
+  font-family: Ubuntu;
+  color: rgb(150, 150, 150);
+}
+
+.icon {
+  margin-left: 5px;
+  margin-right: 20px;
+  transform: scale(1.5);
+}
+
+.header-link {
+  text-decoration: none;
+  color: lightgray;
+  font-family: Ubuntu;
+  font-size: large;
+  margin-right: 15px
+}
+
+.header-link-current {
+    font-weight: bold;
+}
+
+.link-active {
+  color: red;
+}

@@ -39,8 +39,11 @@ namespace BankingService.ConsoleApp.Commands
                 DisplayOperationToFill(operationToFill);
                 var (category, comment) = PromptCategoryAndComment(consoleCategories);
 
-                var filledOperation = operationToFill with
+                var filledOperation = new UpdatableOperationDto
                 {
+                    Id = operationToFill.Id,
+                    Type = operationToFill.Type,
+                    AutoComment = operationToFill.AutoComment,
                     Category = category,
                     Comment = comment
                 };

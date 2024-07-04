@@ -44,6 +44,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new OperationDto
                 {
+                    Id = null,
                     Date = new DateTime(2023,11,21),
                     Flow = expectedFlow,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
@@ -101,6 +102,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new OperationDto
                 {
+                    Id = null,
                     Date = new DateTime(2023,11,21),
                     Flow = -20.47m,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",
@@ -139,6 +141,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new OperationDto
                 {
+                    Id = null,
                     Date = new DateTime(2023,11,21),
                     Flow = -20.47m,
                     Label = "PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888",

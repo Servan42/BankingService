@@ -34,8 +34,8 @@ internal class Program
 
             Console.WriteLine("Backup database");
             maintenanceService.BackupDatabase();
-            Console.WriteLine("Recompute operations");
-            importService.RecomputeEveryOperationAdditionalData();
+            //Console.WriteLine("Recompute operations");
+            //importService.RecomputeEveryOperationAdditionalData();
 
             var invoker = new CommandInvoker();
             invoker.Register(new HelpCommand(invoker));
@@ -46,6 +46,7 @@ internal class Program
             invoker.Register(new RecomputeCategoriesCommand(importService));
             invoker.Register(new ListIncompleteOperationsCommand(bankDataBaseService));
             invoker.Register(new ReportCommand(reportService));
+            invoker.Register(new DatabaseMigrationCommand(maintenanceService));
 
             Console.WriteLine("Welcome to BankingService CLI. Type 'help' for more info.\n");
             while (true)

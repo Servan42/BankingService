@@ -1,0 +1,53 @@
+<div class="misc-data-container">
+    <div class="misc-data-section">
+      <div class="misc-title-container">
+        <h3 class="misc-title" *ngIf="!slideChecked; else withSavingsTitle">Without Savings</h3>
+        <ng-template #withSavingsTitle>
+          <h3 class="misc-title" >With Savings</h3>
+        </ng-template>
+        <mat-slide-toggle [(ngModel)]="slideChecked"/>
+      </div>
+
+      <ng-container *ngIf="!slideChecked; else withSavingsData">
+        <div class="line-container">
+          <div>Positive Sum</div>
+          <div>{{ report?.positiveSumWithoutSavings | numberToMoney }}</div>
+        </div>
+        <div class="line-container">
+          <div>Negative Sum</div>
+          <div>{{ report?.negativeSumWithoutSavings | numberToMoney }}</div>
+        </div>
+        <div class="line-container">
+          <div>Balance</div>
+          <div [ngClass]="{'green': isBalancePositive(false), 'red': !isBalancePositive(false)}">{{ report?.balanceWithoutSavings | numberToMoney }}</div>
+        </div>
+      </ng-container>
+      <ng-template #withSavingsData>
+        <div class="line-container">
+          <div>Positive Sum</div>
+          <div>{{ report?.positiveSum| numberToMoney }}</div>
+        </div>
+        <div class="line-container">
+          <div>Negative Sum</div>
+          <div>{{ report?.negativeSum| numberToMoney }}</div>
+        </div>
+        <div class="line-container">
+          <div>Balance</div>
+          <div [ngClass]="{'green': isBalancePositive(true), 'red': !isBalancePositive(true)}">{{ report?.balance | numberToMoney }}</div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="misc-data-section">
+      <h3 class="misc-title">Highest Transactions</h3>
+      <table>
+        <tbody>
+          <tr *ngFor="let t of report?.highestOperations">
+            <td>{{ t.date | dateToString }}</td>
+            <td>{{ t.flow | numberToMoney }}</td>
+            <td>{{ t.type }}<br>{{ t.category }}</td>
+            <td>{{ t.autoComment }}<br>{{ t.comment }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+input {
+    display: none;
+}
+
+.import-button-section {
+
+    display: flex;
+    justify-content: right;
+}
+
+.import-button {
+    padding: 5px;
+    margin: 15px;
+    font-size: 16px;
+    font-weight: 500;
+}

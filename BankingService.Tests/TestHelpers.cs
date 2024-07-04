@@ -20,6 +20,17 @@ namespace BankingService.Tests
             return true;
         }
 
+        internal static bool CheckUpdatableOperationDtos(List<UpdatableOperationDto> actual, List<UpdatableOperationDto> expected)
+        {
+            Assert.That(actual.Count, Is.EqualTo(expected.Count), "Not the same amount of elements");
+            for (int i = 0; i < actual.Count; i++)
+            {
+                Assert.That(actual[i], Is.EqualTo(expected[i]), $"index:{i}");
+            }
+
+            return true;
+        }
+
         internal static bool CheckStringList(List<string> operations, List<string> expected)
         {
             Assert.That(operations.Count, Is.EqualTo(expected.Count));

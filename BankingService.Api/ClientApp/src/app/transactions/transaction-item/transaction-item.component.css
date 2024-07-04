@@ -1,0 +1,115 @@
+.container {
+  margin: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  padding: 10px;
+  background-color: rgba(20, 0, 75, 0.5);
+  border-radius: 5px;
+
+  font-family: Ubuntu, sans-serif;
+
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.red-bg {
+  background-color: rgba(20, 0, 0, 0.5);
+}
+
+.green-bg {
+  background-color: rgba(0, 20, 0, 0.5);
+}
+
+.column {
+  margin: 0 6px;
+}
+
+.date-column {
+  min-width: 80px;
+}
+
+.flow-column {
+  font-weight: bold;
+  text-align: right;
+  min-width: 80px;
+  text-align: center;
+}
+
+.treasury-column {
+  text-align: center;
+  min-width: 80px;
+}
+
+.type-column {
+  flex-basis: 25%;
+}
+
+.category-column {
+  flex-basis: 50%;
+}
+
+.autoComment-column, .comment-column {
+  flex-basis: 100%;
+}
+
+.label-column, .action-column {
+  margin:0 10px;
+  text-align: center;
+}
+
+.editable-text-field {
+  background-color: rgb(180, 180, 180);
+  color: black;
+  font-family: Ubuntu, sans-serif;
+  padding: 3px;
+  width: 100%;
+}
+
+.dropdown-button {
+  background-color: rgb(180, 180, 180);
+  color: black;
+  font-family: Ubuntu, sans-serif;
+  padding: 3px;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.save-icon {
+  color: rgb(0, 175, 0);
+}
+
+::ng-deep .mat-mdc-menu-content {
+  background-color: rgb(42, 42, 42) !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+  color: lightgray;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: lightgray;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

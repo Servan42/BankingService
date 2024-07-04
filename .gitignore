@@ -361,12 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-sonar.txt
-.sonarqube
-/Infra.WebApiAdapter/NetatmoBackgroundService_last-seen-time.txt
-/Infra.WebApiAdapter/rt
-/Infra.WorkerService/rt
-/Infra.WorkerService/NetatmoBackgroundService_last-seen-time.txt
-/Infra.WebApiAdapter/appsettings.json
-/Infra.WorkerService/appsettings.json
-/TemporaryConsoleApp/appsettings.json
+
+BankingService.Api/Archive/

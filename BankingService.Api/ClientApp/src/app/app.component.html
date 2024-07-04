@@ -1,0 +1,16 @@
+<main class="main">
+  <div class="header">
+    <!-- https://jossef.github.io/material-design-icons-iconfont/ -->
+    <mat-icon fontIcon="account_balance" class="icon"/>
+    <a routerLink="/list" routerLinkActive="header-link-current" class="header-link">
+      Transaction List
+    </a>
+    <a routerLink="/dashboard" routerLinkActive="header-link-current" class="header-link">
+      Dashboard
+    </a>
+  </div>
+  <div class="content">
+    <router-outlet/>
+  </div>
+  <footer class="footer"><div class="linebreak"></div>Version {{ version }}</footer>
+</main>

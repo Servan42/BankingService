@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="filter-input">
+    <input
+      class="search-text-field"
+      id="search-transaction"
+      placeholder="Search..."
+      autocomplete="off"
+      [(ngModel)]="filters.search"
+      (input)="onSearchFilterInput()"
+    />
+  </div>
+
+  <div class="filter-input">
+    <mat-form-field>
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          placeholder="Start date"
+          [(ngModel)]="filters.startDate"
+        />
+        <input
+          matEndDate
+          placeholder="End date"
+          [(ngModel)]="filters.endDate"
+          (dateChange)="onEndDateSelected()"
+        />
+      </mat-date-range-input>
+      <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-input">
+    <button class="dropdown-button" mat-button [matMenuTriggerFor]="menuType">
+      {{ filterTypeButtonText }}
+    </button>
+    <mat-menu #menuType="matMenu">
+      <button
+        *ngFor="let t of types"
+        mat-menu-item
+        (click)="typesMenuItemClicked(t)"
+      >
+        {{ t }}
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="filter-input">
+    <button
+      class="dropdown-button"
+      mat-button
+      [matMenuTriggerFor]="menuCategory"
+    >
+      {{ filterCategoryButtonText }}
+    </button>
+    <mat-menu #menuCategory="matMenu">
+      <button
+        *ngFor="let c of categories"
+        mat-menu-item
+        (click)="categoryMenuItemClicked(c)"
+      >
+        {{ c }}
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="filter-clear">
+    <button class="big-button clear-button" (click)="onClearFilter()">
+      Clear Filters
+    </button>
+  </div>
+</div>

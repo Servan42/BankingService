@@ -1,0 +1,76 @@
+.container {
+    margin: 10px;
+    padding: 10px;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.filter-input, .filter-clear {
+    margin: 0 15px;
+}
+
+.filter-clear{
+    margin-left: auto;
+}
+
+.clear-button {
+    font-size: larger;
+    font-weight: 450;
+    padding: 8px;
+}
+
+.dropdown-button {
+    font-size: larger;
+    background-color: rgb(42, 42, 42);
+    color: lightgray;
+    font-family: Ubuntu, sans-serif;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-button:hover {
+  background-color: rgb(50, 50, 50);
+}
+
+.search-text-field {
+    background-color: rgb(42, 42, 42);
+    color: lightgray;
+    font-family: Ubuntu, sans-serif;
+    padding: 3px;
+    font-size: larger;
+    border: none;
+    padding: 10px;
+}
+
+::ng-deep .mat-datepicker-toggle-default-icon {
+    color: lightgray !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+    background-color: rgb(42, 42, 42) !important;
+}
+
+::ng-deep .mat-date-range-input-separator{
+    color: lightgray !important;
+}
+
+::ng-deep .mat-date-range-input-wrapper{
+    color: lightgray !important;
+}
+
+::ng-deep .mat-mdc-menu-content{
+    background-color: rgb(42, 42, 42) !important;
+}
+
+::ng-deep .mat-mdc-menu-item{
+    color: lightgray;
+}
+
+mat-label {
+    color: lightgray !important;
+}

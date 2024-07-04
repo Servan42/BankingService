@@ -1,0 +1,8 @@
+::ng-deep ngx-charts-line-chart text {
+    font-family: Ubuntu;
+    fill: lightgray !important;
+}
+
+.chart-container {
+  margin-right: 15px;
+}

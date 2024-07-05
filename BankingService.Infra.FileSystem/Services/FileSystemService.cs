@@ -1,4 +1,5 @@
 ﻿using BankingService.Infra.FileSystem.API.Interfaces;
+using BankingService.Infra.FileSystem.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -29,8 +30,15 @@ namespace BankingService.Infra.FileSystem.Services
 
         public List<string> ReadAllLinesDecrypt(string filePath, string encryptionKey)
         {
-            var clear = new EncryptionService().Decrypt(File.ReadAllBytes(filePath), encryptionKey);
-            return clear.Split('\n').ToList();
+            try
+            {
+                var clear = new EncryptionService().Decrypt(File.ReadAllBytes(filePath), encryptionKey);
+                return clear.Split('\n').ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new EncryptionException($"Could not decrypt file {filePath}", ex);
+            }
         }
 
         public void WriteAllLinesOverride(string filePath, List<string> lines)

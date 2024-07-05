@@ -13,6 +13,10 @@ namespace BankingService.Infra.FileSystem.Services
     {
         public void ArchiveFile(string filePath, string archiveFolder)
         {
+            if (!Directory.Exists(archiveFolder))
+            {
+                Directory.CreateDirectory(archiveFolder);
+            }
             var filenameWithoutExtention = Path.GetFileNameWithoutExtension(filePath);
             var extention = Path.GetExtension(filePath);
             var newFileName = $"{filenameWithoutExtention}-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}{extention}";

@@ -45,6 +45,15 @@ namespace BankingService.Infra.FileSystem.Services
 
         public void ZipBackupFilesToFolder(List<string> filesToBackup, string backupFolder)
         {
+            if (!Directory.Exists(backupFolder))
+            {
+                Directory.CreateDirectory(backupFolder);
+            }
+            if (Directory.Exists("temp"))
+            {
+                Directory.GetFiles("temp").ToList().ForEach(file => File.Delete(file));
+                Directory.Delete("temp");
+            }
             Directory.CreateDirectory("temp");
             filesToBackup.ForEach(f => File.Copy(f, Path.Combine("temp",Path.GetFileName(f))));
             var zipFileName = $"backupDB-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}.zip";

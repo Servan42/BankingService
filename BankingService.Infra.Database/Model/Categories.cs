@@ -18,7 +18,7 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static Categories Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static Categories Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new Categories(
                 fileSystemService

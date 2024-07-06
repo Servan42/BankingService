@@ -6,11 +6,11 @@ namespace BankingService.Infra.Database.Services
 {
     public class MaintenanceService
     {
-        private readonly IFileSystemService fileSystemService;
+        private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration dbConfig;
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public MaintenanceService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
+        public MaintenanceService(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
             this.dbConfig = bankDatabaseConfiguration;

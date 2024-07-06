@@ -9,14 +9,14 @@ namespace BankingService.Tests.ImportServiceTests
 {
     public class ImportBankTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             bankDatabaseService.Setup(x => x.GetTransactionTypesKvp()).Returns([]);
             bankDatabaseService.Setup(x => x.GetTransactionCategoriesAndAutoCommentKvp()).Returns([]);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.SPI.Interfaces
 {
-    public interface IFileSystemService
+    public interface IFileSystemServiceForFileDB
     {
         public List<string> ReadAllLines(string filePath);
         public List<string> ReadAllLinesDecrypt(string filePath, string encryptionKey);

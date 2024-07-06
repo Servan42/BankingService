@@ -20,10 +20,10 @@ namespace BankingService.Core.Services
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IFileSystemService fileSystemService;
+        private readonly IFileSystemServiceForCore fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
 
-        public ImportService(IFileSystemService fileSystemService, IBankDatabaseService bankDatabaseService)
+        public ImportService(IFileSystemServiceForCore fileSystemService, IBankDatabaseService bankDatabaseService)
         {
             this.fileSystemService = fileSystemService;
             this.bankDatabaseService = bankDatabaseService;

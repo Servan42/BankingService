@@ -13,7 +13,7 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static CategoriesAndAutoComments Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static CategoriesAndAutoComments Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new CategoriesAndAutoComments(
                 fileSystemService

@@ -1,4 +1,5 @@
-﻿using BankingService.Infra.FileSystem.API.Interfaces;
+﻿using BankingService.Core.SPI.Interfaces;
+using BankingService.Infra.FileSystem.API.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Infra.FileSystem.Adapters
 {
-    public class FileSystemAdapterCore : Core.SPI.Interfaces.IFileSystemService
+    public class FileSystemAdapterCore : IFileSystemServiceForCore
     {
         private readonly IFileSystemService fileSystemService;
 

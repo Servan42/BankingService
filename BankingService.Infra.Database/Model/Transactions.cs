@@ -12,21 +12,21 @@ namespace BankingService.Infra.Database.Model
 {
     internal class Transactions
     {
-        private readonly IFileSystemService fileSystemService;
+        private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration config;
 
         public static string TablePath => Path.Combine("Database", "Transactions.table");
         public static string Header => "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
         public Dictionary<int, Transaction> Data { get; }
-        private Transactions(Dictionary<int, Transaction> data, IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        private Transactions(Dictionary<int, Transaction> data, IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             this.Data = data;
             this.fileSystemService = fileSystemService;
             this.config = config;
         }
 
-        public static Transactions Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static Transactions Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
             return new Transactions(csvLines.Skip(1).ToDictionary(Transaction.GetIdFromCSV, Transaction.Map), fileSystemService, config);

@@ -15,7 +15,7 @@ namespace BankingService.Tests
     internal class BankDatabaseServiceTests
     {
         IBankDatabaseService bankDatabaseService_sut;
-        Mock<Infra.Database.SPI.Interfaces.IFileSystemService> mockFileSystemService;
+        Mock<IFileSystemServiceForFileDB> mockFileSystemService;
         Mock<IBankDatabaseConfiguration> mockDatabaseConfiguration;
         private readonly string KEY = "key";
         private readonly string DB_PATH = "dbPath";

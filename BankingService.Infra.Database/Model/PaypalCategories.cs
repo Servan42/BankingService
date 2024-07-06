@@ -18,7 +18,7 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static PaypalCategories Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static PaypalCategories Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new PaypalCategories(
                 fileSystemService

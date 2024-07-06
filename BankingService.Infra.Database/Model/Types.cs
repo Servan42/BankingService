@@ -18,7 +18,7 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static Types Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static Types Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new Types(fileSystemService
                 .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))

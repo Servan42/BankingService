@@ -8,14 +8,14 @@ namespace BankingService.Tests.ImportServiceTests
 {
     internal class ImportPaypalTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             bankDatabaseService.Setup(x => x.GetUnresolvedPaypalTransactions()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);

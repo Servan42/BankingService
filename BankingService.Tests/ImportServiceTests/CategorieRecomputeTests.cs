@@ -15,14 +15,14 @@ namespace BankingService.Tests.ImportServiceTests
 {
     internal class CategorieRecomputeTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }

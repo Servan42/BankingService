@@ -23,14 +23,12 @@ internal class Program
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var fileSystemService = new FileSystemService();
-            var fileSystemServiceCore = new FileSystemAdapterCore(fileSystemService);
-            var fileSystemServiceDatabase = new FileSystemAdapterDatabase(fileSystemService);
+            FileSystemAdapter fileSystemAdapter = new FileSystemAdapter();
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
-            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, dbConfig);
+            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemAdapter, dbConfig);
             IReportService reportService = new ReportService(bankDataBaseService);
-            IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
-            MaintenanceService maintenanceService = new MaintenanceService(fileSystemServiceDatabase, dbConfig);
+            IImportService importService = new ImportService(fileSystemAdapter, bankDataBaseService);
+            MaintenanceService maintenanceService = new MaintenanceService(fileSystemAdapter, dbConfig);
 
             Console.WriteLine("Backup database");
             maintenanceService.BackupDatabase();

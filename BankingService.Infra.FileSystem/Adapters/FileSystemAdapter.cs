@@ -1,15 +1,18 @@
-﻿using BankingService.Infra.FileSystem.API.Interfaces;
-using BankingService.Infra.FileSystem.Exceptions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BankingService.Core.SPI.Interfaces;
+using BankingService.Infra.Database.SPI.Interfaces;
+using BankingService.Infra.FileSystem.Exceptions;
+using BankingService.Infra.FileSystem.Services;
 
-namespace BankingService.Infra.FileSystem.Services
+
+namespace BankingService.Infra.FileSystem.Adapters
 {
-    public class FileSystemService : IFileSystemService
+    public class FileSystemAdapter : IFileSystemServiceForCore, IFileSystemServiceForFileDB
     {
         public void ArchiveFile(string filePath, string archiveFolder)
         {
@@ -67,7 +70,7 @@ namespace BankingService.Infra.FileSystem.Services
                 Directory.Delete("temp");
             }
             Directory.CreateDirectory("temp");
-            filesToBackup.ForEach(f => File.Copy(f, Path.Combine("temp",Path.GetFileName(f))));
+            filesToBackup.ForEach(f => File.Copy(f, Path.Combine("temp", Path.GetFileName(f))));
             var zipFileName = $"backupDB-{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}.zip";
             ZipFile.CreateFromDirectory("temp", Path.Combine(backupFolder, zipFileName));
             Directory.GetFiles("temp").ToList().ForEach(File.Delete);

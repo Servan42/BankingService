@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BankingService.Infra.Database.SPI.Interfaces
+﻿namespace BankingService.Infra.Database.SPI.Interfaces
 {
     public interface IFileSystemServiceForFileDB
     {

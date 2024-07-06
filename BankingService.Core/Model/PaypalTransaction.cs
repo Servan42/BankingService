@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.Model
 {
-    internal class PaypalOperation
+    internal class PaypalTransaction
     {
         public DateTime Date { get; internal set; }
         public decimal Net { get; internal set; }

@@ -4,15 +4,15 @@ namespace BankingService.Core.SPI.Interfaces
 {
     public interface IBankDatabaseService
     {
-        public int InsertOperationsIfNew(List<OperationDto> operationsDto);
-        public Dictionary<string, string> GetOperationTypesKvp();
+        public int InsertTransactionsIfNew(List<TransactionDto> transactionsDto);
+        public Dictionary<string, string> GetTransactionTypesKvp();
         public Dictionary<string, string> GetPaypalCategoriesKvp();
-        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp();
-        public List<OperationDto> GetUnresolvedPaypalOperations();
-        public List<OperationDto> GetAllOperations();
-        public void UpdateOperations(List<UpdatableOperationDto> operationsDto);
-        public List<OperationDto> GetOperationsThatNeedsManualInput();
+        public Dictionary<string, TransactionCategoryAndAutoCommentDto> GetTransactionCategoriesAndAutoCommentKvp();
+        public List<TransactionDto> GetUnresolvedPaypalTransactions();
+        public List<TransactionDto> GetAllTransactions();
+        public void UpdateTransactions(List<UpdatableTransactionDto> transactionsDto);
+        public List<TransactionDto> GetTransactionsThatNeedsManualInput();
         public List<string> GetAllCategoriesNames();
-        List<OperationDto> GetOperationsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded);
+        List<TransactionDto> GetTransactionsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded);
     }
 }

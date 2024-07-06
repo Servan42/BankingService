@@ -19,13 +19,13 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType<OperationsReportDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType<TransactionsReportDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<OperationsReportDto> GetReport(DateTime startDate, DateTime endDate, int highestOperationMinAmount)
+        public ActionResult<TransactionsReportDto> GetReport(DateTime startDate, DateTime endDate, int highestTransactionMinAmount)
         {
             try
             {
-                var report = this.reportService.GetOperationsReport(startDate, endDate, highestOperationMinAmount);
+                var report = this.reportService.GetTransactionsReport(startDate, endDate, highestTransactionMinAmount);
                 return Ok(report);
             }
             catch (Exception ex)

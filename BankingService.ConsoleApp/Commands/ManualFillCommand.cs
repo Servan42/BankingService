@@ -22,33 +22,33 @@ namespace BankingService.ConsoleApp.Commands
 
         public override string Name => "fill";
 
-        public override string ShortManual => "Runs a loop that goes through the operations that needs manual categorization.";
+        public override string ShortManual => "Runs a loop that goes through the transactions that needs manual categorization.";
 
         public override void Execute(string[] args)
         {
             Dictionary<string, string> consoleCategories = LoadCategoriesWithIndexes();
 
-            var operationsToFill = bankDataBaseService.GetOperationsThatNeedsManualInput();
-            int operationCount = 0;
-            foreach (var operationToFill in operationsToFill)
+            var transactionsToFill = bankDataBaseService.GetTransactionsThatNeedsManualInput();
+            int transactionCount = 0;
+            foreach (var transactionToFill in transactionsToFill)
             {
-                Console.WriteLine($"--- Filling operation {++operationCount}/{operationsToFill.Count} ---\n");
+                Console.WriteLine($"--- Filling transaction {++transactionCount}/{transactionsToFill.Count} ---\n");
                 Console.WriteLine("Categories:\n");
                 EnhancedConsole.DisplayStringsOnXColumns(3, 2, consoleCategories.Select(cat => $"[{cat.Key,2}]: {cat.Value}").ToList());
 
-                DisplayOperationToFill(operationToFill);
+                DisplayTransactionToFill(transactionToFill);
                 var (category, comment) = PromptCategoryAndComment(consoleCategories);
 
-                var filledOperation = new UpdatableOperationDto
+                var filledTransaction = new UpdatableTransactionDto
                 {
-                    Id = operationToFill.Id,
-                    Type = operationToFill.Type,
-                    AutoComment = operationToFill.AutoComment,
+                    Id = transactionToFill.Id,
+                    Type = transactionToFill.Type,
+                    AutoComment = transactionToFill.AutoComment,
                     Category = category,
                     Comment = comment
                 };
 
-                bankDataBaseService.UpdateOperations([filledOperation]);
+                bankDataBaseService.UpdateTransactions([filledTransaction]);
                 Console.Clear();
             }
         }
@@ -77,17 +77,17 @@ namespace BankingService.ConsoleApp.Commands
             return (category, comment);
         }
 
-        private void DisplayOperationToFill(OperationDto operationToFill)
+        private void DisplayTransactionToFill(TransactionDto transactionToFill)
         {
-            Console.WriteLine("Operation to complete:\n");
+            Console.WriteLine("Transaction to complete:\n");
             Console.Write("  - Date:  ");
-            EnhancedConsole.WriteWithForeGroundColor(operationToFill.Date.ToString("d"), ConsoleColor.Cyan, true);
+            EnhancedConsole.WriteWithForeGroundColor(transactionToFill.Date.ToString("d"), ConsoleColor.Cyan, true);
             Console.Write("  - Flow:  ");
-            EnhancedConsole.WriteWithForeGroundColor(operationToFill.Flow.ToString(), ConsoleColor.Cyan, true);
+            EnhancedConsole.WriteWithForeGroundColor(transactionToFill.Flow.ToString(), ConsoleColor.Cyan, true);
             Console.Write("  - Label: ");
-            EnhancedConsole.WriteWithForeGroundColor(operationToFill.Label, ConsoleColor.Cyan, true);
+            EnhancedConsole.WriteWithForeGroundColor(transactionToFill.Label, ConsoleColor.Cyan, true);
             Console.Write("  - Type:  ");
-            EnhancedConsole.WriteWithForeGroundColor(operationToFill.Type, ConsoleColor.Cyan, true);
+            EnhancedConsole.WriteWithForeGroundColor(transactionToFill.Type, ConsoleColor.Cyan, true);
             Console.WriteLine();
         }
 

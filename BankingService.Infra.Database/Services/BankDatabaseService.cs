@@ -22,77 +22,77 @@ namespace BankingService.Infra.Database.Services
             this.dbConfig = bankDatabaseConfiguration;
         }
 
-        public Dictionary<string, OperationCategoryAndAutoCommentDto> GetOperationCategoriesAndAutoCommentKvp()
+        public Dictionary<string, TransactionCategoryAndAutoCommentDto> GetTransactionCategoriesAndAutoCommentKvp()
         {
             return CategoriesAndAutoComments.Load(this.fileSystemService, this.dbConfig).Data
                 .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
-                .ToDictionary(j => j.ca.Key, j => new OperationCategoryAndAutoCommentDto
+                .ToDictionary(j => j.ca.Key, j => new TransactionCategoryAndAutoCommentDto
                 {
                     AutoComment = j.ca.Value.AutoComment,
                     Category = j.c.Value.Name
                 });
         }
 
-        public Dictionary<string, string> GetOperationTypesKvp()
+        public Dictionary<string, string> GetTransactionTypesKvp()
         {
             return Types.Load(this.fileSystemService, this.dbConfig).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
         }
 
-        public int InsertOperationsIfNew(List<OperationDto> operationsDto)
+        public int InsertTransactionsIfNew(List<TransactionDto> transactionsDto)
         {
-            int newOperationCount = 0;
-            var operations = Operations.Load(this.fileSystemService, this.dbConfig);
-            var existingOperationsKeys = operations.GetUniqueIdentifiersFromData();
+            int newTransactionCount = 0;
+            var transactions = Transactions.Load(this.fileSystemService, this.dbConfig);
+            var existingTransactionsKeys = transactions.GetUniqueIdentifiersFromData();
 
-            foreach (var newOperation in ResolveOperationDtoCategoryId(operationsDto))
+            foreach (var newTransaction in ResolveTransactionDtoCategoryId(transactionsDto))
             {
-                if (existingOperationsKeys.Contains(newOperation.GetUniqueIdentifier()))
+                if (existingTransactionsKeys.Contains(newTransaction.GetUniqueIdentifier()))
                 {
-                    logger.Debug($"Following operation will not be imported because it already exists: '{newOperation.GetUniqueIdentifier()}'");
+                    logger.Debug($"Following transaction will not be imported because it already exists: '{newTransaction.GetUniqueIdentifier()}'");
                     continue;
                 }
 
-                newOperationCount++;
-                newOperation.Id = operations.GetNextId();
-                operations.Data.Add(newOperation.Id.Value, newOperation);
+                newTransactionCount++;
+                newTransaction.Id = transactions.GetNextId();
+                transactions.Data.Add(newTransaction.Id.Value, newTransaction);
             }
 
-            logger.Info($"{newOperationCount} new operations added to database");
-            operations.SaveAll();
-            return newOperationCount;
+            logger.Info($"{newTransactionCount} new transactions added to database");
+            transactions.SaveAll();
+            return newTransactionCount;
         }
 
-        public void UpdateOperations(List<UpdatableOperationDto> operationsDto)
+        public void UpdateTransactions(List<UpdatableTransactionDto> transactionsDto)
         {
-            var storedOperations = Operations.Load(this.fileSystemService, this.dbConfig);
+            var storedTransactions = Transactions.Load(this.fileSystemService, this.dbConfig);
 
-            foreach(var operationToUpdate in ResolveUpdatebleOperationDtoCategoryId(operationsDto))
+            foreach(var transactionToUpdate in ResolveUpdatebleTransactionDtoCategoryId(transactionsDto))
             {
-                if (!operationToUpdate.Id.HasValue)
-                    throw new Exception($"Operation '{operationToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id");
+                if (!transactionToUpdate.Id.HasValue)
+                    throw new Exception($"Transaction '{transactionToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id");
 
-                if (!storedOperations.Data.ContainsKey(operationToUpdate.Id.Value))
-                    throw new Exception($"Operation '{operationToUpdate.Id.Value}' cannot be updated because it is not present in database");
+                if (!storedTransactions.Data.ContainsKey(transactionToUpdate.Id.Value))
+                    throw new Exception($"Transaction '{transactionToUpdate.Id.Value}' cannot be updated because it is not present in database");
 
-                var storedOperation = storedOperations.Data[operationToUpdate.Id.Value];
-                storedOperation.Type = operationToUpdate.Type;
-                storedOperation.CategoryId = operationToUpdate.CategoryId;
-                storedOperation.AutoComment = operationToUpdate.AutoComment;
-                storedOperation.Comment = operationToUpdate.Comment;
+                var storedTransaction = storedTransactions.Data[transactionToUpdate.Id.Value];
+                storedTransaction.Type = transactionToUpdate.Type;
+                storedTransaction.CategoryId = transactionToUpdate.CategoryId;
+                storedTransaction.AutoComment = transactionToUpdate.AutoComment;
+                storedTransaction.Comment = transactionToUpdate.Comment;
             }
 
-            logger.Info($"{operationsDto.Count} operations updated");
-            storedOperations.SaveAll();
+            logger.Info($"{transactionsDto.Count} transactions updated");
+            storedTransactions.SaveAll();
         }
 
-        private IEnumerable<Operation> ResolveOperationDtoCategoryId(List<OperationDto> operationsDto)
+        private IEnumerable<Transaction> ResolveTransactionDtoCategoryId(List<TransactionDto> transactionsDto)
         {
-            return operationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
+            return transactionsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Transaction.Map(dto, c.Key));
         }
 
-        private IEnumerable<Operation> ResolveUpdatebleOperationDtoCategoryId(List<UpdatableOperationDto> updatableOperationsDto)
+        private IEnumerable<Transaction> ResolveUpdatebleTransactionDtoCategoryId(List<UpdatableTransactionDto> updatableTransactionsDto)
         {
-            return updatableOperationsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Operation.Map(dto, c.Key));
+            return updatableTransactionsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Transaction.Map(dto, c.Key));
         }
 
         public Dictionary<string, string> GetPaypalCategoriesKvp()
@@ -109,35 +109,35 @@ namespace BankingService.Infra.Database.Services
                 .ToList();
         }
 
-        public List<OperationDto> GetUnresolvedPaypalOperations()
+        public List<TransactionDto> GetUnresolvedPaypalTransactions()
         {
-            return GetStoredOperationsAsDtos()
+            return GetStoredTransactionsAsDtos()
                 .Where(o => o.Type == "Paypal" && o.Category == "TODO" && o.AutoComment == "")
                 .ToList();
         }
 
-        public List<OperationDto> GetAllOperations()
+        public List<TransactionDto> GetAllTransactions()
         {
-            return GetStoredOperationsAsDtos()
+            return GetStoredTransactionsAsDtos()
                 .ToList();
         }
 
-        public List<OperationDto> GetOperationsThatNeedsManualInput()
+        public List<TransactionDto> GetTransactionsThatNeedsManualInput()
         {
-            return GetStoredOperationsAsDtos()
+            return GetStoredTransactionsAsDtos()
                 .Where(o => o.Category == "TODO")
                 .ToList();
         }
 
-        private IEnumerable<OperationDto> GetStoredOperationsAsDtos()
+        private IEnumerable<TransactionDto> GetStoredTransactionsAsDtos()
         {
-            return Operations.Load(this.fileSystemService, this.dbConfig).Data
+            return Transactions.Load(this.fileSystemService, this.dbConfig).Data
                 .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
 
-        public List<OperationDto> GetOperationsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded)
+        public List<TransactionDto> GetTransactionsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded)
         {
-            return GetStoredOperationsAsDtos()
+            return GetStoredTransactionsAsDtos()
                 .Where(o => o.Date >= startDateIncluded && o.Date <= endDateIncluded)
                 .ToList();
         }

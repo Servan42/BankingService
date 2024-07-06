@@ -56,7 +56,7 @@ export class DateSelectorComponent implements OnInit {
     let input: ReportInput = {
       startDate: this.getStartDate(),
       endDate: this.getEndDate(),
-      highestOperationMinAmount: this.getMinAmount()
+      highestTransactionMinAmount: this.getMinAmount()
     };
     this.reportInput.emit(input);
   }

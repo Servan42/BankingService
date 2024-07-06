@@ -41,7 +41,7 @@ namespace BankingService.Api.Controllers
 
                 string result = string.Empty;
                 if (isBankFile)
-                    result = this.importService.ImportBankFile(tempFilePath) + " new operations imported.";
+                    result = this.importService.ImportBankFile(tempFilePath) + " new transactions imported.";
                 else
                     this.importService.ImportPaypalFile(tempFilePath);
 

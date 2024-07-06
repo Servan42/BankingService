@@ -15,7 +15,7 @@ export class DatabaseService {
   getAllTransactions(): Observable<Transaction[]> {
     console.log('DB CALLED! (GetAllTransactions)');
     return this.httpClient
-      .get<Transaction[]>(ENDPOINT + 'GetAllOperations')
+      .get<Transaction[]>(ENDPOINT + 'GetAllTransactions')
       .pipe(
         // tap((x) => console.log(x)),
         map((transactions) =>
@@ -46,7 +46,7 @@ export class DatabaseService {
 
   updateTransaction(transaction: Transaction): Observable<any> {
     console.log('DB CALLED! (updateTransaction)');
-    return this.httpClient.post(ENDPOINT + "UpdateOperations", [
+    return this.httpClient.post(ENDPOINT + "UpdateTransactions", [
       {
         id: transaction.id,
         type: transaction.type,

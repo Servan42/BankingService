@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.API.DTOs
 {
-    public record HighestOperationDto
+    public record HighestTransactionDto
     {
         public DateTime Date { get; init; }
         public decimal Flow { get; init; }

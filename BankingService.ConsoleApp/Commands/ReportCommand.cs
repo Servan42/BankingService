@@ -12,7 +12,7 @@ namespace BankingService.ConsoleApp.Commands
     internal class ReportCommand : Command
     {
         private readonly IReportService reportService;
-        private OperationsReportDto report;
+        private TransactionsReportDto report;
 
         public ReportCommand(IReportService reportService)
         {
@@ -21,7 +21,7 @@ namespace BankingService.ConsoleApp.Commands
 
         public override string Name => "report";
 
-        public override string ShortManual => "Displays an operations report. Takes a number between 1 and 12 representing the month.";
+        public override string ShortManual => "Displays an transactions report. Takes a number between 1 and 12 representing the month.";
 
         public override void Execute(string[] args)
         {
@@ -44,7 +44,7 @@ namespace BankingService.ConsoleApp.Commands
             }
 
             (var startDate, var endDate) = GetStartAndEndDateFromMonthNumber(monthNumber);
-            report = reportService.GetOperationsReport(startDate, endDate);
+            report = reportService.GetTransactionsReport(startDate, endDate);
             DisplayReport();
         }
         private (DateTime startDate, DateTime endDate) GetStartAndEndDateFromMonthNumber(int monthNumber)
@@ -63,17 +63,17 @@ namespace BankingService.ConsoleApp.Commands
             Console.WriteLine();
             DisplayBalanceDataTable();
             Console.WriteLine();
-            DisplayHighestOperations();
+            DisplayHighestTransactions();
         }
 
-        private void DisplayHighestOperations()
+        private void DisplayHighestTransactions()
         {
-            Console.WriteLine("  Highest operations:");
+            Console.WriteLine("  Highest transactions:");
             var table = new ConsoleTable(6, [true, true, true, true, true, true], 4, " | ");
             table.AddSeparatorLine();
             table.AddLine(["Date", "Flow", "Type", "Category", "AutoComment", "Comment"]);
             table.AddSeparatorLine();
-            foreach (var line in report.HighestOperations)
+            foreach (var line in report.HighestTransactions)
             {
                 table.AddLine(
                 [

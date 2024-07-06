@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace BankingService.ConsoleApp.Commands
 {
-    internal class DatabaseMigrationCommand : Command
+    internal class DatabasePasswordManagementCommand : Command
     {
         private readonly MaintenanceService maintenanceService;
 
-        public DatabaseMigrationCommand(MaintenanceService maintenanceService)
+        public DatabasePasswordManagementCommand(MaintenanceService maintenanceService)
         {
             this.maintenanceService = maintenanceService;
         }
 
-        public override string Name => "dbmigration";
+        public override string Name => "dbpwd";
 
-        public override string ShortManual => "Maintenance: Migrates the DB operation table to add IDs to it.";
+        public override string ShortManual => "Maintenance: Change DB password.";
 
         public override void Execute(string[] args)
         {
-            this.maintenanceService.OperationTableMigrationToIdVersion();
+            this.maintenanceService.ChangeDatabasePassword();
         }
     }
 }

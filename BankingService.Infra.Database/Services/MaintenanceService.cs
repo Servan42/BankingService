@@ -64,5 +64,27 @@ namespace BankingService.Infra.Database.Services
             Console.WriteLine("DB MIGRATED");
             logger.Info("DB MIGRATED");
         }
+
+        public void ChangeDatabasePassword()
+        {
+            Console.WriteLine($"Changing password for database {dbConfig.DatabasePath}");
+            Console.Write("Enter old password (clear): ");
+            string oldPassword = Console.ReadLine() ?? "";
+            Console.Write("Enter new password (clear): ");
+            string? newPassword = Console.ReadLine();
+            if (string.IsNullOrEmpty(newPassword))
+                throw new InvalidOperationException("New password cannot be empty");
+
+            Console.Write($"Changing password from \"{oldPassword}\" to \"{newPassword}\". Kill the program if it is incorrect. Press enter to continue.");
+            _ = Console.ReadLine();
+
+            var tablePath = Path.Combine(dbConfig.DatabasePath, Operations.TablePath);
+            var backupTablePath = $"{tablePath}.backup_{DateTime.Now.Ticks}";
+            File.Copy(tablePath, backupTablePath);
+            Console.WriteLine($"{backupTablePath} created");
+            List<string> csvLines = fileSystemService.ReadAllLinesDecrypt(tablePath, oldPassword);
+            fileSystemService.WriteAllLinesOverrideEncrypt(tablePath, csvLines, newPassword);
+            Console.WriteLine("DB passcord modified successfully");
+        }
     }
 }

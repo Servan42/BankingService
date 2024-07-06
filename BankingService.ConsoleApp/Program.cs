@@ -34,17 +34,17 @@ internal class Program
 
             Console.WriteLine("Backup database");
             maintenanceService.BackupDatabase();
-            //Console.WriteLine("Recompute operations");
-            //importService.RecomputeEveryOperationAdditionalData();
+            //Console.WriteLine("Recompute transactions");
+            //importService.RecomputeEveryTransactionAdditionalData();
 
             var invoker = new CommandInvoker();
             invoker.Register(new HelpCommand(invoker));
             invoker.Register(new ImportFileCommand(importService));
             invoker.Register(new ManualFillCommand(importService, bankDataBaseService));
-            invoker.Register(new ExportClearOperationsCommand(maintenanceService));
+            invoker.Register(new ExportClearTransactionsCommand(maintenanceService));
             invoker.Register(new BackupDbCommand(maintenanceService));
             invoker.Register(new RecomputeCategoriesCommand(importService));
-            invoker.Register(new ListIncompleteOperationsCommand(bankDataBaseService));
+            invoker.Register(new ListIncompleteTransactionsCommand(bankDataBaseService));
             invoker.Register(new ReportCommand(reportService));
             invoker.Register(new DatabaseMigrationCommand(maintenanceService));
             invoker.Register(new DatabasePasswordManagementCommand(maintenanceService));

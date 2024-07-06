@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.Model
 {
-    internal class Operation
+    internal class Transaction
     {
         public int? Id { get; set; }
         public DateTime Date { get; set; }
@@ -20,9 +20,9 @@ namespace BankingService.Core.Model
         public string AutoComment { get; set; }
         public string Comment { get; set; }
 
-        internal static Operation Map(OperationDto dto)
+        internal static Transaction Map(TransactionDto dto)
         {
-            return new Operation
+            return new Transaction
             {
                 Id = dto.Id,
                 Date = dto.Date,
@@ -36,9 +36,9 @@ namespace BankingService.Core.Model
             };
         }
 
-        public OperationDto MapToDto()
+        public TransactionDto MapToDto()
         {
-            return new OperationDto
+            return new TransactionDto
             {
                 Id = Id,
                 Date = Date,
@@ -52,9 +52,9 @@ namespace BankingService.Core.Model
             };
         }
 
-        public UpdatableOperationDto MapToUpdatableOperationDto()
+        public UpdatableTransactionDto MapToUpdatableTransactionDto()
         {
-            return new UpdatableOperationDto
+            return new UpdatableTransactionDto
             {
                 Id = Id,
                 Type = Type,
@@ -64,26 +64,26 @@ namespace BankingService.Core.Model
             };
         }
 
-        internal void ResolveCategoryAndAutoComment(Dictionary<string, OperationCategoryAndAutoCommentDto> operationCategoriesAndAutoComment)
+        internal void ResolveCategoryAndAutoComment(Dictionary<string, TransactionCategoryAndAutoCommentDto> transactionCategoriesAndAutoComment)
         {
             var defaultCategory = "TODO";
             if(!string.IsNullOrEmpty(this.Category))
                 defaultCategory = this.Category;
-            this.Category = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category), this.Label, defaultCategory);
-            this.AutoComment = ResolveOperationKeyValue(operationCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment), this.Label, String.Empty);
+            this.Category = ResolveTransactionKeyValue(transactionCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.Category), this.Label, defaultCategory);
+            this.AutoComment = ResolveTransactionKeyValue(transactionCategoriesAndAutoComment.ToDictionary(o => o.Key, o => o.Value.AutoComment), this.Label, String.Empty);
         }
 
-        internal void ResolveType(Dictionary<string, string> operationTypes)
+        internal void ResolveType(Dictionary<string, string> transactionTypes)
         {
-            this.Type = ResolveOperationKeyValue(operationTypes, this.Label, "TODO");
+            this.Type = ResolveTransactionKeyValue(transactionTypes, this.Label, "TODO");
         }
 
         internal void ResolvePaypalCategory(Dictionary<string, string> paypalCategories)
         {
-            this.Category = ResolveOperationKeyValue(paypalCategories, this.AutoComment, "TODO");
+            this.Category = ResolveTransactionKeyValue(paypalCategories, this.AutoComment, "TODO");
         }
 
-        private string ResolveOperationKeyValue(Dictionary<string, string> dict, string source, string defaultValue)
+        private string ResolveTransactionKeyValue(Dictionary<string, string> dict, string source, string defaultValue)
         {
             if (string.IsNullOrEmpty(source))
                 return defaultValue;

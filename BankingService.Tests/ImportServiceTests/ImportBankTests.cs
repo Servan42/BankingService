@@ -18,8 +18,8 @@ namespace BankingService.Tests.ImportServiceTests
         {
             fileSystemService = new Mock<IFileSystemService>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
-            bankDatabaseService.Setup(x => x.GetOperationTypesKvp()).Returns([]);
-            bankDatabaseService.Setup(x => x.GetOperationCategoriesAndAutoCommentKvp()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetTransactionTypesKvp()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetTransactionCategoriesAndAutoCommentKvp()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
@@ -40,9 +40,9 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportBankFile("bankFilePath.csv");
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = null,
                     Date = new DateTime(2023,11,21),
@@ -54,7 +54,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace BankingService.Tests.ImportServiceTests
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
-                .Setup(x => x.GetOperationTypesKvp())
+                .Setup(x => x.GetTransactionTypesKvp())
                 .Returns(new Dictionary<string, string>
                 {
                     { "PSC", "Sans Contact" }
@@ -98,9 +98,9 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportBankFile("bankFilePath.csv");
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = null,
                     Date = new DateTime(2023,11,21),
@@ -112,7 +112,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
         }
 
         [Test]
@@ -127,19 +127,19 @@ namespace BankingService.Tests.ImportServiceTests
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
-                .Setup(x => x.GetOperationCategoriesAndAutoCommentKvp())
-                .Returns(new Dictionary<string, OperationCategoryAndAutoCommentDto>
+                .Setup(x => x.GetTransactionCategoriesAndAutoCommentKvp())
+                .Returns(new Dictionary<string, TransactionCategoryAndAutoCommentDto>
                 {
-                    { "AUCHAN", new OperationCategoryAndAutoCommentDto { Category = "Nourriture", AutoComment = "Courses (Auchan)" } },
+                    { "AUCHAN", new TransactionCategoryAndAutoCommentDto { Category = "Nourriture", AutoComment = "Courses (Auchan)" } },
                 });
 
             // WHEN
             importService_sut.ImportBankFile("bankFilePath.csv");
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = null,
                     Date = new DateTime(2023,11,21),
@@ -151,7 +151,7 @@ namespace BankingService.Tests.ImportServiceTests
                     Category = "Nourriture"
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertOperationsIfNew(It.Is<List<OperationDto>>(o => TestHelpers.CheckOperationDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.API.DTOs
 {
-    public record OperationsReportDto
+    public record TransactionsReportDto
     {
         public DateTime StartDate { get; init; }
         public DateTime EndDate { get; init; }
@@ -18,7 +18,7 @@ namespace BankingService.Core.API.DTOs
         public decimal NegativeSum { get; init; }
         public decimal PositiveSumWithoutSavings { get; init; }
         public decimal NegativeSumWithoutSavings { get; init; }
-        public List<HighestOperationDto> HighestOperations { get; init; }
+        public List<HighestTransactionDto> HighestTransactions { get; init; }
         public List<DataTagDto> TreasuryGraphData { get; set; }
     }
 }

@@ -29,14 +29,14 @@ namespace BankingService.Tests
             startDate = new DateTime(2024, 03, 26);
             endDate = new DateTime(2024, 03, 27);
             mockBankDatabaseService
-                .Setup(x => x.GetOperationsBetweenDates(startDate, endDate))
-                .Returns(new List<OperationDto>
+                .Setup(x => x.GetTransactionsBetweenDates(startDate, endDate))
+                .Returns(new List<TransactionDto>
                 {
-                    new OperationDto { Flow = -10m, Category = "C1", Date = new DateTime(2024, 03, 26), Treasury = 70m },
-                    new OperationDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Treasury = 80m, Type = "T", AutoComment = "AC", Comment= "Co" },
-                    new OperationDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Treasury = 130m, Type = "T2", AutoComment = "AC2", Comment= "Co2" },
-                    new OperationDto { Flow = 100m, Category = "Epargne", Date = new DateTime(2024, 03, 27), Treasury = 160m, },
-                    new OperationDto { Flow = -10m, Category = "Epargne", Date = new DateTime(2024, 03, 26), Treasury = 60m },
+                    new TransactionDto { Flow = -10m, Category = "C1", Date = new DateTime(2024, 03, 26), Treasury = 70m },
+                    new TransactionDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Treasury = 80m, Type = "T", AutoComment = "AC", Comment= "Co" },
+                    new TransactionDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Treasury = 130m, Type = "T2", AutoComment = "AC2", Comment= "Co2" },
+                    new TransactionDto { Flow = 100m, Category = "Epargne", Date = new DateTime(2024, 03, 27), Treasury = 160m, },
+                    new TransactionDto { Flow = -10m, Category = "Epargne", Date = new DateTime(2024, 03, 26), Treasury = 60m },
                 });
         }
 
@@ -44,7 +44,7 @@ namespace BankingService.Tests
         public void Should_carry_report_dates()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
             Assert.That(result.StartDate, Is.EqualTo(startDate));
@@ -55,7 +55,7 @@ namespace BankingService.Tests
         public void Should_get_sum_per_categories()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
             Assert.That(result.SumPerCategory["C1"], Is.EqualTo(-40m));
@@ -67,7 +67,7 @@ namespace BankingService.Tests
         public void Should_get_balance()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
             Assert.That(result.Balance, Is.EqualTo(30m));
@@ -78,7 +78,7 @@ namespace BankingService.Tests
         public void Should_get_sums()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
             Assert.That(result.PositiveSum, Is.EqualTo(100m));
@@ -88,13 +88,13 @@ namespace BankingService.Tests
         }
 
         [Test]
-        public void Should_get_highest_operation()
+        public void Should_get_highest_transaction()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate, -20m);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate, -20m);
 
             // WHEN
-            var expectedHighestOperation1 = new HighestOperationDto
+            var expectedHighestTransaction1 = new HighestTransactionDto
             {
                 Date = new DateTime(2024, 03, 26),
                 Flow = -20m,
@@ -103,7 +103,7 @@ namespace BankingService.Tests
                 AutoComment = "AC",
                 Comment = "Co"
             };
-            var expectedHighestOperation2 = new HighestOperationDto
+            var expectedHighestTransaction2 = new HighestTransactionDto
             {
                 Date = new DateTime(2024, 03, 27),
                 Flow = -30m,
@@ -113,15 +113,15 @@ namespace BankingService.Tests
                 Comment = "Co2"
             };
 
-            Assert.That(result.HighestOperations[0], Is.EqualTo(expectedHighestOperation1));
-            Assert.That(result.HighestOperations[1], Is.EqualTo(expectedHighestOperation2));
+            Assert.That(result.HighestTransactions[0], Is.EqualTo(expectedHighestTransaction1));
+            Assert.That(result.HighestTransactions[1], Is.EqualTo(expectedHighestTransaction2));
         }
 
         [Test]
         public void Should_get_treasury_graph_data()
         {
             // WHEN
-            var result = reportService_sut.GetOperationsReport(startDate, endDate);
+            var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
             var expected = new List<DataTagDto>

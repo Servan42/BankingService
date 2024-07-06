@@ -16,7 +16,7 @@ export class ReportService {
 
   getReport(reportInput: ReportInput): Observable<TransactionReport> {
     console.log('DB CALLED! (getReport)');
-    let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestOperationMinAmount=' + reportInput.highestOperationMinAmount;
+    let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestTransactionMinAmount=' + reportInput.highestTransactionMinAmount;
     return this.httpClient
       .get<TransactionReport>(ENDPOINT + params)
       .pipe(
@@ -24,7 +24,7 @@ export class ReportService {
           ...r,
           startDate: new Date(r.startDate),
           endDate: new Date(r.endDate),
-          highestOperations: r.highestOperations.map((t) => ({...t, date: new Date(t.date)})),
+          highestTransactions: r.highestTransactions.map((t) => ({...t, date: new Date(t.date)})),
           treasuryGraphData: r.treasuryGraphData.map((data) => ({...data, dateTime: new Date(data.dateTime)}))
         }))
       );

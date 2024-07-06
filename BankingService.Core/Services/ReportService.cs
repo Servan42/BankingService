@@ -19,18 +19,18 @@ namespace BankingService.Core.Services
             this.bankDatabaseService = bankDatabaseService;
         }
 
-        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestOperationMinAmount = -100m)
+        public TransactionsReportDto GetTransactionsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestTransactionMinAmount = -100m)
         {
-            var reportResult = new OperationReport(startDateIncluded, endDateIncluded);
-            var operations = bankDatabaseService.GetOperationsBetweenDates(startDateIncluded, endDateIncluded);
-            reportResult.SetTreasuryGraphData(operations);
+            var reportResult = new TransactionReport(startDateIncluded, endDateIncluded);
+            var transactions = bankDatabaseService.GetTransactionsBetweenDates(startDateIncluded, endDateIncluded);
+            reportResult.SetTreasuryGraphData(transactions);
 
-            foreach (var operation in operations)
+            foreach (var transaction in transactions)
             {
-                reportResult.AddToSumPerCategory(operation.Category, operation.Flow);
-                reportResult.AddToBalances(operation.Category, operation.Flow);
-                reportResult.AddToSums(operation.Category, operation.Flow);
-                reportResult.AddHighestOperation(operation, highestOperationMinAmount);
+                reportResult.AddToSumPerCategory(transaction.Category, transaction.Flow);
+                reportResult.AddToBalances(transaction.Category, transaction.Flow);
+                reportResult.AddToSums(transaction.Category, transaction.Flow);
+                reportResult.AddHighestTransaction(transaction, highestTransactionMinAmount);
             }
 
             return reportResult.MapToDto();

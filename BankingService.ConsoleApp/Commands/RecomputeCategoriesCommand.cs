@@ -18,12 +18,12 @@ namespace BankingService.ConsoleApp.Commands
 
         public override string Name => "recompute";
 
-        public override string ShortManual => "Recomputes the auto categories and auto comments for every operation in database.";
+        public override string ShortManual => "Recomputes the auto categories and auto comments for every transaction in database.";
 
         public override void Execute(string[] args)
         {
-            importService.RecomputeEveryOperationAdditionalData();
-            Console.WriteLine("Auto categories and auto comments have been updated for every operation in database.");
+            importService.RecomputeEveryTransactionAdditionalData();
+            Console.WriteLine("Auto categories and auto comments have been updated for every transaction in database.");
         }
     }
 }

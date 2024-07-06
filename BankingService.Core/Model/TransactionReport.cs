@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.Model
 {
-    internal class OperationReport
+    internal class TransactionReport
     {
         private const string SAVINGS_CATEGORY = "Epargne";
 
@@ -21,10 +21,10 @@ namespace BankingService.Core.Model
         private decimal positiveSum;
         private decimal negativeSumWithoutSavings;
         private decimal positiveSumWithoutSavings;
-        private List<HighestOperationDto> highestOperations = new();
+        private List<HighestTransactionDto> highestTransactions = new();
         private List<DataTagDto> treasuryGraphData;
 
-        public OperationReport(DateTime startDate, DateTime endDate)
+        public TransactionReport(DateTime startDate, DateTime endDate)
         {
             this.startDate = startDate;
             this.endDate = endDate;
@@ -62,25 +62,25 @@ namespace BankingService.Core.Model
             }
         }
 
-        internal void AddHighestOperation(OperationDto operation, decimal highestOperationMinAmount)
+        internal void AddHighestTransaction(TransactionDto transaction, decimal highestTransactionMinAmount)
         {
-            if (operation.Flow <= highestOperationMinAmount && operation.Category != SAVINGS_CATEGORY)
+            if (transaction.Flow <= highestTransactionMinAmount && transaction.Category != SAVINGS_CATEGORY)
             {
-                highestOperations.Add(new HighestOperationDto
+                highestTransactions.Add(new HighestTransactionDto
                 {
-                    Date = operation.Date,
-                    Flow = operation.Flow,
-                    Type = operation.Type,
-                    Category = operation.Category,
-                    AutoComment = operation.AutoComment,
-                    Comment = operation.Comment
+                    Date = transaction.Date,
+                    Flow = transaction.Flow,
+                    Type = transaction.Type,
+                    Category = transaction.Category,
+                    AutoComment = transaction.AutoComment,
+                    Comment = transaction.Comment
                 });
             }
         }
 
-        internal void SetTreasuryGraphData(List<OperationDto> operations)
+        internal void SetTreasuryGraphData(List<TransactionDto> transactions)
         {
-            treasuryGraphData = operations
+            treasuryGraphData = transactions
                 .OrderBy(o => o.Date)
                 .ThenByDescending(o => o.Treasury)
                 .Select(o => new DataTagDto
@@ -91,9 +91,9 @@ namespace BankingService.Core.Model
                 .ToList();
         }
 
-        internal OperationsReportDto MapToDto()
+        internal TransactionsReportDto MapToDto()
         {
-            return new OperationsReportDto
+            return new TransactionsReportDto
             {
                 StartDate = startDate,
                 EndDate = endDate,
@@ -104,7 +104,7 @@ namespace BankingService.Core.Model
                 PositiveSum = positiveSum,
                 NegativeSumWithoutSavings = negativeSumWithoutSavings,
                 PositiveSumWithoutSavings = positiveSumWithoutSavings,
-                HighestOperations = highestOperations,
+                HighestTransactions = highestTransactions,
                 TreasuryGraphData = treasuryGraphData
             };
         }

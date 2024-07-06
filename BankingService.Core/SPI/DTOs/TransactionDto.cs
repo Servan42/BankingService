@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.SPI.DTOs
 {
-    public record OperationDto
+    public record TransactionDto
     {
         public int? Id { get; init; }
         public DateTime Date { get; init; }

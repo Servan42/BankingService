@@ -10,33 +10,33 @@ using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Model
 {
-    internal class Operations
+    internal class Transactions
     {
         private readonly IFileSystemService fileSystemService;
         private readonly IBankDatabaseConfiguration config;
 
-        public static string TablePath => Path.Combine("Database", "Operations.table");
+        public static string TablePath => Path.Combine("Database", "Transactions.table");
         public static string Header => "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
-        public Dictionary<int, Operation> Data { get; }
-        private Operations(Dictionary<int, Operation> data, IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public Dictionary<int, Transaction> Data { get; }
+        private Transactions(Dictionary<int, Transaction> data, IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             this.Data = data;
             this.fileSystemService = fileSystemService;
             this.config = config;
         }
 
-        public static Operations Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static Transactions Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
         {
             var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
-            return new Operations(csvLines.Skip(1).ToDictionary(Operation.GetIdFromCSV, Operation.Map), fileSystemService, config);
+            return new Transactions(csvLines.Skip(1).ToDictionary(Transaction.GetIdFromCSV, Transaction.Map), fileSystemService, config);
         }
 
         internal void SaveAll()
         {
-            List<string> operationsToWrite = [Header];
-            operationsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(config.DatabasePath, TablePath), operationsToWrite, this.config.DatabaseKey);
+            List<string> transactionsToWrite = [Header];
+            transactionsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(config.DatabasePath, TablePath), transactionsToWrite, this.config.DatabaseKey);
         }
 
         internal List<string> GetUniqueIdentifiersFromData()
@@ -55,7 +55,7 @@ namespace BankingService.Infra.Database.Model
         }
     }
 
-    internal class Operation
+    internal class Transaction
     {
         public int? Id { get; set; }
         public DateTime Date { get; set; }
@@ -72,38 +72,38 @@ namespace BankingService.Infra.Database.Model
             return int.Parse(csv.Split(";")[0]);
         }
 
-        internal static Operation Map(OperationDto operationDto, int categoryId)
+        internal static Transaction Map(TransactionDto transactionDto, int categoryId)
         {
-            return new Operation
+            return new Transaction
             {
-                Id = operationDto.Id,
-                Date = operationDto.Date,
-                Flow = operationDto.Flow,
-                Treasury = operationDto.Treasury,
-                Label = operationDto.Label,
-                Type = operationDto.Type,
+                Id = transactionDto.Id,
+                Date = transactionDto.Date,
+                Flow = transactionDto.Flow,
+                Treasury = transactionDto.Treasury,
+                Label = transactionDto.Label,
+                Type = transactionDto.Type,
                 CategoryId = categoryId,
-                AutoComment = operationDto.AutoComment,
-                Comment = operationDto.Comment,
+                AutoComment = transactionDto.AutoComment,
+                Comment = transactionDto.Comment,
             };
         }
 
-        internal static Operation Map(UpdatableOperationDto updatableOperationDto, int categoryId)
+        internal static Transaction Map(UpdatableTransactionDto updatableTransactionDto, int categoryId)
         {
-            return new Operation
+            return new Transaction
             {
-                Id = updatableOperationDto.Id,
-                Type = updatableOperationDto.Type,
+                Id = updatableTransactionDto.Id,
+                Type = updatableTransactionDto.Type,
                 CategoryId = categoryId,
-                AutoComment = updatableOperationDto.AutoComment,
-                Comment = updatableOperationDto.Comment
+                AutoComment = updatableTransactionDto.AutoComment,
+                Comment = updatableTransactionDto.Comment
             };
         }
 
-        internal static Operation Map(string csv)
+        internal static Transaction Map(string csv)
         {
             var splitted = csv.Split(";");
-            return new Operation
+            return new Transaction
             {
                 Id = int.Parse(splitted[0]),
                 Date = DateTime.Parse(splitted[1]),
@@ -117,9 +117,9 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
-        internal OperationDto MapToDto(string resolvedCategory)
+        internal TransactionDto MapToDto(string resolvedCategory)
         {
-            return new OperationDto
+            return new TransactionDto
             {
                 Id = Id,
                 Date = Date,

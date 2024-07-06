@@ -7,8 +7,8 @@ namespace BankingService.Infra.Database.Model
         public static string TablePath => Path.Combine("Database", "CategoriesAndAutoComments.csv");
         public static string Header => "StringToScan;AssociatedCategoryId;AssociatedCommentAuto";
 
-        public Dictionary<string, OperationCategoryAndAutoComment> Data { get; }
-        private CategoriesAndAutoComments(Dictionary<string, OperationCategoryAndAutoComment> data)
+        public Dictionary<string, TransactionCategoryAndAutoComment> Data { get; }
+        private CategoriesAndAutoComments(Dictionary<string, TransactionCategoryAndAutoComment> data)
         {
             this.Data = data;
         }
@@ -20,14 +20,14 @@ namespace BankingService.Infra.Database.Model
                 .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
-                .ToDictionary(s => s[0], s => new OperationCategoryAndAutoComment(s[0], int.Parse(s[1]), s[2]))
+                .ToDictionary(s => s[0], s => new TransactionCategoryAndAutoComment(s[0], int.Parse(s[1]), s[2]))
                 );
         }
     }
 
-    internal class OperationCategoryAndAutoComment
+    internal class TransactionCategoryAndAutoComment
     {
-        public OperationCategoryAndAutoComment(string stringToScan, int categoryId, string autoComment)
+        public TransactionCategoryAndAutoComment(string stringToScan, int categoryId, string autoComment)
         {
             StringToScan = stringToScan;
             CategoryId = categoryId;

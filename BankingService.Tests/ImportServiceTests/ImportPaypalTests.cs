@@ -17,7 +17,7 @@ namespace BankingService.Tests.ImportServiceTests
         {
             fileSystemService = new Mock<IFileSystemService>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
-            bankDatabaseService.Setup(x => x.GetUnresolvedPaypalOperations()).Returns([]);
+            bankDatabaseService.Setup(x => x.GetUnresolvedPaypalTransactions()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
 
@@ -54,12 +54,12 @@ namespace BankingService.Tests.ImportServiceTests
                     "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\"\r\n"
                 });
             bankDatabaseService
-                .Setup(x => x.GetUnresolvedPaypalOperations())
-                .Returns(new List<OperationDto>
+                .Setup(x => x.GetUnresolvedPaypalTransactions())
+                .Returns(new List<TransactionDto>
                 {
-                    new OperationDto { Id = 1, Date = new DateTime(2024,01,06), Flow = -10.99m }, // no match
-                    new OperationDto { Id = 2, Date = new DateTime(2024,01,07), Flow = -9.99m }, // no match
-                    new OperationDto { Id = 3, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
+                    new TransactionDto { Id = 1, Date = new DateTime(2024,01,06), Flow = -10.99m }, // no match
+                    new TransactionDto { Id = 2, Date = new DateTime(2024,01,07), Flow = -9.99m }, // no match
+                    new TransactionDto { Id = 3, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
                 .Setup(x => x.GetPaypalCategoriesKvp())
@@ -72,11 +72,11 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportPaypalFile("folder/paypal.csv");
 
             // THEN
-            var expected = new List<UpdatableOperationDto>
+            var expected = new List<UpdatableTransactionDto>
             {
-                new UpdatableOperationDto { Id = 3, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
+                new UpdatableTransactionDto { Id = 3, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<UpdatableOperationDto>>(actual => TestHelpers.CheckUpdatableOperationDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
         }
 
         [Test]
@@ -94,11 +94,11 @@ namespace BankingService.Tests.ImportServiceTests
                     "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
                 });
             bankDatabaseService
-                .Setup(x => x.GetUnresolvedPaypalOperations())
-                .Returns(new List<OperationDto>
+                .Setup(x => x.GetUnresolvedPaypalTransactions())
+                .Returns(new List<TransactionDto>
                 {
-                    new OperationDto { Id = 1, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" },
-                    new OperationDto { Id = 2, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 100, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
+                    new TransactionDto { Id = 1, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" },
+                    new TransactionDto { Id = 2, Date = new DateTime(2024,01,07), Flow = -10.99m, Treasury = 100, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
                 .Setup(x => x.GetPaypalCategoriesKvp())
@@ -111,12 +111,12 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportPaypalFile("folder/paypal.csv");
 
             // THEN
-            var expected = new List<UpdatableOperationDto>
+            var expected = new List<UpdatableTransactionDto>
             {
-                new UpdatableOperationDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" },
-                new UpdatableOperationDto { Id = 2, Type = "Paypal", AutoComment = "Spotify AB 2", Category = "Loisirs", Comment = "e" }
+                new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" },
+                new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Spotify AB 2", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<UpdatableOperationDto>>(actual => TestHelpers.CheckUpdatableOperationDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
         }
 
         [Test]
@@ -134,11 +134,11 @@ namespace BankingService.Tests.ImportServiceTests
                     "\"25/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"22,99\",\"0,00\",\"22,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
                 });
             bankDatabaseService
-                .Setup(x => x.GetUnresolvedPaypalOperations())
-                .Returns(new List<OperationDto>
+                .Setup(x => x.GetUnresolvedPaypalTransactions())
+                .Returns(new List<TransactionDto>
                 {
-                    new OperationDto { Id = 1, Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" },
-                    new OperationDto { Id = 2, Date = new DateTime(2024,01,25), Flow = -22.99m, Treasury = 10, Label = "aa", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
+                    new TransactionDto { Id = 1, Date = new DateTime(2024,01,10), Flow = -10.99m, Treasury = 0, Label = "a", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" },
+                    new TransactionDto { Id = 2, Date = new DateTime(2024,01,25), Flow = -22.99m, Treasury = 10, Label = "aa", Type = "Paypal", AutoComment = "", Category = "TODO", Comment = "e" }
                 });
             bankDatabaseService
                 .Setup(x => x.GetPaypalCategoriesKvp())
@@ -152,12 +152,12 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportPaypalFile("folder/paypal.csv");
 
             // THEN
-            var expected = new List<UpdatableOperationDto>
+            var expected = new List<UpdatableTransactionDto>
             {
-                new UpdatableOperationDto { Id = 2, Type = "Paypal", AutoComment = "Steam", Category = "Loisirs2", Comment = "e" },
-                new UpdatableOperationDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
+                new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Steam", Category = "Loisirs2", Comment = "e" },
+                new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateOperations(It.Is<List<UpdatableOperationDto>>(actual => TestHelpers.CheckUpdatableOperationDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
         }
     }
 }

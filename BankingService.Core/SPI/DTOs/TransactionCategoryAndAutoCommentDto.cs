@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.SPI.DTOs
 {
-    public record OperationCategoryAndAutoCommentDto
+    public record TransactionCategoryAndAutoCommentDto
     {
         public string Category { get; init; }
         public string AutoComment { get; init; }

@@ -19,17 +19,17 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllOperations")]
-        [ProducesResponseType<IEnumerable<OperationDto>>(StatusCodes.Status200OK)]
+        [Route("GetAllTransactions")]
+        [ProducesResponseType<IEnumerable<TransactionDto>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<OperationDto>> GetAllOperations()
+        public ActionResult<IEnumerable<TransactionDto>> GetAllTransactions()
         {
             try
             {
-                var operations = this.databaseService.GetAllOperations();
-                if (operations.Any())
-                    return Ok(operations);
+                var transactions = this.databaseService.GetAllTransactions();
+                if (transactions.Any())
+                    return Ok(transactions);
                 else
                     return NotFound();
             }
@@ -71,7 +71,7 @@ namespace BankingService.Api.Controllers
         {
             try
             {
-                var types = this.databaseService.GetOperationTypesKvp().Values.Distinct();
+                var types = this.databaseService.GetTransactionTypesKvp().Values.Distinct();
                 if (types.Any())
                     return Ok(types);
                 else
@@ -85,14 +85,14 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpPost]
-        [Route("UpdateOperations")]
+        [Route("UpdateTransactions")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult UpdateOperations(List<UpdatableOperationDto> operationsToUpdate)
+        public ActionResult UpdateTransactions(List<UpdatableTransactionDto> transactionsToUpdate)
         {
             try
             {
-                this.databaseService.UpdateOperations(operationsToUpdate);
+                this.databaseService.UpdateTransactions(transactionsToUpdate);
                 return StatusCode(204);
             }
             catch (Exception ex)

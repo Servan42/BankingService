@@ -18,11 +18,11 @@ namespace BankingService.ConsoleApp.Commands
 
         public override string Name => "dbmigration";
 
-        public override string ShortManual => "Maintenance: Migrates the DB operation table to add IDs to it.";
+        public override string ShortManual => "Maintenance: Migrates the DB transaction table to add IDs to it.";
 
         public override void Execute(string[] args)
         {
-            this.maintenanceService.OperationTableMigrationToIdVersion();
+            this.maintenanceService.TransactionTableMigrationToIdVersion();
         }
     }
 }

@@ -32,131 +32,131 @@ namespace BankingService.Core.Services
         public int ImportBankFile(string bankFilePath)
         {
             logger.Info($"Importing {bankFilePath} bank file");
-            var csvOperations = fileSystemService.ReadAllLines(bankFilePath);
-            List<Operation> operations = GetBankOperationsFromCSV(csvOperations);
-            ResolveOperationsAutoFields(operations);
-            int nbImported = bankDatabaseService.InsertOperationsIfNew(operations.Select(o => o.MapToDto()).ToList());
+            var csvTransactions = fileSystemService.ReadAllLines(bankFilePath);
+            List<Transaction> transactions = GetBankTransactionsFromCSV(csvTransactions);
+            ResolveTransactionsAutoFields(transactions);
+            int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(o => o.MapToDto()).ToList());
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
             return nbImported;
         }
 
-        private List<Operation> GetBankOperationsFromCSV(List<string> csvOperations)
+        private List<Transaction> GetBankTransactionsFromCSV(List<string> csvTransactions)
         {
-            var operations = new List<Operation>();
+            var transactions = new List<Transaction>();
 
-            foreach (var csvOperation in csvOperations.Skip(1))
+            foreach (var csvTransaction in csvTransactions.Skip(1))
             {
-                var splitedOperation = csvOperation.Split(";");
-                operations.Add(new Operation
+                var splitedTransaction = csvTransaction.Split(";");
+                transactions.Add(new Transaction
                 {
-                    Date = DateTime.Parse(splitedOperation[0]),
-                    Flow = GetBankFlow(splitedOperation),
-                    Label = splitedOperation[4],
-                    Treasury = decimal.Parse(splitedOperation[5], CultureInfo.GetCultureInfo("fr-FR"))
+                    Date = DateTime.Parse(splitedTransaction[0]),
+                    Flow = GetBankFlow(splitedTransaction),
+                    Label = splitedTransaction[4],
+                    Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
                 });
             }
 
-            return operations;
+            return transactions;
         }
 
-        private void ResolveOperationsAutoFields(List<Operation> operations)
+        private void ResolveTransactionsAutoFields(List<Transaction> transactions)
         {
-            var operationTypes = bankDatabaseService.GetOperationTypesKvp();
-            var operationCategoriesAndAutoComment = bankDatabaseService.GetOperationCategoriesAndAutoCommentKvp();
+            var transactionTypes = bankDatabaseService.GetTransactionTypesKvp();
+            var transactionCategoriesAndAutoComment = bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp();
 
-            foreach (var operation in operations)
+            foreach (var transaction in transactions)
             {
-                operation.ResolveType(operationTypes);
-                operation.ResolveCategoryAndAutoComment(operationCategoriesAndAutoComment);
+                transaction.ResolveType(transactionTypes);
+                transaction.ResolveCategoryAndAutoComment(transactionCategoriesAndAutoComment);
             }
 
-            logger.Info($"{operations.Count(o => o.Type != "TODO")}/{operations.Count} operation types resolved");
-            operations.Where(o => o.Type == "TODO").ToList().ForEach(o => logger.Debug($"Operation needs a type: '{o.Date};{o.Flow};{o.Treasury};{o.Label}'"));
-            logger.Info($"{operations.Count(o => o.Category != "TODO")}/{operations.Count} operation categories resolved");
+            logger.Info($"{transactions.Count(o => o.Type != "TODO")}/{transactions.Count} transaction types resolved");
+            transactions.Where(o => o.Type == "TODO").ToList().ForEach(o => logger.Debug($"Transaction needs a type: '{o.Date};{o.Flow};{o.Treasury};{o.Label}'"));
+            logger.Info($"{transactions.Count(o => o.Category != "TODO")}/{transactions.Count} transaction categories resolved");
         }
 
-        private decimal GetBankFlow(string[] splitedOperation)
+        private decimal GetBankFlow(string[] splitedTransaction)
         {
-            if (string.IsNullOrEmpty(splitedOperation[2]))
-                return decimal.Parse(splitedOperation[3], CultureInfo.GetCultureInfo("fr-FR"));
+            if (string.IsNullOrEmpty(splitedTransaction[2]))
+                return decimal.Parse(splitedTransaction[3], CultureInfo.GetCultureInfo("fr-FR"));
             else
-                return decimal.Parse(splitedOperation[2], CultureInfo.GetCultureInfo("fr-FR"));
+                return decimal.Parse(splitedTransaction[2], CultureInfo.GetCultureInfo("fr-FR"));
         }
 
         public void ImportPaypalFile(string paypalFilePath)
         {
             logger.Info($"Importing {paypalFilePath} paypal file");
-            var csvOperations = fileSystemService.ReadAllLines(paypalFilePath);
-            List<Operation> completeOperations = MatchPaypalDataToExistingOperations(csvOperations);
-            bankDatabaseService.UpdateOperations(completeOperations.Select(o => o.MapToUpdatableOperationDto()).ToList());
+            var csvTransactions = fileSystemService.ReadAllLines(paypalFilePath);
+            List<Transaction> completeTransactions = MatchPaypalDataToExistingTransactions(csvTransactions);
+            bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => o.MapToUpdatableTransactionDto()).ToList());
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
         }
 
-        private List<Operation> MatchPaypalDataToExistingOperations(List<string> csvOperations)
+        private List<Transaction> MatchPaypalDataToExistingTransactions(List<string> csvTransactions)
         {
-            var operationsQueue = new Queue<PaypalOperation>(GetPaypalOperationsFromCSV(csvOperations).OrderBy(o => o.Date));
-            var incompletePaypalOperationsDto = bankDatabaseService.GetUnresolvedPaypalOperations().OrderBy(o => o.Date).ToList();
+            var transactionsQueue = new Queue<PaypalTransaction>(GetPaypalTransactionsFromCSV(csvTransactions).OrderBy(o => o.Date));
+            var incompletePaypalTransactionsDto = bankDatabaseService.GetUnresolvedPaypalTransactions().OrderBy(o => o.Date).ToList();
             var paypalCategories = bankDatabaseService.GetPaypalCategoriesKvp();
 
-            var completeOperations = new List<Operation>();
-            while (operationsQueue.Count > 0)
+            var completeTransactions = new List<Transaction>();
+            while (transactionsQueue.Count > 0)
             {
-                var paypalOperation = operationsQueue.Dequeue();
-                var operationToCompleteDto = incompletePaypalOperationsDto
-                    .FirstOrDefault(o => o.Date == paypalOperation.OffesetedDate() && o.Flow == paypalOperation.Net);
+                var paypalTransaction = transactionsQueue.Dequeue();
+                var transactionToCompleteDto = incompletePaypalTransactionsDto
+                    .FirstOrDefault(o => o.Date == paypalTransaction.OffesetedDate() && o.Flow == paypalTransaction.Net);
 
-                if (operationToCompleteDto == null)
+                if (transactionToCompleteDto == null)
                 {
-                    paypalOperation.DateOffset++;
-                    if (paypalOperation.DateOffset > 31)
+                    paypalTransaction.DateOffset++;
+                    if (paypalTransaction.DateOffset > 31)
                         break;
-                    operationsQueue.Enqueue(paypalOperation);
+                    transactionsQueue.Enqueue(paypalTransaction);
                     continue;
                 }
 
-                incompletePaypalOperationsDto.Remove(operationToCompleteDto);
-                var completeOperation = Operation.Map(operationToCompleteDto);
-                completeOperation.AutoComment = paypalOperation.Nom;
-                completeOperation.ResolvePaypalCategory(paypalCategories);
-                completeOperations.Add(completeOperation);
+                incompletePaypalTransactionsDto.Remove(transactionToCompleteDto);
+                var completeTransaction = Transaction.Map(transactionToCompleteDto);
+                completeTransaction.AutoComment = paypalTransaction.Nom;
+                completeTransaction.ResolvePaypalCategory(paypalCategories);
+                completeTransactions.Add(completeTransaction);
             }
 
-            logger.Info(operationsQueue.Count > 0 ? $"{operationsQueue.Count} paypal operations could not be matched" : "All paypal operations were matched to data");
-            while (operationsQueue.Count > 0)
+            logger.Info(transactionsQueue.Count > 0 ? $"{transactionsQueue.Count} paypal transactions could not be matched" : "All paypal transactions were matched to data");
+            while (transactionsQueue.Count > 0)
             {
-                var unmatchedOp = operationsQueue.Dequeue();
-                logger.Debug($"Following paypal operation could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
+                var unmatchedOp = transactionsQueue.Dequeue();
+                logger.Debug($"Following paypal transaction could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
             }
 
-            return completeOperations;
+            return completeTransactions;
         }
 
-        private List<PaypalOperation> GetPaypalOperationsFromCSV(List<string> csvOperations)
+        private List<PaypalTransaction> GetPaypalTransactionsFromCSV(List<string> csvTransactions)
         {
-            var operations = new List<PaypalOperation>();
+            var transactions = new List<PaypalTransaction>();
 
-            foreach (var operation in csvOperations.Skip(1))
+            foreach (var transaction in csvTransactions.Skip(1))
             {
-                var operationFeilds = GetCSVFeilds(operation, ",");
-                var paypalOperation = new PaypalOperation()
+                var transactionFeilds = GetCSVFeilds(transaction, ",");
+                var paypalTransaction = new PaypalTransaction()
                 {
-                    Date = DateTime.Parse(operationFeilds[0]),
-                    Net = decimal.Parse(operationFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
-                    Nom = operationFeilds[11]
+                    Date = DateTime.Parse(transactionFeilds[0]),
+                    Net = decimal.Parse(transactionFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
+                    Nom = transactionFeilds[11]
                 };
-                if (paypalOperation.Net < 0)
-                    operations.Add(paypalOperation);
+                if (paypalTransaction.Net < 0)
+                    transactions.Add(paypalTransaction);
             }
 
-            return operations;
+            return transactions;
         }
 
-        private List<string> GetCSVFeilds(string operation, string delimiter)
+        private List<string> GetCSVFeilds(string transaction, string delimiter)
         {
             var result = new List<string>();
             string lastIncompleteFeild = string.Empty;
 
-            foreach (var feild in operation.Split(delimiter))
+            foreach (var feild in transaction.Split(delimiter))
             {
                 if (feild.StartsWith("\"") && feild.EndsWith("\""))
                 {
@@ -179,27 +179,27 @@ namespace BankingService.Core.Services
             return result;
         }
 
-        public void RecomputeEveryOperationAdditionalData()
+        public void RecomputeEveryTransactionAdditionalData()
         {
-            logger.Info("Re-computing every operation additional data");
+            logger.Info("Re-computing every transaction additional data");
 
-            var operations = bankDatabaseService.GetAllOperations().Select(Operation.Map).ToList();
-            var types = bankDatabaseService.GetOperationTypesKvp();
-            var catAndComments = bankDatabaseService.GetOperationCategoriesAndAutoCommentKvp();
+            var transactions = bankDatabaseService.GetAllTransactions().Select(Transaction.Map).ToList();
+            var types = bankDatabaseService.GetTransactionTypesKvp();
+            var catAndComments = bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp();
             var paypalCat = bankDatabaseService.GetPaypalCategoriesKvp();
 
-            foreach (var operation in operations)
+            foreach (var transaction in transactions)
             {
-                operation.ResolveType(types);
-                if (operation.Type == "Paypal")
-                    operation.ResolvePaypalCategory(paypalCat);
+                transaction.ResolveType(types);
+                if (transaction.Type == "Paypal")
+                    transaction.ResolvePaypalCategory(paypalCat);
                 else
-                    operation.ResolveCategoryAndAutoComment(catAndComments);
+                    transaction.ResolveCategoryAndAutoComment(catAndComments);
             }
 
-            logger.Info($"{operations.Count(o => o.Type == "TODO" || o.Category == "TODO")} operations still require manual input");
+            logger.Info($"{transactions.Count(o => o.Type == "TODO" || o.Category == "TODO")} transactions still require manual input");
 
-            bankDatabaseService.UpdateOperations(operations.Select(o => o.MapToUpdatableOperationDto()).ToList());
+            bankDatabaseService.UpdateTransactions(transactions.Select(o => o.MapToUpdatableTransactionDto()).ToList());
         }
     }
 }

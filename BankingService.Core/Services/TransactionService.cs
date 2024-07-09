@@ -31,5 +31,10 @@ namespace BankingService.Core.Services
         {
             this.bankDatabaseService.UpdateTransactions(mapper.Map<List<SPI.DTOs.UpdatableTransactionDto>>(mapper.Map<List<UpdatableTransaction>>(transactionsToUpdate)));
         }
+
+        public List<string> GetTransactionCategoriesNames()
+        {
+            return this.bankDatabaseService.GetAllCategoriesNames();
+        }
     }
 }

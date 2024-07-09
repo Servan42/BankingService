@@ -75,6 +75,19 @@ namespace BankingService.Tests
             this.mockDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<Core.SPI.DTOs.UpdatableTransactionDto>>(actual => VerifyCollections(expected, actual))), Times.Once());
         }
 
+        [Test]
+        public void Should_get_transaction_categories_names()
+        {
+            // GIVEN
+            this.mockDatabaseService.Setup(x => x.GetAllCategoriesNames()).Returns(["cat1", "cat2"]);
+
+            // WHEN
+            var result = this.transactionService_sut.GetTransactionCategoriesNames();
+
+            // THEN
+            CollectionAssert.AreEqual(new List<string> { "cat1", "cat2" }, result);
+        }
+
         private bool VerifyCollections<T>(List<T> expected, List<T> actual)
         {
             CollectionAssert.AreEqual(expected, actual);

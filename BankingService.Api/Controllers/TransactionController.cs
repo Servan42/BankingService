@@ -45,15 +45,15 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllCategoriesNames")]
+        [Route("GetTransactionCategoriesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<string>> GetAllCategoriesNames()
+        public ActionResult<IEnumerable<string>> GetTransactionCategoriesNames()
         {
             try
             {
-                var categories = this.databaseService.GetAllCategoriesNames();
+                var categories = this.transactionService.GetTransactionCategoriesNames();
                 if (categories.Any())
                     return Ok(categories);
                 else

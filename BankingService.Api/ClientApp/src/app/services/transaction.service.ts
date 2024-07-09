@@ -31,7 +31,7 @@ export class TransactionService {
   getCategoriesNames(): Observable<string[]> {
     console.log('DB CALLED! (getCategoriesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetAllCategoriesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionCategoriesNames");
     // const mockCategories = ['Food', 'Salary', 'Entertainment', 'Utilities'];
     // return of(mockCategories);
   }

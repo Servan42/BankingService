@@ -54,7 +54,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace BankingService.Tests.ImportServiceTests
                     Category = "Nourriture"
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
     }
 }

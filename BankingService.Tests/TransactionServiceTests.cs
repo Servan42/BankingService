@@ -72,7 +72,7 @@ namespace BankingService.Tests
                 new Core.SPI.DTOs.UpdatableTransactionDto { Id = 1, Type = "type1", Category = "cat1", Comment = "c1", AutoComment = "ac1" },
                 new Core.SPI.DTOs.UpdatableTransactionDto { Id = 2, Type = "type2", Category = "cat2", Comment = "c2", AutoComment = "ac2" }
             };
-            this.mockDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<Core.SPI.DTOs.UpdatableTransactionDto>>(actual => VerifyCollections(expected, actual))), Times.Once());
+            this.mockDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<Core.SPI.DTOs.UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -104,12 +104,6 @@ namespace BankingService.Tests
 
             // THEN
             CollectionAssert.AreEqual(new List<string> { "value1", "value2" }, result);
-        }
-
-        private bool VerifyCollections<T>(List<T> expected, List<T> actual)
-        {
-            CollectionAssert.AreEqual(expected, actual);
-            return true;
         }
     }
 }

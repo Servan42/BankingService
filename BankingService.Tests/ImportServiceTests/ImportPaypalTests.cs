@@ -76,7 +76,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new UpdatableTransactionDto { Id = 3, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace BankingService.Tests.ImportServiceTests
                 new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" },
                 new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Spotify AB 2", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace BankingService.Tests.ImportServiceTests
                 new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Steam", Category = "Loisirs2", Comment = "e" },
                 new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
     }
 }

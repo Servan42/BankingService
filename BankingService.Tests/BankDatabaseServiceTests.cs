@@ -186,7 +186,7 @@ namespace BankingService.Tests
                 "10;2024-03-24;-10,01;20,00;label1;;1;;",
                 "11;2024-03-24;-10,01;20,00;label2;;2;;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => o.IsEqualTo(expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
             Assert.That(count, Is.EqualTo(1));
@@ -237,7 +237,7 @@ namespace BankingService.Tests
                     Comment = ""
                 }
             };
-            Assert.That(TestHelpers.CheckTransactionDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
@@ -289,7 +289,7 @@ namespace BankingService.Tests
                 "1;2024-03-24;-10,01;20,00;label1;TODO;1;;",
                 "2;2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => o.IsEqualTo(expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
@@ -337,7 +337,7 @@ namespace BankingService.Tests
                     Comment = ""
                 }
             };
-            Assert.That(TestHelpers.CheckTransactionDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
@@ -398,7 +398,7 @@ namespace BankingService.Tests
                 }
             };
 
-            Assert.That(TestHelpers.CheckTransactionDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
@@ -481,7 +481,7 @@ namespace BankingService.Tests
                 }
             };
 
-            Assert.That(TestHelpers.CheckTransactionDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }

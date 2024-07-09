@@ -150,7 +150,7 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.RecomputeEveryTransactionAdditionalData();
 
             // THEN
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, new List<UpdatableTransactionDto> { expected }))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(new List<UpdatableTransactionDto> { expected }))), Times.Once());
         }
     }
 }

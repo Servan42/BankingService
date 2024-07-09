@@ -36,5 +36,13 @@ namespace BankingService.Core.Services
         {
             return this.bankDatabaseService.GetAllCategoriesNames();
         }
+
+        public List<string> GetTransactionTypesNames()
+        {
+            return this.bankDatabaseService.GetTransactionTypesKvp()
+                .Values
+                .Distinct()
+                .ToList();
+        }
     }
 }

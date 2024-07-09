@@ -1,7 +1,5 @@
 ﻿using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
-using BankingService.Core.SPI.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 
@@ -13,13 +11,10 @@ namespace BankingService.Api.Controllers
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly ITransactionService transactionService;
-        [Obsolete]
-        private readonly IBankDatabaseService databaseService;
 
-        public TransactionController(ITransactionService transactionService, IBankDatabaseService databaseService)
+        public TransactionController(ITransactionService transactionService)
         {
             this.transactionService = transactionService;
-            this.databaseService = databaseService;
         }
 
         [HttpGet]
@@ -67,15 +62,15 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllTypesNames")]
+        [Route("GetTransactionTypesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<string>> GetAllTypesNames()
+        public ActionResult<IEnumerable<string>> GetTransactionTypesNames()
         {
             try
             {
-                var types = this.databaseService.GetTransactionTypesKvp().Values.Distinct();
+                var types = this.transactionService.GetTransactionTypesNames();
                 if (types.Any())
                     return Ok(types);
                 else

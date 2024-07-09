@@ -88,6 +88,24 @@ namespace BankingService.Tests
             CollectionAssert.AreEqual(new List<string> { "cat1", "cat2" }, result);
         }
 
+        [Test]
+        public void Should_get_transaction_type_names()
+        {
+            // GIVEN
+            this.mockDatabaseService.Setup(x => x.GetTransactionTypesKvp()).Returns(new Dictionary<string, string> 
+            {
+                { "key1", "value1" },
+                { "key2", "value2" },
+                { "key3", "value2" }
+            });
+
+            // WHEN
+            var result = this.transactionService_sut.GetTransactionTypesNames();
+
+            // THEN
+            CollectionAssert.AreEqual(new List<string> { "value1", "value2" }, result);
+        }
+
         private bool VerifyCollections<T>(List<T> expected, List<T> actual)
         {
             CollectionAssert.AreEqual(expected, actual);

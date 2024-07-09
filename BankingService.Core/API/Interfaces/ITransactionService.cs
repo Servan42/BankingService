@@ -1,5 +1,6 @@
 ﻿using BankingService.Core.API.DTOs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace BankingService.Core.API.Interfaces
     {
         List<TransactionDto> GetAllTransactions();
         List<string> GetTransactionCategoriesNames();
+        List<string> GetTransactionTypesNames();
         void UpdateTransactions(List<UpdatableTransactionDto> transactionsToUpdate);
     }
 }

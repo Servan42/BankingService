@@ -39,7 +39,7 @@ export class TransactionService {
   getTypesNames(): Observable<string[]> {
     console.log('DB CALLED! (getTypesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetAllTypesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionTypesNames");
     // const mockTypes = ['Expense', 'Income'];
     // return of(mockTypes);
   }

@@ -1,5 +1,5 @@
-﻿using BankingService.Core.API.Interfaces;
-using BankingService.Core.SPI.DTOs;
+﻿using BankingService.Core.API.DTOs;
+using BankingService.Core.API.Interfaces;
 using BankingService.Core.SPI.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -96,7 +96,7 @@ namespace BankingService.Api.Controllers
         {
             try
             {
-                this.databaseService.UpdateTransactions(transactionsToUpdate);
+                this.transactionService.UpdateTransactions(transactionsToUpdate);
                 return StatusCode(204);
             }
             catch (Exception ex)

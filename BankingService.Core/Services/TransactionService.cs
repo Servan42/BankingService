@@ -1,5 +1,4 @@
 ﻿using BankingService.Core.API.Interfaces;
-using BankingService.Core.SPI.DTOs;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using System;
@@ -23,9 +22,14 @@ namespace BankingService.Core.Services
             this.mapper = mapper;
         }
 
-        public List<API.DTOs.TransactionDto> GetAllTransactions()
+        public List<TransactionDto> GetAllTransactions()
         {
-            return mapper.Map<List<API.DTOs.TransactionDto>>(mapper.Map<List<Transaction>>(this.bankDatabaseService.GetAllTransactions()));
+            return mapper.Map<List<TransactionDto>>(mapper.Map<List<Transaction>>(this.bankDatabaseService.GetAllTransactions()));
+        }
+
+        public void UpdateTransactions(List<UpdatableTransactionDto> transactionsToUpdate)
+        {
+            this.bankDatabaseService.UpdateTransactions(mapper.Map<List<SPI.DTOs.UpdatableTransactionDto>>(mapper.Map<List<UpdatableTransaction>>(transactionsToUpdate)));
         }
     }
 }

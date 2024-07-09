@@ -14,6 +14,7 @@ namespace BankingService.Core.API.MapperProfile
         public CoreApiProfile()
         {
             CreateMap<Transaction, TransactionDto>();
+            CreateMap<UpdatableTransactionDto, UpdatableTransaction>();
         }
     }
 }

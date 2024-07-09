@@ -10,5 +10,6 @@ namespace BankingService.Core.API.Interfaces
     public interface ITransactionService
     {
         List<TransactionDto> GetAllTransactions();
+        void UpdateTransactions(List<UpdatableTransactionDto> transactionsToUpdate);
     }
 }

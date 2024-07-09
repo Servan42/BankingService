@@ -14,6 +14,7 @@ namespace BankingService.Core.SPI.MapperProfile
         public CoreSpiProfile()
         {
             CreateMap<TransactionDto, Transaction>();
+            CreateMap<UpdatableTransaction, UpdatableTransactionDto>();
         }
     }
 }

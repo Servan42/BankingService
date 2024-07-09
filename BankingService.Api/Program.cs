@@ -1,7 +1,10 @@
+using AutoMapper;
 using BankingService.Api.Configuration;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
@@ -27,6 +30,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAutoMapper(typeof(CoreApiProfile), typeof(CoreSpiProfile));
+
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IFileSystemServiceForFileDB, FileSystemAdapter>();
 builder.Services.AddScoped<IFileSystemServiceForCore, FileSystemAdapter>();
 builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();

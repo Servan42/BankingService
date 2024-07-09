@@ -4,12 +4,12 @@ import { Transaction, mockTransactions } from '../model/transaction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-const ENDPOINT = environment.apiUrl + '/api/Database/';
+const ENDPOINT = environment.apiUrl + '/api/Transaction/';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DatabaseService {
+export class TransactionService {
   constructor(private httpClient: HttpClient) {}
 
   getAllTransactions(): Observable<Transaction[]> {

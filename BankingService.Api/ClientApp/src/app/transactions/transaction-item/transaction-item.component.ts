@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Transaction } from '../../model/transaction';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DatabaseService } from '../../services/database.service';
+import { TransactionService } from '../../services/transaction.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { NumberToMoneyPipe } from '../../pipe/number-to-money.pipe';
@@ -23,7 +23,7 @@ export class TransactionItemComponent implements OnInit {
   categories: string[] = [];
   types: string[] = [];
 
-  constructor(private dbService: DatabaseService) {}
+  constructor(private dbService: TransactionService) {}
 
   ngOnInit() {}
 

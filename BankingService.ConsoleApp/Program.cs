@@ -1,9 +1,12 @@
-﻿using BankingService.ConsoleApp;
+﻿using AutoMapper;
+using BankingService.ConsoleApp;
 using BankingService.ConsoleApp.Commands;
 using BankingService.ConsoleApp.Configuration;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
@@ -23,10 +26,16 @@ internal class Program
                 .AddJsonFile("appsettings.json")
                 .Build();
 
+            IMapper mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CoreSpiProfile>();
+                cfg.AddProfile<CoreApiProfile>();
+            }));
+
             FileSystemAdapter fileSystemAdapter = new FileSystemAdapter();
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
             IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemAdapter, dbConfig);
-            IReportService reportService = new ReportService(bankDataBaseService);
+            IReportService reportService = new ReportService(bankDataBaseService, mapper);
             IImportService importService = new ImportService(fileSystemAdapter, bankDataBaseService);
             MaintenanceService maintenanceService = new MaintenanceService(fileSystemAdapter, dbConfig);
 

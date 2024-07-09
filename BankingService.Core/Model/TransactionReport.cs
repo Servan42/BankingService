@@ -62,7 +62,7 @@ namespace BankingService.Core.Model
             }
         }
 
-        internal void AddHighestTransaction(TransactionDto transaction, decimal highestTransactionMinAmount)
+        internal void AddHighestTransaction(Transaction transaction, decimal highestTransactionMinAmount)
         {
             if (transaction.Flow <= highestTransactionMinAmount && transaction.Category != SAVINGS_CATEGORY)
             {
@@ -78,7 +78,7 @@ namespace BankingService.Core.Model
             }
         }
 
-        internal void SetTreasuryGraphData(List<TransactionDto> transactions)
+        internal void SetTreasuryGraphData(List<Transaction> transactions)
         {
             treasuryGraphData = transactions
                 .OrderBy(o => o.Date)

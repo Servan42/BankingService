@@ -1,4 +1,5 @@
-﻿using BankingService.Core.SPI.DTOs;
+﻿using BankingService.Core.API.Interfaces;
+using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,13 +9,16 @@ namespace BankingService.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DatabaseController : ControllerBase
+    public class TransactionController : ControllerBase
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly ITransactionService transactionService;
+        [Obsolete]
         private readonly IBankDatabaseService databaseService;
 
-        public DatabaseController(IBankDatabaseService databaseService)
+        public TransactionController(ITransactionService transactionService, IBankDatabaseService databaseService)
         {
+            this.transactionService = transactionService;
             this.databaseService = databaseService;
         }
 
@@ -27,7 +31,7 @@ namespace BankingService.Api.Controllers
         {
             try
             {
-                var transactions = this.databaseService.GetAllTransactions();
+                var transactions = this.transactionService.GetAllTransactions();
                 if (transactions.Any())
                     return Ok(transactions);
                 else

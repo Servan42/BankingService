@@ -7,7 +7,7 @@ import { TransactionItemComponent } from './transaction-item/transaction-item.co
 import { Transaction, mockTransactions } from '../model/transaction';
 import { FilterTransactionsPipe } from '../pipe/filter-transactions.pipe';
 import { TransactionFilters } from '../model/transaction-filters';
-import { DatabaseService } from '../services/database.service';
+import { TransactionService } from '../services/transaction.service';
 
 @Component({
   selector: 'app-transactions',
@@ -28,7 +28,7 @@ export class TransactionsComponent implements OnInit {
   transactions: Transaction[] = [];
   filters: TransactionFilters | undefined;
 
-  constructor(private dbService: DatabaseService) { }
+  constructor(private dbService: TransactionService) { }
 
   ngOnInit() {
     this.refreshList();

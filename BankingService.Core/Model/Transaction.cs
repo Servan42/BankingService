@@ -14,44 +14,9 @@ namespace BankingService.Core.Model
         public string AutoComment { get; set; }
         public string Comment { get; set; }
 
-        [Obsolete]
-        internal static Transaction Map(TransactionDto dto)
+        public UpdatableTransaction ToUpdatableTransaction()
         {
-            return new Transaction
-            {
-                Id = dto.Id,
-                Date = dto.Date,
-                Flow = dto.Flow,
-                Treasury = dto.Treasury,
-                Label = dto.Label,
-                Type = dto.Type,
-                Category = dto.Category,
-                AutoComment = dto.AutoComment,
-                Comment = dto.Comment,
-            };
-        }
-
-        [Obsolete]
-        public TransactionDto MapToDto()
-        {
-            return new TransactionDto
-            {
-                Id = Id,
-                Date = Date,
-                Flow = Flow,
-                Treasury = Treasury,
-                Label = Label,
-                Type = Type,
-                Category = Category,
-                AutoComment = AutoComment,
-                Comment = Comment,
-            };
-        }
-
-        [Obsolete]
-        public UpdatableTransactionDto MapToUpdatableTransactionDto()
-        {
-            return new UpdatableTransactionDto
+            return new UpdatableTransaction
             {
                 Id = Id,
                 Type = Type,
@@ -61,7 +26,7 @@ namespace BankingService.Core.Model
             };
         }
 
-        internal void ResolveCategoryAndAutoComment(Dictionary<string, TransactionCategoryAndAutoCommentDto> transactionCategoriesAndAutoComment)
+        internal void ResolveCategoryAndAutoComment(Dictionary<string, TransactionCategoryAndAutoComment> transactionCategoriesAndAutoComment)
         {
             var defaultCategory = "TODO";
             if(!string.IsNullOrEmpty(this.Category))

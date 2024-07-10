@@ -5,11 +5,6 @@ using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Core.SPI.MapperProfile;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests
 {
@@ -104,6 +99,29 @@ namespace BankingService.Tests
 
             // THEN
             CollectionAssert.AreEqual(new List<string> { "value1", "value2" }, result);
+        }
+
+        [Test]
+        public void Should_get_transaction_that_needs_manual_input()
+        {
+            // GIVEN
+            this.mockDatabaseService
+                .Setup(x => x.GetTransactionsThatNeedsManualInput())
+                .Returns(new List<Core.SPI.DTOs.TransactionDto>
+                {
+                    new Core.SPI.DTOs.TransactionDto { Id = 1, Type = "type1", Treasury = 10, AutoComment = "ac1", Category = "TODO", Comment = "cm1", Date = new DateTime(2024,03,26), Flow = 20, Label = "label1" },
+                    new Core.SPI.DTOs.TransactionDto { Id = 2, Type = "type2", Treasury = 11, AutoComment = "ac2", Category = "TODO", Comment = "cm2", Date = new DateTime(2024,03,27), Flow = 21, Label = "label2" }
+                });
+
+            // WHEN
+            var result = this.transactionService_sut.GetTransactionsThatNeedsManualInput();
+
+            // THEN
+            CollectionAssert.AreEqual(new List<Core.API.DTOs.TransactionDto>
+            {
+                new Core.API.DTOs.TransactionDto { Id = 1, Type = "type1", Treasury = 10, AutoComment = "ac1", Category = "TODO", Comment = "cm1", Date = new DateTime(2024,03,26), Flow = 20, Label = "label1" },
+                new Core.API.DTOs.TransactionDto { Id = 2, Type = "type2", Treasury = 11, AutoComment = "ac2", Category = "TODO", Comment = "cm2", Date = new DateTime(2024,03,27), Flow = 21, Label = "label2" }
+            }, result);
         }
     }
 }

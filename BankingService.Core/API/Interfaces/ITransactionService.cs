@@ -12,6 +12,7 @@ namespace BankingService.Core.API.Interfaces
     {
         List<TransactionDto> GetAllTransactions();
         List<string> GetTransactionCategoriesNames();
+        List<TransactionDto> GetTransactionsThatNeedsManualInput();
         List<string> GetTransactionTypesNames();
         void UpdateTransactions(List<UpdatableTransactionDto> transactionsToUpdate);
     }

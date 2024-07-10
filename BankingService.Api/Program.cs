@@ -1,4 +1,3 @@
-using AutoMapper;
 using BankingService.Api.Configuration;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;

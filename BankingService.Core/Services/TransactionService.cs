@@ -44,5 +44,10 @@ namespace BankingService.Core.Services
                 .Distinct()
                 .ToList();
         }
+
+        public List<TransactionDto> GetTransactionsThatNeedsManualInput()
+        {
+            return mapper.Map<List<TransactionDto>>(mapper.Map<List<Transaction>>(this.bankDatabaseService.GetTransactionsThatNeedsManualInput()));
+        }
     }
 }

@@ -1,6 +1,5 @@
-﻿using BankingService.Core.API.Interfaces;
-using BankingService.Core.SPI.DTOs;
-using BankingService.Core.SPI.Interfaces;
+﻿using BankingService.Core.API.DTOs;
+using BankingService.Core.API.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +10,11 @@ namespace BankingService.ConsoleApp.Commands
 {
     internal class ManualFillCommand : Command
     {
-        private readonly IImportService importService;
-        private readonly IBankDatabaseService bankDataBaseService;
+        private readonly ITransactionService transactionService;
 
-        public ManualFillCommand(IImportService importService, IBankDatabaseService bankDataBaseService)
+        public ManualFillCommand(ITransactionService transactionService)
         {
-            this.importService = importService;
-            this.bankDataBaseService = bankDataBaseService;
+            this.transactionService = transactionService;
         }
 
         public override string Name => "fill";
@@ -28,7 +25,7 @@ namespace BankingService.ConsoleApp.Commands
         {
             Dictionary<string, string> consoleCategories = LoadCategoriesWithIndexes();
 
-            var transactionsToFill = bankDataBaseService.GetTransactionsThatNeedsManualInput();
+            var transactionsToFill = transactionService.GetTransactionsThatNeedsManualInput();
             int transactionCount = 0;
             foreach (var transactionToFill in transactionsToFill)
             {
@@ -48,7 +45,7 @@ namespace BankingService.ConsoleApp.Commands
                     Comment = comment
                 };
 
-                bankDataBaseService.UpdateTransactions([filledTransaction]);
+                transactionService.UpdateTransactions([filledTransaction]);
                 Console.Clear();
             }
         }
@@ -95,7 +92,7 @@ namespace BankingService.ConsoleApp.Commands
         {
             var consoleCategories = new Dictionary<string, string>();
             int i = 1;
-            foreach (var cat in bankDataBaseService.GetAllCategoriesNames())
+            foreach (var cat in transactionService.GetTransactionCategoriesNames())
             {
                 if (cat == "TODO") continue;
                 consoleCategories.Add(i.ToString(), cat);

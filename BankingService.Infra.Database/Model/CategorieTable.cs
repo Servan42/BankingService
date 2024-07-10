@@ -2,32 +2,32 @@
 
 namespace BankingService.Infra.Database.Model
 {
-    internal class Categories
+    internal class CategorieTable
     {
         public static string TablePath => Path.Combine("Database", "Categories.csv");
         public static string Header => "Id;Name";
 
-        public Dictionary<int, Categorie> Data { get; }
-        private Categories(Dictionary<int, Categorie> data)
+        public Dictionary<int, CategorieLine> Data { get; }
+        private CategorieTable(Dictionary<int, CategorieLine> data)
         {
             this.Data = data;
         }
 
-        public static Categories Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
+        public static CategorieTable Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
-            return new Categories(
+            return new CategorieTable(
                 fileSystemService
                 .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
-                .ToDictionary(s => int.Parse(s[0]), s => new Categorie(int.Parse(s[0]), s[1]))
+                .ToDictionary(s => int.Parse(s[0]), s => new CategorieLine(int.Parse(s[0]), s[1]))
                 );
         }
     }
 
-    internal class Categorie
+    internal class CategorieLine
     {
-        public Categorie(int id, string name)
+        public CategorieLine(int id, string name)
         {
             Id = id;
             Name = name;

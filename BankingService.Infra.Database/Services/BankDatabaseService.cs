@@ -19,8 +19,8 @@ namespace BankingService.Infra.Database.Services
 
         public Dictionary<string, TransactionCategoryAndAutoCommentDto> GetTransactionCategoriesAndAutoCommentKvp()
         {
-            return CategoriesAndAutoComments.Load(this.fileSystemService, this.dbConfig).Data
-                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
+            return CategoriesAndAutoCommentsTable.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(CategorieTable.Load(this.fileSystemService, this.dbConfig).Data, ca => ca.Value.CategoryId, c => c.Key, (ca, c) => new {ca, c})
                 .ToDictionary(j => j.ca.Key, j => new TransactionCategoryAndAutoCommentDto
                 {
                     AutoComment = j.ca.Value.AutoComment,
@@ -30,13 +30,13 @@ namespace BankingService.Infra.Database.Services
 
         public Dictionary<string, string> GetTransactionTypesKvp()
         {
-            return Types.Load(this.fileSystemService, this.dbConfig).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
+            return TypeTable.Load(this.fileSystemService, this.dbConfig).Data.ToDictionary(t => t.Key, t => t.Value.AssociatedType);
         }
 
         public int InsertTransactionsIfNew(List<TransactionDto> transactionsDto)
         {
             int newTransactionCount = 0;
-            var transactions = Transactions.Load(this.fileSystemService, this.dbConfig);
+            var transactions = TransactionTable.Load(this.fileSystemService, this.dbConfig);
             var existingTransactionsKeys = transactions.GetUniqueIdentifiersFromData();
 
             foreach (var newTransaction in ResolveTransactionDtoCategoryId(transactionsDto))
@@ -59,7 +59,7 @@ namespace BankingService.Infra.Database.Services
 
         public void UpdateTransactions(List<UpdatableTransactionDto> transactionsDto)
         {
-            var storedTransactions = Transactions.Load(this.fileSystemService, this.dbConfig);
+            var storedTransactions = TransactionTable.Load(this.fileSystemService, this.dbConfig);
 
             foreach(var transactionToUpdate in ResolveUpdatebleTransactionDtoCategoryId(transactionsDto))
             {
@@ -80,26 +80,26 @@ namespace BankingService.Infra.Database.Services
             storedTransactions.SaveAll();
         }
 
-        private IEnumerable<Transaction> ResolveTransactionDtoCategoryId(List<TransactionDto> transactionsDto)
+        private IEnumerable<TransactionLine> ResolveTransactionDtoCategoryId(List<TransactionDto> transactionsDto)
         {
-            return transactionsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Transaction.Map(dto, c.Key));
+            return transactionsDto.Join(CategorieTable.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => TransactionLine.Map(dto, c.Key));
         }
 
-        private IEnumerable<Transaction> ResolveUpdatebleTransactionDtoCategoryId(List<UpdatableTransactionDto> updatableTransactionsDto)
+        private IEnumerable<TransactionLine> ResolveUpdatebleTransactionDtoCategoryId(List<UpdatableTransactionDto> updatableTransactionsDto)
         {
-            return updatableTransactionsDto.Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => Transaction.Map(dto, c.Key));
+            return updatableTransactionsDto.Join(CategorieTable.Load(this.fileSystemService, this.dbConfig).Data, dto => dto.Category, c => c.Value.Name, (dto, c) => TransactionLine.Map(dto, c.Key));
         }
 
         public Dictionary<string, string> GetPaypalCategoriesKvp()
         {
-            return PaypalCategories.Load(this.fileSystemService, this.dbConfig).Data
-                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, pc => pc.Value.CategoryId, c => c.Key, (pc, c) => new { pc.Key, c.Value })
+            return PaypalCategorieTable.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(CategorieTable.Load(this.fileSystemService, this.dbConfig).Data, pc => pc.Value.CategoryId, c => c.Key, (pc, c) => new { pc.Key, c.Value })
                 .ToDictionary(j => j.Key, j => j.Value.Name);
         }
 
         public List<string> GetAllCategoriesNames()
         {
-            return Categories.Load(this.fileSystemService, this.dbConfig).Data
+            return CategorieTable.Load(this.fileSystemService, this.dbConfig).Data
                 .Select(c => c.Value.Name)
                 .ToList();
         }
@@ -126,8 +126,8 @@ namespace BankingService.Infra.Database.Services
 
         private IEnumerable<TransactionDto> GetStoredTransactionsAsDtos()
         {
-            return Transactions.Load(this.fileSystemService, this.dbConfig).Data
-                .Join(Categories.Load(this.fileSystemService, this.dbConfig).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
+            return TransactionTable.Load(this.fileSystemService, this.dbConfig).Data
+                .Join(CategorieTable.Load(this.fileSystemService, this.dbConfig).Data, op => op.Value.CategoryId, c => c.Key, (op, ca) => op.Value.MapToDto(ca.Value.Name));
         }
 
         public List<TransactionDto> GetTransactionsBetweenDates(DateTime startDateIncluded, DateTime endDateIncluded)

@@ -2,32 +2,32 @@
 
 namespace BankingService.Infra.Database.Model
 {
-    internal class CategoriesAndAutoComments
+    internal class CategoriesAndAutoCommentsTable
     {
         public static string TablePath => Path.Combine("Database", "CategoriesAndAutoComments.csv");
         public static string Header => "StringToScan;AssociatedCategoryId;AssociatedCommentAuto";
 
-        public Dictionary<string, TransactionCategoryAndAutoComment> Data { get; }
-        private CategoriesAndAutoComments(Dictionary<string, TransactionCategoryAndAutoComment> data)
+        public Dictionary<string, TransactionCategoryAndAutoCommentLine> Data { get; }
+        private CategoriesAndAutoCommentsTable(Dictionary<string, TransactionCategoryAndAutoCommentLine> data)
         {
             this.Data = data;
         }
 
-        public static CategoriesAndAutoComments Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
+        public static CategoriesAndAutoCommentsTable Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
-            return new CategoriesAndAutoComments(
+            return new CategoriesAndAutoCommentsTable(
                 fileSystemService
                 .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
                 .Skip(1)
                 .Select(l => l.Split(";"))
-                .ToDictionary(s => s[0], s => new TransactionCategoryAndAutoComment(s[0], int.Parse(s[1]), s[2]))
+                .ToDictionary(s => s[0], s => new TransactionCategoryAndAutoCommentLine(s[0], int.Parse(s[1]), s[2]))
                 );
         }
     }
 
-    internal class TransactionCategoryAndAutoComment
+    internal class TransactionCategoryAndAutoCommentLine
     {
-        public TransactionCategoryAndAutoComment(string stringToScan, int categoryId, string autoComment)
+        public TransactionCategoryAndAutoCommentLine(string stringToScan, int categoryId, string autoComment)
         {
             StringToScan = stringToScan;
             CategoryId = categoryId;

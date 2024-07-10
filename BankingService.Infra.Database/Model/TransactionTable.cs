@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace BankingService.Infra.Database.Model
 {
-    internal class Transactions
+    internal class TransactionTable
     {
         private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration config;
@@ -12,18 +12,18 @@ namespace BankingService.Infra.Database.Model
         public static string TablePath => Path.Combine("Database", "Transactions.table");
         public static string Header => "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
-        public Dictionary<int, Transaction> Data { get; }
-        private Transactions(Dictionary<int, Transaction> data, IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
+        public Dictionary<int, TransactionLine> Data { get; }
+        private TransactionTable(Dictionary<int, TransactionLine> data, IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             this.Data = data;
             this.fileSystemService = fileSystemService;
             this.config = config;
         }
 
-        public static Transactions Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
+        public static TransactionTable Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
-            return new Transactions(csvLines.Skip(1).ToDictionary(Transaction.GetIdFromCSV, Transaction.BuildFromCsv), fileSystemService, config);
+            return new TransactionTable(csvLines.Skip(1).ToDictionary(TransactionLine.GetIdFromCSV, TransactionLine.BuildFromCsv), fileSystemService, config);
         }
 
         internal void SaveAll()
@@ -49,7 +49,7 @@ namespace BankingService.Infra.Database.Model
         }
     }
 
-    internal class Transaction
+    internal class TransactionLine
     {
         public int? Id { get; set; }
         public DateTime Date { get; set; }
@@ -66,10 +66,10 @@ namespace BankingService.Infra.Database.Model
             return int.Parse(csv.Split(";")[0]);
         }
 
-        internal static Transaction BuildFromCsv(string csv)
+        internal static TransactionLine BuildFromCsv(string csv)
         {
             var splitted = csv.Split(";");
-            return new Transaction
+            return new TransactionLine
             {
                 Id = int.Parse(splitted[0]),
                 Date = DateTime.Parse(splitted[1]),
@@ -84,9 +84,9 @@ namespace BankingService.Infra.Database.Model
         }
 
         [Obsolete]
-        internal static Transaction Map(TransactionDto transactionDto, int categoryId)
+        internal static TransactionLine Map(TransactionDto transactionDto, int categoryId)
         {
-            return new Transaction
+            return new TransactionLine
             {
                 Id = transactionDto.Id,
                 Date = transactionDto.Date,
@@ -101,9 +101,9 @@ namespace BankingService.Infra.Database.Model
         }
 
         [Obsolete]
-        internal static Transaction Map(UpdatableTransactionDto updatableTransactionDto, int categoryId)
+        internal static TransactionLine Map(UpdatableTransactionDto updatableTransactionDto, int categoryId)
         {
-            return new Transaction
+            return new TransactionLine
             {
                 Id = updatableTransactionDto.Id,
                 Type = updatableTransactionDto.Type,

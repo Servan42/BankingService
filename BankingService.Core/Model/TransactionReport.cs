@@ -1,33 +1,34 @@
-﻿using BankingService.Core.API.DTOs;
-
-namespace BankingService.Core.Model
+﻿namespace BankingService.Core.Model
 {
     internal class TransactionReport
     {
         private const string SAVINGS_CATEGORY = "Epargne";
 
-        private DateTime startDate;
-        private DateTime endDate;
-        private Dictionary<string, decimal> SumPerCategory = new();
-        private decimal balance = 0;
-        private decimal balanceWithoutSavings = 0;
-        private decimal negativeSum;
-        private decimal positiveSum;
-        private decimal negativeSumWithoutSavings;
-        private decimal positiveSumWithoutSavings;
-        private List<HighestTransactionDto> highestTransactions = new();
-        private List<DataTagDto> treasuryGraphData;
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
+        public decimal Balance { get; private set; }
+        public decimal BalanceWithoutSavings { get; private set; }
+        public decimal NegativeSum { get; private set; }
+        public decimal PositiveSum { get; private set; }
+        public decimal NegativeSumWithoutSavings { get; private set; }
+        public decimal PositiveSumWithoutSavings { get; private set; }
+        public Dictionary<string, decimal> SumPerCategory { get; private set; }
+        public List<HighestTransaction> HighestTransactions { get; private set; }
+        public List<DataTag> TreasuryGraphData { get; private set; }
 
         public TransactionReport(DateTime startDate, DateTime endDate)
         {
-            this.startDate = startDate;
-            this.endDate = endDate;
+            this.StartDate = startDate;
+            this.EndDate = endDate;
+            this.SumPerCategory = new();
+            this.HighestTransactions = new();
+            this.TreasuryGraphData = new();
         }
 
         internal void AddToBalances(string category, decimal flow)
         {
-            balance += flow;
-            if (category != SAVINGS_CATEGORY) balanceWithoutSavings += flow;
+            Balance += flow;
+            if (category != SAVINGS_CATEGORY) BalanceWithoutSavings += flow;
         }
 
         internal void AddToSumPerCategory(string category, decimal flow)
@@ -46,13 +47,13 @@ namespace BankingService.Core.Model
         {
             if (flow > 0)
             {
-                positiveSum += flow;
-                if (category != SAVINGS_CATEGORY) positiveSumWithoutSavings += flow;
+                PositiveSum += flow;
+                if (category != SAVINGS_CATEGORY) PositiveSumWithoutSavings += flow;
             }
             else
             {
-                negativeSum += flow;
-                if (category != SAVINGS_CATEGORY) negativeSumWithoutSavings += flow;
+                NegativeSum += flow;
+                if (category != SAVINGS_CATEGORY) NegativeSumWithoutSavings += flow;
             }
         }
 
@@ -60,7 +61,7 @@ namespace BankingService.Core.Model
         {
             if (transaction.Flow <= highestTransactionMinAmount && transaction.Category != SAVINGS_CATEGORY)
             {
-                highestTransactions.Add(new HighestTransactionDto
+                HighestTransactions.Add(new HighestTransaction
                 {
                     Date = transaction.Date,
                     Flow = transaction.Flow,
@@ -74,33 +75,15 @@ namespace BankingService.Core.Model
 
         internal void SetTreasuryGraphData(List<Transaction> transactions)
         {
-            treasuryGraphData = transactions
+            TreasuryGraphData = transactions
                 .OrderBy(o => o.Date)
                 .ThenByDescending(o => o.Treasury)
-                .Select(o => new DataTagDto
+                .Select(o => new DataTag
                 {
                    DateTime = o.Date,
                    Value = o.Treasury
                 })
                 .ToList();
-        }
-
-        internal TransactionsReportDto MapToDto()
-        {
-            return new TransactionsReportDto
-            {
-                StartDate = startDate,
-                EndDate = endDate,
-                SumPerCategory = SumPerCategory,
-                Balance = balance,
-                BalanceWithoutSavings = balanceWithoutSavings,
-                NegativeSum = negativeSum,
-                PositiveSum = positiveSum,
-                NegativeSumWithoutSavings = negativeSumWithoutSavings,
-                PositiveSumWithoutSavings = positiveSumWithoutSavings,
-                HighestTransactions = highestTransactions,
-                TreasuryGraphData = treasuryGraphData
-            };
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using BankingService.Core.API.Interfaces;
+﻿using AutoMapper;
+using BankingService.Core.API.Interfaces;
 using BankingService.Core.Model;
+using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using NLog;
 using System.Globalization;
@@ -15,11 +17,13 @@ namespace BankingService.Core.Services
 
         private readonly IFileSystemServiceForCore fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
+        private readonly IMapper mapper;
 
-        public ImportService(IFileSystemServiceForCore fileSystemService, IBankDatabaseService bankDatabaseService)
+        public ImportService(IFileSystemServiceForCore fileSystemService, IBankDatabaseService bankDatabaseService, IMapper mapper)
         {
             this.fileSystemService = fileSystemService;
             this.bankDatabaseService = bankDatabaseService;
+            this.mapper = mapper;
         }
 
         public int ImportBankFile(string bankFilePath)
@@ -28,7 +32,7 @@ namespace BankingService.Core.Services
             var csvTransactions = fileSystemService.ReadAllLines(bankFilePath);
             List<Transaction> transactions = GetBankTransactionsFromCSV(csvTransactions);
             ResolveTransactionsAutoFields(transactions);
-            int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(o => o.MapToDto()).ToList());
+            int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(mapper.Map<TransactionDto>).ToList());
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
             return nbImported;
         }
@@ -55,7 +59,7 @@ namespace BankingService.Core.Services
         private void ResolveTransactionsAutoFields(List<Transaction> transactions)
         {
             var transactionTypes = bankDatabaseService.GetTransactionTypesKvp();
-            var transactionCategoriesAndAutoComment = bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp();
+            var transactionCategoriesAndAutoComment = mapper.Map<Dictionary<string, TransactionCategoryAndAutoComment>>(bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp());
 
             foreach (var transaction in transactions)
             {
@@ -81,43 +85,42 @@ namespace BankingService.Core.Services
             logger.Info($"Importing {paypalFilePath} paypal file");
             var csvTransactions = fileSystemService.ReadAllLines(paypalFilePath);
             List<Transaction> completeTransactions = MatchPaypalDataToExistingTransactions(csvTransactions);
-            bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => o.MapToUpdatableTransactionDto()).ToList());
+            bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
         }
 
         private List<Transaction> MatchPaypalDataToExistingTransactions(List<string> csvTransactions)
         {
-            var transactionsQueue = new Queue<PaypalTransaction>(GetPaypalTransactionsFromCSV(csvTransactions).OrderBy(o => o.Date));
-            var incompletePaypalTransactionsDto = bankDatabaseService.GetUnresolvedPaypalTransactions().OrderBy(o => o.Date).ToList();
+            var paypalTransactionsQueue = new Queue<PaypalTransaction>(GetPaypalTransactionsFromCSV(csvTransactions).OrderBy(o => o.Date));
+            var incompleteTransactions = mapper.Map<List<Transaction>>(bankDatabaseService.GetUnresolvedPaypalTransactions()).OrderBy(o => o.Date).ToList();
             var paypalCategories = bankDatabaseService.GetPaypalCategoriesKvp();
 
             var completeTransactions = new List<Transaction>();
-            while (transactionsQueue.Count > 0)
+            while (paypalTransactionsQueue.Count > 0)
             {
-                var paypalTransaction = transactionsQueue.Dequeue();
-                var transactionToCompleteDto = incompletePaypalTransactionsDto
+                var paypalTransaction = paypalTransactionsQueue.Dequeue();
+                var transactionToComplete = incompleteTransactions
                     .FirstOrDefault(o => o.Date == paypalTransaction.OffesetedDate() && o.Flow == paypalTransaction.Net);
 
-                if (transactionToCompleteDto == null)
+                if (transactionToComplete == null)
                 {
                     paypalTransaction.DateOffset++;
                     if (paypalTransaction.DateOffset > 31)
                         break;
-                    transactionsQueue.Enqueue(paypalTransaction);
+                    paypalTransactionsQueue.Enqueue(paypalTransaction);
                     continue;
                 }
 
-                incompletePaypalTransactionsDto.Remove(transactionToCompleteDto);
-                var completeTransaction = Transaction.Map(transactionToCompleteDto);
-                completeTransaction.AutoComment = paypalTransaction.Nom;
-                completeTransaction.ResolvePaypalCategory(paypalCategories);
-                completeTransactions.Add(completeTransaction);
+                incompleteTransactions.Remove(transactionToComplete);
+                transactionToComplete.AutoComment = paypalTransaction.Nom;
+                transactionToComplete.ResolvePaypalCategory(paypalCategories);
+                completeTransactions.Add(transactionToComplete);
             }
 
-            logger.Info(transactionsQueue.Count > 0 ? $"{transactionsQueue.Count} paypal transactions could not be matched" : "All paypal transactions were matched to data");
-            while (transactionsQueue.Count > 0)
+            logger.Info(paypalTransactionsQueue.Count > 0 ? $"{paypalTransactionsQueue.Count} paypal transactions could not be matched" : "All paypal transactions were matched to data");
+            while (paypalTransactionsQueue.Count > 0)
             {
-                var unmatchedOp = transactionsQueue.Dequeue();
+                var unmatchedOp = paypalTransactionsQueue.Dequeue();
                 logger.Debug($"Following paypal transaction could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
             }
 
@@ -176,9 +179,9 @@ namespace BankingService.Core.Services
         {
             logger.Info("Re-computing every transaction additional data");
 
-            var transactions = bankDatabaseService.GetAllTransactions().Select(Transaction.Map).ToList();
+            var transactions = bankDatabaseService.GetAllTransactions().Select(mapper.Map<Transaction>).ToList();
             var types = bankDatabaseService.GetTransactionTypesKvp();
-            var catAndComments = bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp();
+            var catAndComments = mapper.Map<Dictionary<string, TransactionCategoryAndAutoComment>>(bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp());
             var paypalCat = bankDatabaseService.GetPaypalCategoriesKvp();
 
             foreach (var transaction in transactions)
@@ -192,7 +195,7 @@ namespace BankingService.Core.Services
 
             logger.Info($"{transactions.Count(o => o.Type == "TODO" || o.Category == "TODO")} transactions still require manual input");
 
-            bankDatabaseService.UpdateTransactions(transactions.Select(o => o.MapToUpdatableTransactionDto()).ToList());
+            bankDatabaseService.UpdateTransactions(transactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
         }
     }
 }

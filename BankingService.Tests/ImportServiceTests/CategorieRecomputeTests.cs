@@ -1,7 +1,10 @@
-﻿using BankingService.Core.API.Interfaces;
+﻿using AutoMapper;
+using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using Moq;
 
 namespace BankingService.Tests.ImportServiceTests
@@ -15,9 +18,14 @@ namespace BankingService.Tests.ImportServiceTests
         [SetUp]
         public void Setup()
         {
+            IMapper mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CoreSpiProfile>();
+                cfg.AddProfile<CoreApiProfile>();
+            }));
             fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
-            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
+            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper);
         }
 
         [Test]

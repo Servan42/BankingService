@@ -10,6 +10,9 @@ namespace BankingService.Core.API.MapperProfile
         {
             CreateMap<Transaction, TransactionDto>();
             CreateMap<UpdatableTransactionDto, UpdatableTransaction>();
+            CreateMap<TransactionReport, TransactionsReportDto>();
+            CreateMap<DataTag, DataTagDto>();
+            CreateMap<HighestTransaction, HighestTransactionDto>();
         }
     }
 }

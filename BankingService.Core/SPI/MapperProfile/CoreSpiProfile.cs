@@ -8,8 +8,10 @@ namespace BankingService.Core.SPI.MapperProfile
     {
         public CoreSpiProfile()
         {
-            CreateMap<TransactionDto, Transaction>();
+            CreateMap<TransactionDto, Transaction>()
+                .ReverseMap();
             CreateMap<UpdatableTransaction, UpdatableTransactionDto>();
+            CreateMap<TransactionCategoryAndAutoCommentDto, TransactionCategoryAndAutoComment>();
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿namespace BankingService.Core.Model
 {
-    internal class UpdatableTransaction
+    internal class HighestTransaction
     {
-        public int? Id { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Flow { get; set; }
         public string Type { get; set; }
         public string Category { get; set; }
         public string AutoComment { get; set; }

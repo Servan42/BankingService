@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BankingService.Api.MapperProfile;
 using BankingService.Core.API.MapperProfile;
 
 namespace BankingService.Tests
@@ -20,6 +21,15 @@ namespace BankingService.Tests
             new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<CoreApiProfile>();
+            }).AssertConfigurationIsValid();
+        }
+
+        [Test]
+        public void Should_have_a_valid_AspApi_Mapper_Profile()
+        {
+            new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<AspApiProfile>();
             }).AssertConfigurationIsValid();
         }
     }

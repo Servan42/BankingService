@@ -83,7 +83,6 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
-        [Obsolete]
         internal static TransactionLine Map(TransactionDto transactionDto, int categoryId)
         {
             return new TransactionLine
@@ -100,7 +99,6 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
-        [Obsolete]
         internal static TransactionLine Map(UpdatableTransactionDto updatableTransactionDto, int categoryId)
         {
             return new TransactionLine
@@ -113,7 +111,6 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
-        [Obsolete]
         internal TransactionDto MapToDto(string resolvedCategory)
         {
             return new TransactionDto

@@ -11,6 +11,8 @@ namespace BankingService.Api.MapperProfile
             CreateMap<TransactionsReportDto, TransactionsReportApiDto>();
             CreateMap<DataTagDto, DataTagApiDto>();
             CreateMap<HighestTransactionDto, HighestTransactionApiDto>();
+            CreateMap<UpdatableTransactionApiDto, UpdatableTransactionDto>();
+            CreateMap<TransactionDto, TransactionApiDto>();
         }
     }
 }

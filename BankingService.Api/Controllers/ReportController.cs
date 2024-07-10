@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using BankingService.Api.Controllers.ApiDTOs;
-using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;

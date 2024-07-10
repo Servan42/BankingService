@@ -14,6 +14,7 @@ namespace BankingService.Core.Model
         public string AutoComment { get; set; }
         public string Comment { get; set; }
 
+        [Obsolete]
         internal static Transaction Map(TransactionDto dto)
         {
             return new Transaction
@@ -30,6 +31,7 @@ namespace BankingService.Core.Model
             };
         }
 
+        [Obsolete]
         public TransactionDto MapToDto()
         {
             return new TransactionDto
@@ -46,6 +48,7 @@ namespace BankingService.Core.Model
             };
         }
 
+        [Obsolete]
         public UpdatableTransactionDto MapToUpdatableTransactionDto()
         {
             return new UpdatableTransactionDto

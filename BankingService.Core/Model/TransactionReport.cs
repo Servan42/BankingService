@@ -15,7 +15,10 @@ namespace BankingService.Core.Model
         private decimal positiveSum;
         private decimal negativeSumWithoutSavings;
         private decimal positiveSumWithoutSavings;
+
+        [Obsolete]
         private List<HighestTransactionDto> highestTransactions = new();
+        [Obsolete]
         private List<DataTagDto> treasuryGraphData;
 
         public TransactionReport(DateTime startDate, DateTime endDate)
@@ -85,6 +88,7 @@ namespace BankingService.Core.Model
                 .ToList();
         }
 
+        [Obsolete]
         internal TransactionsReportDto MapToDto()
         {
             return new TransactionsReportDto

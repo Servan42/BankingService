@@ -66,6 +66,7 @@ namespace BankingService.Infra.Database.Model
             return int.Parse(csv.Split(";")[0]);
         }
 
+        [Obsolete]
         internal static Transaction Map(TransactionDto transactionDto, int categoryId)
         {
             return new Transaction
@@ -82,6 +83,7 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
+        [Obsolete]
         internal static Transaction Map(UpdatableTransactionDto updatableTransactionDto, int categoryId)
         {
             return new Transaction
@@ -94,6 +96,7 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
+        [Obsolete]
         internal static Transaction Map(string csv)
         {
             var splitted = csv.Split(";");
@@ -111,6 +114,7 @@ namespace BankingService.Infra.Database.Model
             };
         }
 
+        [Obsolete]
         internal TransactionDto MapToDto(string resolvedCategory)
         {
             return new TransactionDto

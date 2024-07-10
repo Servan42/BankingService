@@ -8,14 +8,14 @@ namespace BankingService.Tests.ImportServiceTests
 {
     internal class ImportPaypalTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             bankDatabaseService.Setup(x => x.GetUnresolvedPaypalTransactions()).Returns([]);
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
@@ -76,7 +76,7 @@ namespace BankingService.Tests.ImportServiceTests
             {
                 new UpdatableTransactionDto { Id = 3, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace BankingService.Tests.ImportServiceTests
                 new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" },
                 new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Spotify AB 2", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace BankingService.Tests.ImportServiceTests
                 new UpdatableTransactionDto { Id = 2, Type = "Paypal", AutoComment = "Steam", Category = "Loisirs2", Comment = "e" },
                 new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
         }
     }
 }

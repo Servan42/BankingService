@@ -2,27 +2,20 @@
 using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
-using BankingService.Infra.Database.Services;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests.ImportServiceTests
 {
     internal class CategorieRecomputeTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object);
         }
@@ -150,7 +143,7 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.RecomputeEveryTransactionAdditionalData();
 
             // THEN
-            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => TestHelpers.CheckUpdatableTransactionDtos(actual, new List<UpdatableTransactionDto> { expected }))), Times.Once());
+            bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(new List<UpdatableTransactionDto> { expected }))), Times.Once());
         }
     }
 }

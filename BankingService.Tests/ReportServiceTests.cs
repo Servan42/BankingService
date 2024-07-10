@@ -1,14 +1,10 @@
-﻿using BankingService.Core.API.DTOs;
+﻿using AutoMapper;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
-using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests
 {
@@ -24,19 +20,24 @@ namespace BankingService.Tests
         public void SetUp()
         {
             mockBankDatabaseService = new Mock<IBankDatabaseService>();
-            reportService_sut = new ReportService(mockBankDatabaseService.Object);
+            IMapper mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CoreSpiProfile>();
+                cfg.AddProfile<CoreApiProfile>();
+            }));
+            reportService_sut = new ReportService(mockBankDatabaseService.Object, mapper);
 
             startDate = new DateTime(2024, 03, 26);
             endDate = new DateTime(2024, 03, 27);
             mockBankDatabaseService
                 .Setup(x => x.GetTransactionsBetweenDates(startDate, endDate))
-                .Returns(new List<TransactionDto>
+                .Returns(new List<Core.SPI.DTOs.TransactionDto>
                 {
-                    new TransactionDto { Flow = -10m, Category = "C1", Date = new DateTime(2024, 03, 26), Treasury = 70m },
-                    new TransactionDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Treasury = 80m, Type = "T", AutoComment = "AC", Comment= "Co" },
-                    new TransactionDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Treasury = 130m, Type = "T2", AutoComment = "AC2", Comment= "Co2" },
-                    new TransactionDto { Flow = 100m, Category = "Epargne", Date = new DateTime(2024, 03, 27), Treasury = 160m, },
-                    new TransactionDto { Flow = -10m, Category = "Epargne", Date = new DateTime(2024, 03, 26), Treasury = 60m },
+                    new Core.SPI.DTOs.TransactionDto { Flow = -10m, Category = "C1", Date = new DateTime(2024, 03, 26), Treasury = 70m },
+                    new Core.SPI.DTOs.TransactionDto { Flow = -20m, Category = "C2", Date = new DateTime(2024, 03, 26), Treasury = 80m, Type = "T", AutoComment = "AC", Comment= "Co" },
+                    new Core.SPI.DTOs.TransactionDto { Flow = -30m, Category = "C1", Date = new DateTime(2024, 03, 27), Treasury = 130m, Type = "T2", AutoComment = "AC2", Comment= "Co2" },
+                    new Core.SPI.DTOs.TransactionDto { Flow = 100m, Category = "Epargne", Date = new DateTime(2024, 03, 27), Treasury = 160m, },
+                    new Core.SPI.DTOs.TransactionDto { Flow = -10m, Category = "Epargne", Date = new DateTime(2024, 03, 26), Treasury = 60m },
                 });
         }
 
@@ -94,7 +95,7 @@ namespace BankingService.Tests
             var result = reportService_sut.GetTransactionsReport(startDate, endDate, -20m);
 
             // WHEN
-            var expectedHighestTransaction1 = new HighestTransactionDto
+            var expectedHighestTransaction1 = new Core.API.DTOs.HighestTransactionDto
             {
                 Date = new DateTime(2024, 03, 26),
                 Flow = -20m,
@@ -103,7 +104,7 @@ namespace BankingService.Tests
                 AutoComment = "AC",
                 Comment = "Co"
             };
-            var expectedHighestTransaction2 = new HighestTransactionDto
+            var expectedHighestTransaction2 = new Core.API.DTOs.HighestTransactionDto
             {
                 Date = new DateTime(2024, 03, 27),
                 Flow = -30m,
@@ -124,13 +125,13 @@ namespace BankingService.Tests
             var result = reportService_sut.GetTransactionsReport(startDate, endDate);
 
             // WHEN
-            var expected = new List<DataTagDto>
+            var expected = new List<Core.API.DTOs.DataTagDto>
             {
-                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 80m },
-                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 70m },
-                new DataTagDto { DateTime = new DateTime(2024,03,26), Value = 60m },
-                new DataTagDto { DateTime = new DateTime(2024,03,27), Value = 160m },
-                new DataTagDto { DateTime = new DateTime(2024,03,27), Value = 130m },
+                new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,26), Value = 80m },
+                new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,26), Value = 70m },
+                new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,26), Value = 60m },
+                new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,27), Value = 160m },
+                new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,27), Value = 130m },
             };
             CollectionAssert.AreEqual(expected, result.TreasuryGraphData);
         }

@@ -1,13 +1,15 @@
-﻿using BankingService.ConsoleApp;
+﻿using AutoMapper;
+using BankingService.ConsoleApp;
 using BankingService.ConsoleApp.Commands;
 using BankingService.ConsoleApp.Configuration;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
-using BankingService.Infra.FileSystem.Services;
 using Microsoft.Extensions.Configuration;
 using NLog;
 
@@ -23,14 +25,19 @@ internal class Program
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var fileSystemService = new FileSystemService();
-            var fileSystemServiceCore = new FileSystemAdapterCore(fileSystemService);
-            var fileSystemServiceDatabase = new FileSystemAdapterDatabase(fileSystemService);
+            IMapper mapper = new Mapper(new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<CoreSpiProfile>();
+                cfg.AddProfile<CoreApiProfile>();
+            }));
+
+            FileSystemAdapter fileSystemAdapter = new FileSystemAdapter();
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
-            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemServiceDatabase, dbConfig);
-            IReportService reportService = new ReportService(bankDataBaseService);
-            IImportService importService = new ImportService(fileSystemServiceCore, bankDataBaseService);
-            MaintenanceService maintenanceService = new MaintenanceService(fileSystemServiceDatabase, dbConfig);
+            IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemAdapter, dbConfig);
+            ITransactionService transactionService = new TransactionService(bankDataBaseService, mapper);
+            IReportService reportService = new ReportService(bankDataBaseService, mapper);
+            IImportService importService = new ImportService(fileSystemAdapter, bankDataBaseService);
+            MaintenanceService maintenanceService = new MaintenanceService(fileSystemAdapter, dbConfig);
 
             Console.WriteLine("Backup database");
             maintenanceService.BackupDatabase();
@@ -40,11 +47,11 @@ internal class Program
             var invoker = new CommandInvoker();
             invoker.Register(new HelpCommand(invoker));
             invoker.Register(new ImportFileCommand(importService));
-            invoker.Register(new ManualFillCommand(importService, bankDataBaseService));
+            invoker.Register(new ManualFillCommand(transactionService));
             invoker.Register(new ExportClearTransactionsCommand(maintenanceService));
             invoker.Register(new BackupDbCommand(maintenanceService));
             invoker.Register(new RecomputeCategoriesCommand(importService));
-            invoker.Register(new ListIncompleteTransactionsCommand(bankDataBaseService));
+            invoker.Register(new ListIncompleteTransactionsCommand(transactionService));
             invoker.Register(new ReportCommand(reportService));
             invoker.Register(new DatabaseMigrationCommand(maintenanceService));
             invoker.Register(new DatabasePasswordManagementCommand(maintenanceService));

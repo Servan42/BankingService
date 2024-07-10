@@ -4,12 +4,12 @@ import { Transaction, mockTransactions } from '../model/transaction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
-const ENDPOINT = environment.apiUrl + '/api/Database/';
+const ENDPOINT = environment.apiUrl + '/api/Transaction/';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DatabaseService {
+export class TransactionService {
   constructor(private httpClient: HttpClient) {}
 
   getAllTransactions(): Observable<Transaction[]> {
@@ -31,7 +31,7 @@ export class DatabaseService {
   getCategoriesNames(): Observable<string[]> {
     console.log('DB CALLED! (getCategoriesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetAllCategoriesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionCategoriesNames");
     // const mockCategories = ['Food', 'Salary', 'Entertainment', 'Utilities'];
     // return of(mockCategories);
   }
@@ -39,7 +39,7 @@ export class DatabaseService {
   getTypesNames(): Observable<string[]> {
     console.log('DB CALLED! (getTypesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetAllTypesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionTypesNames");
     // const mockTypes = ['Expense', 'Income'];
     // return of(mockTypes);
   }

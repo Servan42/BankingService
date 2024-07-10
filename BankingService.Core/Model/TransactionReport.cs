@@ -1,10 +1,4 @@
 ﻿using BankingService.Core.API.DTOs;
-using BankingService.Core.SPI.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Core.Model
 {
@@ -62,7 +56,7 @@ namespace BankingService.Core.Model
             }
         }
 
-        internal void AddHighestTransaction(TransactionDto transaction, decimal highestTransactionMinAmount)
+        internal void AddHighestTransaction(Transaction transaction, decimal highestTransactionMinAmount)
         {
             if (transaction.Flow <= highestTransactionMinAmount && transaction.Category != SAVINGS_CATEGORY)
             {
@@ -78,7 +72,7 @@ namespace BankingService.Core.Model
             }
         }
 
-        internal void SetTreasuryGraphData(List<TransactionDto> transactions)
+        internal void SetTreasuryGraphData(List<Transaction> transactions)
         {
             treasuryGraphData = transactions
                 .OrderBy(o => o.Date)

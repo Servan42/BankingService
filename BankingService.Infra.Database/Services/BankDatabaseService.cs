@@ -2,21 +2,16 @@
 using BankingService.Infra.Database.Model;
 using BankingService.Infra.Database.SPI.Interfaces;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Services
 {
     public class BankDatabaseService : Core.SPI.Interfaces.IBankDatabaseService
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IFileSystemService fileSystemService;
+        private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration dbConfig;
 
-        public BankDatabaseService(IFileSystemService fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
+        public BankDatabaseService(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration bankDatabaseConfiguration)
         {
             this.fileSystemService = fileSystemService;
             this.dbConfig = bankDatabaseConfiguration;

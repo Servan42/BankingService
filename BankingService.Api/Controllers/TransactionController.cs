@@ -1,6 +1,5 @@
-﻿using BankingService.Core.SPI.DTOs;
-using BankingService.Core.SPI.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using BankingService.Core.API.DTOs;
+using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 
@@ -8,14 +7,14 @@ namespace BankingService.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DatabaseController : ControllerBase
+    public class TransactionController : ControllerBase
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IBankDatabaseService databaseService;
+        private readonly ITransactionService transactionService;
 
-        public DatabaseController(IBankDatabaseService databaseService)
+        public TransactionController(ITransactionService transactionService)
         {
-            this.databaseService = databaseService;
+            this.transactionService = transactionService;
         }
 
         [HttpGet]
@@ -27,7 +26,7 @@ namespace BankingService.Api.Controllers
         {
             try
             {
-                var transactions = this.databaseService.GetAllTransactions();
+                var transactions = this.transactionService.GetAllTransactions();
                 if (transactions.Any())
                     return Ok(transactions);
                 else
@@ -41,15 +40,15 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllCategoriesNames")]
+        [Route("GetTransactionCategoriesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<string>> GetAllCategoriesNames()
+        public ActionResult<IEnumerable<string>> GetTransactionCategoriesNames()
         {
             try
             {
-                var categories = this.databaseService.GetAllCategoriesNames();
+                var categories = this.transactionService.GetTransactionCategoriesNames();
                 if (categories.Any())
                     return Ok(categories);
                 else
@@ -63,15 +62,15 @@ namespace BankingService.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllTypesNames")]
+        [Route("GetTransactionTypesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<IEnumerable<string>> GetAllTypesNames()
+        public ActionResult<IEnumerable<string>> GetTransactionTypesNames()
         {
             try
             {
-                var types = this.databaseService.GetTransactionTypesKvp().Values.Distinct();
+                var types = this.transactionService.GetTransactionTypesNames();
                 if (types.Any())
                     return Ok(types);
                 else
@@ -92,7 +91,7 @@ namespace BankingService.Api.Controllers
         {
             try
             {
-                this.databaseService.UpdateTransactions(transactionsToUpdate);
+                this.transactionService.UpdateTransactions(transactionsToUpdate);
                 return StatusCode(204);
             }
             catch (Exception ex)

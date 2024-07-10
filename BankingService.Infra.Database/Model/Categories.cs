@@ -1,9 +1,4 @@
 ﻿using BankingService.Infra.Database.SPI.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Model
 {
@@ -18,7 +13,7 @@ namespace BankingService.Infra.Database.Model
             this.Data = data;
         }
 
-        public static Categories Load(IFileSystemService fileSystemService, IBankDatabaseConfiguration config)
+        public static Categories Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new Categories(
                 fileSystemService

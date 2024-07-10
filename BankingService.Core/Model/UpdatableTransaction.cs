@@ -1,6 +1,6 @@
-﻿namespace BankingService.Core.SPI.DTOs
+﻿namespace BankingService.Core.Model
 {
-    public record UpdatableTransactionDto
+    internal class UpdatableTransaction
     {
         public int? Id { get; init; }
         public string Type { get; init; }

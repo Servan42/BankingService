@@ -1,5 +1,4 @@
 ﻿using BankingService.Core.API.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 

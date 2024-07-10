@@ -1,22 +1,15 @@
-﻿using BankingService.Core.API.Interfaces;
-using BankingService.Core.SPI.DTOs;
-using BankingService.Core.SPI.Interfaces;
-using NLog.LayoutRenderers.Wrappers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BankingService.Core.API.DTOs;
+using BankingService.Core.API.Interfaces;
 
 namespace BankingService.ConsoleApp.Commands
 {
     internal class ListIncompleteTransactionsCommand : Command
     {
-        private readonly IBankDatabaseService bankDataBaseService;
+        private readonly ITransactionService transactionService;
 
-        public ListIncompleteTransactionsCommand(IBankDatabaseService bankDataBaseService)
+        public ListIncompleteTransactionsCommand(ITransactionService transactionService)
         {
-            this.bankDataBaseService = bankDataBaseService;
+            this.transactionService = transactionService;
         }
 
         public override string Name => "list";
@@ -26,7 +19,7 @@ namespace BankingService.ConsoleApp.Commands
         public override void Execute(string[] args)
         {
             Console.WriteLine("The following transactions do not have a category in DB:");
-            var transactions = bankDataBaseService.GetTransactionsThatNeedsManualInput().OrderBy(o => o.Label);
+            var transactions = transactionService.GetTransactionsThatNeedsManualInput().OrderBy(o => o.Label);
             int paddingFlow = transactions.Max(o => o.Flow.ToString().Length);
 
             Console.WriteLine("  Bank:");

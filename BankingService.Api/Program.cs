@@ -1,11 +1,12 @@
 using BankingService.Api.Configuration;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
+using BankingService.Core.SPI.MapperProfile;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
-using BankingService.Infra.FileSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +29,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddScoped<BankingService.Infra.FileSystem.API.Interfaces.IFileSystemService, FileSystemService>();
-builder.Services.AddScoped<BankingService.Infra.Database.SPI.Interfaces.IFileSystemService, FileSystemAdapterDatabase>();
-builder.Services.AddScoped<BankingService.Core.SPI.Interfaces.IFileSystemService, FileSystemAdapterCore>();
+builder.Services.AddAutoMapper(typeof(CoreApiProfile), typeof(CoreSpiProfile));
+
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IFileSystemServiceForFileDB, FileSystemAdapter>();
+builder.Services.AddScoped<IFileSystemServiceForCore, FileSystemAdapter>();
 builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
 builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 builder.Services.AddScoped<IReportService, ReportService>();

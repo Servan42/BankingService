@@ -3,20 +3,19 @@ using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using Moq;
-using System.Diagnostics;
 
 namespace BankingService.Tests.ImportServiceTests
 {
     public class ImportBankTests
     {
-        Mock<IFileSystemService> fileSystemService;
+        Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
         IImportService importService_sut;
 
         [SetUp]
         public void Setup()
         {
-            fileSystemService = new Mock<IFileSystemService>();
+            fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
             bankDatabaseService.Setup(x => x.GetTransactionTypesKvp()).Returns([]);
             bankDatabaseService.Setup(x => x.GetTransactionCategoriesAndAutoCommentKvp()).Returns([]);
@@ -54,7 +53,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -112,7 +111,7 @@ namespace BankingService.Tests.ImportServiceTests
                     AutoComment = ""
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
 
         [Test]
@@ -151,7 +150,7 @@ namespace BankingService.Tests.ImportServiceTests
                     Category = "Nourriture"
                 }
             };
-            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => TestHelpers.CheckTransactionDtos(o, expected))), Times.Once());
+            bankDatabaseService.Verify(x => x.InsertTransactionsIfNew(It.Is<List<TransactionDto>>(o => o.IsEqualTo(expected))), Times.Once());
         }
     }
 }

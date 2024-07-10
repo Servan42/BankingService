@@ -1,4 +1,4 @@
-﻿namespace BankingService.Core.SPI.DTOs
+﻿namespace BankingService.Core.API.DTOs
 {
     public record UpdatableTransactionDto
     {

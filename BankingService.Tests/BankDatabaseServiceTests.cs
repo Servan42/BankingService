@@ -3,12 +3,6 @@ using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests
 {

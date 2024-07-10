@@ -1,15 +1,8 @@
 ﻿using BankingService.Core.API.Interfaces;
 using BankingService.Core.Model;
-using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
-using Microsoft.VisualBasic.FileIO;
 using NLog;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Core.Services
 {

@@ -5,11 +5,6 @@ using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Core.SPI.MapperProfile;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests
 {

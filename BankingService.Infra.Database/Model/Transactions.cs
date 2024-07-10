@@ -1,12 +1,6 @@
 ﻿using BankingService.Core.SPI.DTOs;
 using BankingService.Infra.Database.SPI.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Infra.Database.Model
 {

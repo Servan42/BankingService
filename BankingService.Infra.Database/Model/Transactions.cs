@@ -23,7 +23,7 @@ namespace BankingService.Infra.Database.Model
         public static Transactions Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
-            return new Transactions(csvLines.Skip(1).ToDictionary(Transaction.GetIdFromCSV, Transaction.Map), fileSystemService, config);
+            return new Transactions(csvLines.Skip(1).ToDictionary(Transaction.GetIdFromCSV, Transaction.BuildFromCsv), fileSystemService, config);
         }
 
         internal void SaveAll()
@@ -66,6 +66,23 @@ namespace BankingService.Infra.Database.Model
             return int.Parse(csv.Split(";")[0]);
         }
 
+        internal static Transaction BuildFromCsv(string csv)
+        {
+            var splitted = csv.Split(";");
+            return new Transaction
+            {
+                Id = int.Parse(splitted[0]),
+                Date = DateTime.Parse(splitted[1]),
+                Flow = decimal.Parse(splitted[2], CultureInfo.GetCultureInfo("fr-FR")),
+                Treasury = decimal.Parse(splitted[3], CultureInfo.GetCultureInfo("fr-FR")),
+                Label = splitted[4],
+                Type = splitted[5],
+                CategoryId = int.Parse(splitted[6]),
+                AutoComment = splitted[7],
+                Comment = splitted[8],
+            };
+        }
+
         [Obsolete]
         internal static Transaction Map(TransactionDto transactionDto, int categoryId)
         {
@@ -93,24 +110,6 @@ namespace BankingService.Infra.Database.Model
                 CategoryId = categoryId,
                 AutoComment = updatableTransactionDto.AutoComment,
                 Comment = updatableTransactionDto.Comment
-            };
-        }
-
-        [Obsolete]
-        internal static Transaction Map(string csv)
-        {
-            var splitted = csv.Split(";");
-            return new Transaction
-            {
-                Id = int.Parse(splitted[0]),
-                Date = DateTime.Parse(splitted[1]),
-                Flow = decimal.Parse(splitted[2], CultureInfo.GetCultureInfo("fr-FR")),
-                Treasury = decimal.Parse(splitted[3], CultureInfo.GetCultureInfo("fr-FR")),
-                Label = splitted[4],
-                Type = splitted[5],
-                CategoryId = int.Parse(splitted[6]),
-                AutoComment = splitted[7],
-                Comment = splitted[8],
             };
         }
 

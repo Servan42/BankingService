@@ -1,4 +1,6 @@
-﻿using BankingService.Core.API.DTOs;
+﻿using AutoMapper;
+using BankingService.Api.Controllers.ApiDTOs;
+using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
@@ -11,21 +13,23 @@ namespace BankingService.Api.Controllers
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IReportService reportService;
+        private readonly IMapper mapper;
 
-        public ReportController(IReportService reportService)
+        public ReportController(IReportService reportService, IMapper mapper)
         {
             this.reportService = reportService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        [ProducesResponseType<TransactionsReportDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType<TransactionsReportApiDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<TransactionsReportDto> GetReport(DateTime startDate, DateTime endDate, int highestTransactionMinAmount)
+        public ActionResult<TransactionsReportApiDto> GetReport(DateTime startDate, DateTime endDate, int highestTransactionMinAmount)
         {
             try
             {
                 var report = this.reportService.GetTransactionsReport(startDate, endDate, highestTransactionMinAmount);
-                return Ok(report);
+                return Ok(mapper.Map<TransactionsReportApiDto>(report));
             }
             catch (Exception ex)
             {

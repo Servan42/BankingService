@@ -1,4 +1,5 @@
 using BankingService.Api.Configuration;
+using BankingService.Api.MapperProfile;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
@@ -29,7 +30,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAutoMapper(typeof(CoreApiProfile), typeof(CoreSpiProfile));
+builder.Services.AddAutoMapper(
+    typeof(CoreApiProfile), 
+    typeof(CoreSpiProfile),
+    typeof(AspApiProfile));
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IFileSystemServiceForFileDB, FileSystemAdapter>();

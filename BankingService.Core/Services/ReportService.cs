@@ -31,7 +31,7 @@ namespace BankingService.Core.Services
                 reportResult.AddHighestTransaction(transaction, highestTransactionMinAmount);
             }
 
-            return reportResult.MapToDto();
+            return mapper.Map<TransactionsReportDto>(reportResult);
         }
     }
 }

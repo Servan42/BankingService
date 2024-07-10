@@ -2,7 +2,7 @@
 {
     internal class TransactionCategoryAndAutoComment
     {
-        public string Category { get; init; }
-        public string AutoComment { get; init; }
+        public string Category { get; set; }
+        public string AutoComment { get; set; }
     }
 }

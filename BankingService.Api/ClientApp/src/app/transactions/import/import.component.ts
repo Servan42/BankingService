@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ImportService } from '../../services/import.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorSnackbarComponent } from '../../sncackbars/error-snackbar/error-snackbar.component';
 
 @Component({
   selector: 'app-import',
@@ -10,7 +12,7 @@ import { ImportService } from '../../services/import.service';
   imports: [MatIconModule],
 })
 export class ImportComponent implements OnInit {
-  constructor(private importService: ImportService) {}
+  constructor(private importService: ImportService, private snackBar: MatSnackBar) {}
 
   @Output() uploadComplete = new EventEmitter();
 
@@ -27,8 +29,8 @@ export class ImportComponent implements OnInit {
       this.importService
         .importBankFile(file)
         .subscribe({
-          next: (s) => alert(s),
-          error: (e) => console.error(e),
+          next: (s) => this.snackBar.open(s, '✔', { duration: 5000 }),
+          error: (e) => this.snackBar.openFromComponent(ErrorSnackbarComponent, { data: e }),
           complete: () => this.uploadComplete.emit()
         });
     }
@@ -44,8 +46,8 @@ export class ImportComponent implements OnInit {
       this.importService
         .importPaypalFile(file)
         .subscribe({
-          error: (e) => console.error(e),
-          complete: () => this.uploadComplete.emit()
+          error: (e) => this.snackBar.openFromComponent(ErrorSnackbarComponent, { data: e }),
+          complete: () => { this.snackBar.open('Paypal file imported successfully.', '✔', { duration: 5000 }); this.uploadComplete.emit(); }
         });
     }
   }

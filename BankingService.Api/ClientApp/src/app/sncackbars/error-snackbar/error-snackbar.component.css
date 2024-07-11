@@ -1,0 +1,13 @@
+::ng-deep .mdc-snackbar__surface {
+  background-color: rgb(128, 0, 0) !important;
+}
+
+.custom-snackbar {
+  font-family: Ubuntu;
+  display: flex;
+  justify-content: space-between;
+}
+
+.snackbar-button {
+  color: white !important;
+}

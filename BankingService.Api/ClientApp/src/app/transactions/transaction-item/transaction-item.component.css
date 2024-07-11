@@ -76,6 +76,10 @@
   text-align: left;
 }
 
+.edit-icon, .save-icon {
+  cursor: pointer;
+}
+
 .save-icon {
   color: rgb(0, 175, 0);
 }

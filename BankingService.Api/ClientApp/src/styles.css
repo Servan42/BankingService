@@ -32,5 +32,9 @@ html, body
     border-radius: 15px;
 }
 
+mat-snack-bar-container {
+  white-space: pre-wrap
+}
+
 /* html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */

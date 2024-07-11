@@ -96,7 +96,7 @@ namespace BankingService.Api.Controllers
             try
             {
                 this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {

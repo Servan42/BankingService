@@ -7,6 +7,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { NumberToMoneyPipe } from '../../pipe/number-to-money.pipe';
 import { DateToStringPipe } from '../../pipe/date-to-string.pipe';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorSnackbarComponent } from '../../sncackbars/error-snackbar/error-snackbar.component';
 
 @Component({
   selector: 'app-transaction-item',
@@ -23,7 +25,7 @@ export class TransactionItemComponent implements OnInit {
   categories: string[] = [];
   types: string[] = [];
 
-  constructor(private dbService: TransactionService) {}
+  constructor(private dbService: TransactionService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {}
 
@@ -39,8 +41,8 @@ export class TransactionItemComponent implements OnInit {
     this.dbService
       .updateTransaction(this.transaction)
         .subscribe({
-          error: (e) => alert(e.error),
-          complete: () => alert('saved')
+          error: e => this.snackBar.openFromComponent(ErrorSnackbarComponent, { data: e }),
+          complete: () => this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 })
       });
     this.areEditableFieldsDisabled = true;
   }

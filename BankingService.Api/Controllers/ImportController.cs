@@ -18,7 +18,8 @@ namespace BankingService.Api.Controllers
 
         [HttpPost]
         [Route("ImportFile")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType<string>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<string>> ImportFile(IFormFile formFile, bool isBankFile)
@@ -27,9 +28,10 @@ namespace BankingService.Api.Controllers
             try
             {
                 if (formFile == null || formFile.Length == 0)
-                {
                     return BadRequest("No file uploaded.");
-                }
+
+                if (!string.Equals(Path.GetExtension(formFile.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest("Expected a CSV file.");
 
                 tempFilePath = formFile.FileName.Replace(' ', '_');
                 logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
@@ -40,11 +42,16 @@ namespace BankingService.Api.Controllers
 
                 string result = string.Empty;
                 if (isBankFile)
+                {
                     result = this.importService.ImportBankFile(tempFilePath) + " new transactions imported.";
+                    return Ok(result);
+                }
                 else
+                {
                     this.importService.ImportPaypalFile(tempFilePath);
+                    return NoContent();
+                }
 
-                return Ok(result);
             }
             catch (Exception ex)
             {

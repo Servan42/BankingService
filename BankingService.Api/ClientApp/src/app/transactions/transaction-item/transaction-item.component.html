@@ -71,7 +71,7 @@
   </div>
 
   <div class="column action-column">
-    <mat-icon fontIcon="edit" (click)="onEditTransactionClicked()" *ngIf="areEditableFieldsDisabled; else saveAction"/>
+    <mat-icon fontIcon="edit" class="edit-icon" (click)="onEditTransactionClicked()" *ngIf="areEditableFieldsDisabled; else saveAction"/>
     <ng-template #saveAction><mat-icon fontIcon="save" class="save-icon" (click)="onSaveTransactionClicked()"/></ng-template>
   </div>
 </div>

@@ -4,6 +4,7 @@ using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using System.Collections.Generic;
 
 namespace BankingService.Api.Controllers
 {
@@ -24,17 +25,12 @@ namespace BankingService.Api.Controllers
         [HttpGet]
         [Route("GetAllTransactions")]
         [ProducesResponseType<IEnumerable<TransactionApiDto>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<TransactionApiDto>> GetAllTransactions()
         {
             try
             {
-                var transactions = this.transactionService.GetAllTransactions();
-                if (transactions.Any())
-                    return Ok(mapper.Map<List<TransactionApiDto>>(transactions));
-                else
-                    return NotFound();
+                return Ok(mapper.Map<List<TransactionApiDto>>(this.transactionService.GetAllTransactions()));
             }
             catch (Exception ex)
             {
@@ -46,17 +42,12 @@ namespace BankingService.Api.Controllers
         [HttpGet]
         [Route("GetTransactionCategoriesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionCategoriesNames()
         {
             try
             {
-                var categories = this.transactionService.GetTransactionCategoriesNames();
-                if (categories.Any())
-                    return Ok(categories);
-                else
-                    return NotFound();
+                return Ok(this.transactionService.GetTransactionCategoriesNames());
             }
             catch (Exception ex)
             {
@@ -68,17 +59,12 @@ namespace BankingService.Api.Controllers
         [HttpGet]
         [Route("GetTransactionTypesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionTypesNames()
         {
             try
             {
-                var types = this.transactionService.GetTransactionTypesNames();
-                if (types.Any())
-                    return Ok(types);
-                else
-                    return NotFound();
+                return Ok(this.transactionService.GetTransactionTypesNames());
             }
             catch (Exception ex)
             {

@@ -11,5 +11,9 @@ namespace BankingService.Core.Exceptions
         public BusinessException(string? message) : base(message)
         {
         }
+
+        public BusinessException(string? message, Exception ex) : base(message)
+        {
+        }
     }
 }

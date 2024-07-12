@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Model;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
@@ -39,18 +40,30 @@ namespace BankingService.Core.Services
 
         private List<Transaction> GetBankTransactionsFromCSV(List<string> csvTransactions)
         {
-            var transactions = new List<Transaction>();
+            if (csvTransactions.Count == 0 || csvTransactions.FirstOrDefault() != "Date;Date de valeur;Débit;Crédit;Libellé;Solde")
+                throw new BusinessException("Not recognized as a bank CSV file.");
 
+            var transactions = new List<Transaction>();
             foreach (var csvTransaction in csvTransactions.Skip(1))
             {
                 var splitedTransaction = csvTransaction.Split(";");
-                transactions.Add(new Transaction
+                if (splitedTransaction.Length != 6)
+                    throw new BusinessException($"The line \"{csvTransaction}\" contains {splitedTransaction.Length} fields. Expected 6.");
+
+                try
                 {
-                    Date = DateTime.Parse(splitedTransaction[0]),
-                    Flow = GetBankFlow(splitedTransaction),
-                    Label = splitedTransaction[4],
-                    Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
-                });
+                    transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Parse(splitedTransaction[0]),
+                        Flow = GetBankFlow(splitedTransaction),
+                        Label = splitedTransaction[4],
+                        Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
+                    });
+                }
+                catch (Exception ex)
+                {
+                    throw new BusinessException($"The line \"{csvTransaction}\" could not be parsed: {ex.Message}", ex);
+                }
             }
 
             return transactions;

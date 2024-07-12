@@ -64,10 +64,10 @@ namespace BankingService.Infra.Database.Services
             foreach(var transactionToUpdate in ResolveUpdatebleTransactionDtoCategoryId(transactionsDto))
             {
                 if (!transactionToUpdate.Id.HasValue)
-                    throw new Exception($"Transaction '{transactionToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id");
+                    throw new Exception($"Transaction '{transactionToUpdate.GetUniqueIdentifier()}' cannot be updated because it does not have an Id. Aborting");
 
                 if (!storedTransactions.Data.ContainsKey(transactionToUpdate.Id.Value))
-                    throw new Exception($"Transaction '{transactionToUpdate.Id.Value}' cannot be updated because it is not present in database");
+                    throw new Exception($"Transaction '{transactionToUpdate.Id.Value}' cannot be updated because it is not present in database. Aborting.");
 
                 var storedTransaction = storedTransactions.Data[transactionToUpdate.Id.Value];
                 storedTransaction.Type = transactionToUpdate.Type;

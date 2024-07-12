@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 
@@ -22,6 +23,7 @@ namespace BankingService.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType<TransactionsReportApiDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<TransactionsReportApiDto> GetReport(DateTime startDate, DateTime endDate, int highestTransactionMinAmount)
         {
@@ -29,6 +31,11 @@ namespace BankingService.Api.Controllers
             {
                 var report = this.reportService.GetTransactionsReport(startDate, endDate, highestTransactionMinAmount);
                 return Ok(mapper.Map<TransactionsReportApiDto>(report));
+            }
+            catch (BusinessException ex)
+            {
+                logger.Error(ex);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

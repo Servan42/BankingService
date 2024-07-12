@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Model;
 using BankingService.Core.SPI.Interfaces;
 
@@ -19,6 +20,9 @@ namespace BankingService.Core.Services
 
         public TransactionsReportDto GetTransactionsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestTransactionMinAmount = -100m)
         {
+            if (startDateIncluded >= endDateIncluded)
+                throw new BusinessException("The start date cannot be higher than the end date.");
+
             var reportResult = new TransactionReport(startDateIncluded, endDateIncluded);
             var transactions = mapper.Map<List<Transaction>>(bankDatabaseService.GetTransactionsBetweenDates(startDateIncluded, endDateIncluded));
             reportResult.SetTreasuryGraphData(transactions);

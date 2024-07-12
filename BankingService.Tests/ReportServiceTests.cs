@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.Interfaces;
 using BankingService.Core.SPI.MapperProfile;
@@ -134,6 +135,12 @@ namespace BankingService.Tests
                 new Core.API.DTOs.DataTagDto { DateTime = new DateTime(2024,03,27), Value = 130m },
             };
             CollectionAssert.AreEqual(expected, result.TreasuryGraphData);
+        }
+
+        [Test]
+        public void Should_throw_exception_when_dates_are_not_in_order()
+        {
+            Assert.Throws<BusinessException>(() => reportService_sut.GetTransactionsReport(endDate, startDate));
         }
     }
 }

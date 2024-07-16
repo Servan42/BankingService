@@ -2,10 +2,7 @@
 using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
-using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
-using System.Collections.Generic;
 
 namespace BankingService.Api.Controllers
 {
@@ -13,7 +10,6 @@ namespace BankingService.Api.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly ITransactionService transactionService;
         private readonly IMapper mapper;
 
@@ -29,15 +25,7 @@ namespace BankingService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<TransactionApiDto>> GetAllTransactions()
         {
-            try
-            {
-                return Ok(mapper.Map<List<TransactionApiDto>>(this.transactionService.GetAllTransactions()));
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(mapper.Map<List<TransactionApiDto>>(this.transactionService.GetAllTransactions()));
         }
 
         [HttpGet]
@@ -46,15 +34,7 @@ namespace BankingService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionCategoriesNames()
         {
-            try
-            {
-                return Ok(this.transactionService.GetTransactionCategoriesNames());
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(this.transactionService.GetTransactionCategoriesNames());
         }
 
         [HttpGet]
@@ -63,38 +43,18 @@ namespace BankingService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionTypesNames()
         {
-            try
-            {
-                return Ok(this.transactionService.GetTransactionTypesNames());
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(this.transactionService.GetTransactionTypesNames());
         }
 
         [HttpPost]
         [Route("UpdateTransactions")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult UpdateTransactions(List<UpdatableTransactionApiDto> transactionsToUpdate)
         {
-            try
-            {
-                this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
-                return NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                logger.Error(ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
+            return NoContent();
         }
     }
 }

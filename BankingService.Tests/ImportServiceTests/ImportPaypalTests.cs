@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Services;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
@@ -39,7 +40,7 @@ namespace BankingService.Tests.ImportServiceTests
                 {
                     "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
                     "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
-                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\"\r\n"
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
                 });
 
             // WHEN
@@ -59,7 +60,7 @@ namespace BankingService.Tests.ImportServiceTests
                 {
                     "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
                     "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
-                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\"\r\n"
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
                 });
             bankDatabaseService
                 .Setup(x => x.GetUnresolvedPaypalTransactions())
@@ -166,6 +167,87 @@ namespace BankingService.Tests.ImportServiceTests
                 new UpdatableTransactionDto { Id = 1, Type = "Paypal", AutoComment = "Spotify AB", Category = "Loisirs", Comment = "e" }
             };
             bankDatabaseService.Verify(x => x.UpdateTransactions(It.Is<List<UpdatableTransactionDto>>(actual => actual.IsEqualTo(expected))), Times.Once());
+        }
+
+        [Test]
+        public void Should_throw_exception_when_not_a_paypal_file()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("folder/paypal.csv"))
+                .Returns(new List<string>
+                {
+                    "line1",
+                    "line2"
+                });
+
+            // WHEN
+            var ex = Assert.Throws<BusinessException>(() => importService_sut.ImportPaypalFile("folder/paypal.csv"));
+
+            // THEN
+            Assert.That(ex.Message, Is.EqualTo("Not recognized as a paypal CSV file."));
+        }
+
+        [Test]
+        public void Should_throw_exception_when_missing_a_feild()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("folder/paypal.csv"))
+                .Returns(new List<string>
+                {
+                    "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
+                });
+
+            // WHEN
+            var ex = Assert.Throws<BusinessException>(() => importService_sut.ImportPaypalFile("folder/paypal.csv"));
+
+            // THEN
+            Assert.That(ex.Message, Is.EqualTo("The line '\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"' contains 17 fields. Expected 18."));
+        }
+
+        [Test]
+        public void Should_throw_exception_cannot_parse_transaction_date()
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("folder/paypal.csv"))
+                .Returns(new List<string>
+                {
+                    "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
+                    "\"0701/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
+                });
+
+            // WHEN
+            var ex = Assert.Throws<BusinessException>(() => importService_sut.ImportPaypalFile("folder/paypal.csv"));
+
+            // THEN
+            Assert.That(ex.Message, Is.EqualTo("The line '\"0701/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"' could not be parsed: String '0701/2024' was not recognized as a valid DateTime."));
+        }
+
+        [TestCase("-20,4a7", "")]
+        [TestCase("", "20,4a7")]
+        public void Should_throw_exception_cannot_parse_transaction_net(string negative, string positive)
+        {
+            // GIVEN
+            fileSystemService
+                .Setup(x => x.ReadAllLines("folder/paypal.csv"))
+                .Returns(new List<string>
+                {
+                    "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"",
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10a,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"",
+                    "\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Virement bancaire sur le compte PayPal\",\"EUR\",\"10,99\",\"0,00\",\"10,99\",\"0,00\",\"1234\",\"\",\"\",\"Caisse Federale de Banque\",\"7303\",\"0,00\",\"0,00\",\"P122\",\"5678\""
+                });
+
+            // WHEN
+            var ex = Assert.Throws<BusinessException>(() => importService_sut.ImportPaypalFile("folder/paypal.csv"));
+
+            // THEN
+            var faultyString = negative == string.Empty ? positive : negative;
+            Assert.That(ex.Message, Is.EqualTo($"The line '\"07/01/2024\",\"08:29:44\",\"Europe/Berlin\",\"Paiement préapprouvé d'un utilisateur de facture de paiement\",\"EUR\",\"-10,99\",\"0,00\",\"-10a,99\",\"-10,99\",\"5678\",\"paypal-se@spotify.com\",\"Spotify AB\",\"\",\"\",\"0,00\",\"0,00\",\"P122\",\"B-1245\"' could not be parsed: The input string '-10a,99' was not in a correct format."));
         }
     }
 }

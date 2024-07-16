@@ -185,7 +185,6 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_throw_exception_when_missing_a_feild()
         {
             // GIVEN
-            // GIVEN
             fileSystemService
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
@@ -204,7 +203,6 @@ namespace BankingService.Tests.ImportServiceTests
         [Test]
         public void Should_throw_exception_cannot_parse_transaction_date()
         {
-            // GIVEN
             // GIVEN
             fileSystemService
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
@@ -226,7 +224,6 @@ namespace BankingService.Tests.ImportServiceTests
         public void Should_throw_exception_cannot_parse_transaction_flow(string negative, string positive)
         {
             // GIVEN
-            // GIVEN
             fileSystemService
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
@@ -246,7 +243,6 @@ namespace BankingService.Tests.ImportServiceTests
         [Test]
         public void Should_throw_exception_cannot_parse_transaction_treasury()
         {
-            // GIVEN
             // GIVEN
             fileSystemService
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))

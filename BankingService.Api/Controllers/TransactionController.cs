@@ -2,6 +2,7 @@
 using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Collections.Generic;
@@ -83,6 +84,11 @@ namespace BankingService.Api.Controllers
             {
                 this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
                 return NoContent();
+            }
+            catch (BusinessException ex)
+            {
+                logger.Error(ex);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

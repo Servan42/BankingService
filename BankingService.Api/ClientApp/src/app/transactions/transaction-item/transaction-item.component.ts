@@ -1,5 +1,5 @@
+import { Transaction } from './../../model/transaction';
 import { Component, Input, OnInit } from '@angular/core';
-import { Transaction } from '../../model/transaction';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TransactionService } from '../../services/transaction.service';
@@ -23,6 +23,7 @@ export class TransactionItemComponent implements OnInit {
   editButtonText: string = 'Edit';
   categories: string[] = [];
   types: string[] = [];
+  backupTransaction!: Transaction;
 
   constructor(private dbService: TransactionService, private snackBar: MatSnackBar) {}
 
@@ -33,6 +34,7 @@ export class TransactionItemComponent implements OnInit {
     this.dbService.getTypesNames().subscribe((x) => (this.types = x));
     this.editButtonText = 'Save';
     this.areEditableFieldsDisabled = false;
+    this.backupTransaction = { ... this.transaction };
   }
 
   onSaveTransactionClicked(): void {
@@ -40,7 +42,8 @@ export class TransactionItemComponent implements OnInit {
     this.dbService
       .updateTransaction(this.transaction)
         .subscribe({
-          complete: () => this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 })
+          complete: () => this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 }),
+          error: () => this.transaction = { ... this.backupTransaction }
       });
     this.areEditableFieldsDisabled = true;
   }

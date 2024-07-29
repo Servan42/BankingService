@@ -3,6 +3,7 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { Transaction, mockTransactions } from '../model/transaction';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { ErrorHandlerService } from './error-handler.service';
 
 const ENDPOINT = environment.apiUrl + '/api/Transaction/';
 
@@ -10,7 +11,7 @@ const ENDPOINT = environment.apiUrl + '/api/Transaction/';
   providedIn: 'root',
 })
 export class TransactionService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private errorHandler: ErrorHandlerService) {}
 
   getAllTransactions(): Observable<Transaction[]> {
     console.log('DB CALLED! (GetAllTransactions)');
@@ -22,7 +23,8 @@ export class TransactionService {
           transactions.map((transaction) => ({
             ...transaction,
             date: new Date(transaction.date),
-          }))
+          })),
+          catchError(err => this.errorHandler.handleError(err))
         )
       );
     // return of(mockTransactions);
@@ -31,7 +33,10 @@ export class TransactionService {
   getCategoriesNames(): Observable<string[]> {
     console.log('DB CALLED! (getCategoriesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetTransactionCategoriesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionCategoriesNames")
+      .pipe(
+        catchError(err => this.errorHandler.handleError(err))
+      );
     // const mockCategories = ['Food', 'Salary', 'Entertainment', 'Utilities'];
     // return of(mockCategories);
   }
@@ -39,7 +44,10 @@ export class TransactionService {
   getTypesNames(): Observable<string[]> {
     console.log('DB CALLED! (getTypesNames)');
     return this.httpClient
-      .get<string[]>(ENDPOINT + "GetTransactionTypesNames");
+      .get<string[]>(ENDPOINT + "GetTransactionTypesNames")
+      .pipe(
+        catchError(err => this.errorHandler.handleError(err))
+      );
     // const mockTypes = ['Expense', 'Income'];
     // return of(mockTypes);
   }
@@ -54,6 +62,9 @@ export class TransactionService {
         autoComment: transaction.autoComment,
         comment: transaction.comment
       }
-    ]);
+    ])
+    .pipe(
+      catchError(err => this.errorHandler.handleError(err))
+    );
   }
 }

@@ -21,7 +21,6 @@ export class ImportService {
   }
 
   private importFile(file: File, isBankFile: boolean): Observable<string> {
-    console.log('DB CALLED! (importFile)', file);
     const formData = new FormData();
     formData.append('formFile', file);
     return this.httpClient.post(ENDPOINT + 'ImportFile?isBankFile=' + isBankFile, formData, { responseType: 'text'})

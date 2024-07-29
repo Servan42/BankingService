@@ -15,7 +15,6 @@ export class ReportService {
   constructor(private httpClient: HttpClient, private errorHandler: ErrorHandlerService) {}
 
   getReport(reportInput: ReportInput): Observable<TransactionReport> {
-    console.log('DB CALLED! (getReport)');
     let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestTransactionMinAmount=' + reportInput.highestTransactionMinAmount;
     return this.httpClient
       .get<TransactionReport>(ENDPOINT + params)

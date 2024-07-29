@@ -1,4 +1,5 @@
 ﻿using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 
@@ -27,8 +28,11 @@ namespace BankingService.Api.Controllers
             string tempFilePath = string.Empty;
             try
             {
-                if (formFile == null || formFile.Length == 0)
+                if (formFile == null)
                     return BadRequest("No file uploaded.");
+
+                if (formFile.Length == 0)
+                    return BadRequest("Empty file uploaded.");
 
                 if (!string.Equals(Path.GetExtension(formFile.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
                     return BadRequest("Expected a CSV file.");
@@ -52,6 +56,11 @@ namespace BankingService.Api.Controllers
                     return NoContent();
                 }
 
+            }
+            catch (BusinessException ex)
+            {
+                logger.Error(ex);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

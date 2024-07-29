@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Model;
 using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
@@ -39,18 +40,30 @@ namespace BankingService.Core.Services
 
         private List<Transaction> GetBankTransactionsFromCSV(List<string> csvTransactions)
         {
-            var transactions = new List<Transaction>();
+            if (csvTransactions.Count == 0 || csvTransactions.FirstOrDefault() != "Date;Date de valeur;Débit;Crédit;Libellé;Solde")
+                throw new BusinessException("Not recognized as a bank CSV file.");
 
+            var transactions = new List<Transaction>();
             foreach (var csvTransaction in csvTransactions.Skip(1))
             {
                 var splitedTransaction = csvTransaction.Split(";");
-                transactions.Add(new Transaction
+                if (splitedTransaction.Length != 6)
+                    throw new BusinessException($"The line \"{csvTransaction}\" contains {splitedTransaction.Length} fields. Expected 6.");
+
+                try
                 {
-                    Date = DateTime.Parse(splitedTransaction[0]),
-                    Flow = GetBankFlow(splitedTransaction),
-                    Label = splitedTransaction[4],
-                    Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
-                });
+                    transactions.Add(new Transaction
+                    {
+                        Date = DateTime.Parse(splitedTransaction[0]),
+                        Flow = GetBankFlow(splitedTransaction),
+                        Label = splitedTransaction[4],
+                        Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
+                    });
+                }
+                catch (Exception ex)
+                {
+                    throw new BusinessException($"The line \"{csvTransaction}\" could not be parsed: {ex.Message}", ex);
+                }
             }
 
             return transactions;
@@ -85,7 +98,14 @@ namespace BankingService.Core.Services
             logger.Info($"Importing {paypalFilePath} paypal file");
             var csvTransactions = fileSystemService.ReadAllLines(paypalFilePath);
             List<Transaction> completeTransactions = MatchPaypalDataToExistingTransactions(csvTransactions);
-            bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
+            try
+            {
+                bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new BusinessException(ex.Message, ex);
+            }
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
         }
 
@@ -129,17 +149,30 @@ namespace BankingService.Core.Services
 
         private List<PaypalTransaction> GetPaypalTransactionsFromCSV(List<string> csvTransactions)
         {
-            var transactions = new List<PaypalTransaction>();
+            if (csvTransactions.Count == 0 || csvTransactions.FirstOrDefault() != "\"Date\",\"Heure\",\"Fuseau horaire\",\"Description\",\"Devise\",\"Brut \",\"Frais \",\"Net\",\"Solde\",\"Numéro de transaction\",\"Adresse email de l'expéditeur\",\"Nom\",\"Nom de la banque\",\"Compte bancaire\",\"Montant des frais de livraison et de traitement\",\"TVA\",\"Numéro de facture\",\"Numéro de la transaction de référence\"")
+                throw new BusinessException("Not recognized as a paypal CSV file.");
 
+            var transactions = new List<PaypalTransaction>();
             foreach (var transaction in csvTransactions.Skip(1))
             {
                 var transactionFeilds = GetCSVFeilds(transaction, ",");
-                var paypalTransaction = new PaypalTransaction()
+                if (transactionFeilds.Count != 18)
+                    throw new BusinessException($"The line '{transaction}' contains {transactionFeilds.Count} fields. Expected 18.");
+
+                PaypalTransaction paypalTransaction;
+                try
                 {
-                    Date = DateTime.Parse(transactionFeilds[0]),
-                    Net = decimal.Parse(transactionFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
-                    Nom = transactionFeilds[11]
-                };
+                    paypalTransaction = new PaypalTransaction()
+                    {
+                        Date = DateTime.Parse(transactionFeilds[0]),
+                        Net = decimal.Parse(transactionFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
+                        Nom = transactionFeilds[11]
+                    };
+                }
+                catch (Exception ex)
+                {
+                    throw new BusinessException($"The line '{transaction}' could not be parsed: {ex.Message}", ex);
+                }
                 if (paypalTransaction.Net < 0)
                     transactions.Add(paypalTransaction);
             }
@@ -195,7 +228,14 @@ namespace BankingService.Core.Services
 
             logger.Info($"{transactions.Count(o => o.Type == "TODO" || o.Category == "TODO")} transactions still require manual input");
 
-            bankDatabaseService.UpdateTransactions(transactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
+            try
+            {
+                bankDatabaseService.UpdateTransactions(transactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new BusinessException(ex.Message, ex);
+            }
         }
     }
 }

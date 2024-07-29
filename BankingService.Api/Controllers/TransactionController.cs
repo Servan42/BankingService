@@ -3,7 +3,6 @@ using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
 
 namespace BankingService.Api.Controllers
 {
@@ -11,7 +10,6 @@ namespace BankingService.Api.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly ITransactionService transactionService;
         private readonly IMapper mapper;
 
@@ -24,85 +22,39 @@ namespace BankingService.Api.Controllers
         [HttpGet]
         [Route("GetAllTransactions")]
         [ProducesResponseType<IEnumerable<TransactionApiDto>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<TransactionApiDto>> GetAllTransactions()
         {
-            try
-            {
-                var transactions = this.transactionService.GetAllTransactions();
-                if (transactions.Any())
-                    return Ok(mapper.Map<List<TransactionApiDto>>(transactions));
-                else
-                    return NotFound();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(mapper.Map<List<TransactionApiDto>>(this.transactionService.GetAllTransactions()));
         }
 
         [HttpGet]
         [Route("GetTransactionCategoriesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionCategoriesNames()
         {
-            try
-            {
-                var categories = this.transactionService.GetTransactionCategoriesNames();
-                if (categories.Any())
-                    return Ok(categories);
-                else
-                    return NotFound();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(this.transactionService.GetTransactionCategoriesNames());
         }
 
         [HttpGet]
         [Route("GetTransactionTypesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<string>> GetTransactionTypesNames()
         {
-            try
-            {
-                var types = this.transactionService.GetTransactionTypesNames();
-                if (types.Any())
-                    return Ok(types);
-                else
-                    return NotFound();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(this.transactionService.GetTransactionTypesNames());
         }
 
         [HttpPost]
         [Route("UpdateTransactions")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult UpdateTransactions(List<UpdatableTransactionApiDto> transactionsToUpdate)
         {
-            try
-            {
-                this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return StatusCode(500, ex.Message);
-            }
+            this.transactionService.UpdateTransactions(mapper.Map<List<UpdatableTransactionDto>>(transactionsToUpdate));
+            return NoContent();
         }
     }
 }

@@ -1,5 +1,6 @@
 using BankingService.Api.Configuration;
 using BankingService.Api.MapperProfile;
+using BankingService.Api.Middlewares;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Services;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
 builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IImportService, ImportService>();
+builder.Services.AddScoped<ExceptionMiddleware>();
 
 var app = builder.Build();
 
@@ -59,6 +61,7 @@ app.UseCors("AllowSpecificOrigin");
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
 // https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/hosting-bundle?view=aspnetcore-8.0#install-the-net-core-hosting-bundle

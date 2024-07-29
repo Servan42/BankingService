@@ -19,7 +19,7 @@
       </span>
     </div>
     <div class="date-type-cat-line">
-      <span>{{ transaction.date | dateToString }}</span>
+      <span>{{ transaction.date | date:'YYYY-MM-dd' }}</span>
       {{ ' . ' }}
       <span>
         <span *ngIf="areEditableFieldsDisabled; else typesInput">

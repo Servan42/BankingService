@@ -1,79 +1,50 @@
 .container {
-  margin: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
-  padding: 10px;
-  background-color: rgba(20, 0, 75, 0.5);
-  border-radius: 5px;
-
-  font-family: Ubuntu, sans-serif;
-
   display: flex;
   align-items: center;
-  /* justify-content: center; */
+  justify-content: space-between;
+  font-family: Ubuntu, sans-serif;
+
+  margin: 10px;
+  padding: 8px 16px 10px 16px;
+
+  border-style: solid;
+  border-color: rgb(40, 40, 40);
+  border-width: 1px;
+  border-radius: 10px;
 }
 
-.red-bg {
-  background-color: rgba(20, 0, 0, 0.5);
+.container:hover {
+  background-color: #1f1f1f;
 }
 
-.green-bg {
-  background-color: rgba(0, 20, 0, 0.5);
+.title-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
-.column {
-  margin: 0 6px;
-}
-
-.date-column {
-  min-width: 80px;
-}
-
-.flow-column {
-  font-weight: bold;
-  text-align: right;
-  min-width: 80px;
-  text-align: center;
-}
-
-.treasury-column {
-  text-align: center;
-  min-width: 80px;
-}
-
-.type-column {
-  flex-basis: 25%;
-}
-
-.category-column {
-  flex-basis: 50%;
-}
-
-.autoComment-column, .comment-column {
-  flex-basis: 100%;
-}
-
-.label-column, .action-column {
-  margin:0 10px;
-  text-align: center;
+.title {
+  font-size: 1.4em;
+  padding-left: 7px;
 }
 
 .editable-text-field {
-  background-color: rgb(180, 180, 180);
-  color: black;
+  background-color: rgb(42, 42, 42);
+  color: lightgray;
   font-family: Ubuntu, sans-serif;
+  font-size: 1em;
+  border: none;
   padding: 3px;
-  width: 100%;
 }
 
-.dropdown-button {
-  background-color: rgb(180, 180, 180);
-  color: black;
-  font-family: Ubuntu, sans-serif;
-  padding: 3px;
-  border: none;
-  width: 100%;
-  text-align: left;
+.date-type-cat-line {
+  font-size: 1.1em;
+}
+
+.money-panel {
+  font-size: 1.3em;
+  font-weight: bold;
+  cursor: help;
 }
 
 .edit-icon, .save-icon {
@@ -84,34 +55,35 @@
   color: rgb(0, 175, 0);
 }
 
-::ng-deep .mat-mdc-menu-content {
-  background-color: rgb(42, 42, 42) !important;
+.label-line {
+  font-style: italic;
+  font-size: 0.9em;
 }
 
-::ng-deep .mat-mdc-menu-item {
-  color: lightgray;
+.red-text {
+  color: rgb(200, 0, 0);
 }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-  cursor: help;
+.green-text {
+  color: rgb(0, 175, 0);
 }
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 120px;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.75);
   color: lightgray;
   text-align: center;
   padding: 5px;
+
   border-radius: 6px;
+  border-style: solid;
+  border-color: rgb(150, 150, 150);
+  border-width: 1px;
 
   position: absolute;
   z-index: 1;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-left: -30px;
+  margin-top: -30px;
 }
 
 .tooltip:hover .tooltiptext {

@@ -19,6 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class TransactionItemComponent implements OnInit {
   @Input() transaction!: Transaction;
 
+  separator: string = '';
   areEditableFieldsDisabled: boolean = true;
   editButtonText: string = 'Edit';
   categories: string[] = [];
@@ -27,7 +28,19 @@ export class TransactionItemComponent implements OnInit {
 
   constructor(private dbService: TransactionService, private snackBar: MatSnackBar) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initSeparator();
+  }
+
+  private initSeparator() {
+    if (this.transaction.autoComment.length == 0 && this.transaction.comment.length == 0) {
+      this.separator = '<< TODO ADD TITLE >>'
+    } else if (this.transaction.autoComment.length > 0 && this.transaction.comment.length > 0) {
+      this.separator = ' - ';
+    } else {
+      this.separator = '';
+    }
+  }
 
   onEditTransactionClicked(): void {
     this.dbService.getCategoriesNames().subscribe((x) => (this.categories = x));
@@ -42,7 +55,10 @@ export class TransactionItemComponent implements OnInit {
     this.dbService
       .updateTransaction(this.transaction)
         .subscribe({
-          complete: () => this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 }),
+          complete: () => {
+            this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 });
+            this.initSeparator();
+          },
           error: () => this.transaction = { ... this.backupTransaction }
       });
     this.areEditableFieldsDisabled = true;

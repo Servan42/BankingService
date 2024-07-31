@@ -18,7 +18,7 @@ import { TransactionFilters } from '../../model/transaction-filters';
   standalone: true,
   providers: [
     provideNativeDateAdapter(),
-    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-CA' },
   ],
   imports: [
     CommonModule,

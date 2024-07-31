@@ -24,11 +24,28 @@ export class TransactionItemComponent implements OnInit {
   categories: string[] = [];
   types: string[] = [];
   backupTransaction!: Transaction;
+  imgSrc: string = '';
+
+  private imageTable = new Map<string, string>([
+    ['EPARGNE', '../../../assets/piggybank_icon.png'],
+    ['Paypal', '../../../assets/paypal_icon.png'],
+    ['Carte Bancaire', '../../../assets/credit_card_icon.png'],
+    ['Sans contact', '../../../assets/contactless.png'],
+    ['Virement', '../../../assets/bank_transfer.png'],
+    ['Retrait', '../../../assets/withdraw.png'],
+    ['Frais Bancaires', '../../../assets/bank_costs.png'],
+    ['Prelevement', '../../../assets/direct_debit.png']
+  ]);
 
   constructor(private dbService: TransactionService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.initSeparator();
+    this.initImage();
+  }
+
+  private initImage() {
+    this.imgSrc = this.imageTable.get(this.transaction.type) ?? '';
   }
 
   private initSeparator() {
@@ -57,6 +74,7 @@ export class TransactionItemComponent implements OnInit {
           complete: () => {
             this.snackBar.open('Transaction ' + this.transaction.id + ' updated successfully.', '✔', { duration: 5000 });
             this.initSeparator();
+            this.initImage();
           },
           error: () => this.transaction = { ... this.backupTransaction }
       });

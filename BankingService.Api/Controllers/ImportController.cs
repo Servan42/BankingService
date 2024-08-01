@@ -2,6 +2,8 @@
 using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using System.Diagnostics;
+using System.Text;
 
 namespace BankingService.Api.Controllers
 {
@@ -36,13 +38,8 @@ namespace BankingService.Api.Controllers
 
                 if (!string.Equals(Path.GetExtension(formFile.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
                     return BadRequest("Expected a CSV file.");
-
-                tempFilePath = formFile.FileName.Replace(' ', '_');
-                logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
-                using (var fileStream = System.IO.File.Create(tempFilePath))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
+                
+                tempFilePath = WriteUploadedFileToLocalFile(formFile);
 
                 string result = string.Empty;
                 if (isBankFile)
@@ -75,6 +72,19 @@ namespace BankingService.Api.Controllers
                     System.IO.File.Delete(tempFilePath);
                 }
             }
+        }
+
+        private string WriteUploadedFileToLocalFile(IFormFile formFile)
+        {
+            string tempFilePath = formFile.FileName.Replace(' ', '_');
+            logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
+            using (var formFileReader = new StreamReader(formFile.OpenReadStream(), Encoding.GetEncoding("iso-8859-1")))
+            {
+                using var fileStream = new StreamWriter(tempFilePath);
+                while (!formFileReader.EndOfStream)
+                    fileStream.WriteLine(formFileReader.ReadLine());
+            }
+            return tempFilePath;
         }
     }
 }

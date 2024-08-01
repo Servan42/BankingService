@@ -1,0 +1,33 @@
+.container {
+  padding: 15px;
+  font-family: Ubuntu;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-data {
+  white-space: pre-wrap;
+}
+
+h2 {
+  text-align: center;
+}
+
+.close-button {
+  align-self: center;
+  background-color: transparent;
+  margin-top: 4px;
+  padding: 5px;
+
+  color: lightgray;
+  font-size: 1em;
+
+  border: solid;
+  border-width: 1px;
+  border-color: lightgray;
+  border-radius: 4px;
+}
+
+.close-button:hover {
+  background-color: #353535;
+}

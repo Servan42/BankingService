@@ -2,6 +2,8 @@
 using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using System.Diagnostics;
+using System.Text;
 
 namespace BankingService.Api.Controllers
 {
@@ -20,10 +22,9 @@ namespace BankingService.Api.Controllers
         [HttpPost]
         [Route("ImportFile")]
         [ProducesResponseType<string>(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<string>> ImportFile(IFormFile formFile, bool isBankFile)
+        public ActionResult<string> ImportFile(IFormFile formFile, bool isBankFile)
         {
             string tempFilePath = string.Empty;
             try
@@ -36,24 +37,16 @@ namespace BankingService.Api.Controllers
 
                 if (!string.Equals(Path.GetExtension(formFile.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
                     return BadRequest("Expected a CSV file.");
+                
+                tempFilePath = WriteUploadedFileToLocalFile(formFile);
 
-                tempFilePath = formFile.FileName.Replace(' ', '_');
-                logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
-                using (var fileStream = System.IO.File.Create(tempFilePath))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
-
-                string result = string.Empty;
                 if (isBankFile)
                 {
-                    result = this.importService.ImportBankFile(tempFilePath) + " new transactions imported.";
-                    return Ok(result);
+                    return Ok(this.importService.ImportBankFile(tempFilePath));
                 }
                 else
                 {
-                    this.importService.ImportPaypalFile(tempFilePath);
-                    return NoContent();
+                    return Ok(this.importService.ImportPaypalFile(tempFilePath));
                 }
 
             }
@@ -75,6 +68,19 @@ namespace BankingService.Api.Controllers
                     System.IO.File.Delete(tempFilePath);
                 }
             }
+        }
+
+        private string WriteUploadedFileToLocalFile(IFormFile formFile)
+        {
+            string tempFilePath = formFile.FileName.Replace(' ', '_');
+            logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
+            using (var formFileReader = new StreamReader(formFile.OpenReadStream(), Encoding.GetEncoding("iso-8859-1")))
+            {
+                using var fileStream = new StreamWriter(tempFilePath);
+                while (!formFileReader.EndOfStream)
+                    fileStream.WriteLine(formFileReader.ReadLine());
+            }
+            return tempFilePath;
         }
     }
 }

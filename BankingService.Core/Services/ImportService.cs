@@ -6,6 +6,7 @@ using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using NLog;
 using System.Globalization;
+using System.Text;
 
 namespace BankingService.Core.Services
 {
@@ -27,15 +28,15 @@ namespace BankingService.Core.Services
             this.mapper = mapper;
         }
 
-        public int ImportBankFile(string bankFilePath)
+        public string ImportBankFile(string bankFilePath)
         {
             logger.Info($"Importing {bankFilePath} bank file");
             var csvTransactions = fileSystemService.ReadAllLines(bankFilePath);
             List<Transaction> transactions = GetBankTransactionsFromCSV(csvTransactions);
-            ResolveTransactionsAutoFields(transactions);
+            var report = ResolveTransactionsAutoFields(transactions);
             int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(mapper.Map<TransactionDto>).ToList());
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
-            return nbImported;
+            return report + $"{nbImported} new transactions imported.";
         }
 
         private List<Transaction> GetBankTransactionsFromCSV(List<string> csvTransactions)
@@ -69,7 +70,7 @@ namespace BankingService.Core.Services
             return transactions;
         }
 
-        private void ResolveTransactionsAutoFields(List<Transaction> transactions)
+        private string ResolveTransactionsAutoFields(List<Transaction> transactions)
         {
             var transactionTypes = bankDatabaseService.GetTransactionTypesKvp();
             var transactionCategoriesAndAutoComment = mapper.Map<Dictionary<string, TransactionCategoryAndAutoComment>>(bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp());
@@ -80,9 +81,25 @@ namespace BankingService.Core.Services
                 transaction.ResolveCategoryAndAutoComment(transactionCategoriesAndAutoComment);
             }
 
-            logger.Info($"{transactions.Count(o => o.Type != "TODO")}/{transactions.Count} transaction types resolved");
-            transactions.Where(o => o.Type == "TODO").ToList().ForEach(o => logger.Debug($"Transaction needs a type: '{o.Date};{o.Flow};{o.Treasury};{o.Label}'"));
-            logger.Info($"{transactions.Count(o => o.Category != "TODO")}/{transactions.Count} transaction categories resolved");
+            return PrepareBankReport(transactions);
+        }
+
+        private string PrepareBankReport(List<Transaction> transactions)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            var message = $"{transactions.Count(o => o.Type != "TODO")}/{transactions.Count} transaction types resolved.";
+            stringBuilder.AppendLine(message);
+            logger.Info(message);
+            foreach (var transactionWithoutAType in transactions.Where(o => o.Type == "TODO"))
+            {
+                message = $"- Transaction needs a type: '{transactionWithoutAType.Date:yyyy-MM-dd};{transactionWithoutAType.Flow};{transactionWithoutAType.Treasury};{transactionWithoutAType.Label}'";
+                stringBuilder.AppendLine(message);
+                logger.Debug(message);
+            }
+            message = $"{transactions.Count(o => o.Category != "TODO")}/{transactions.Count} transaction categories resolved.";
+            stringBuilder.AppendLine(message);
+            logger.Info(message);
+            return stringBuilder.ToString();
         }
 
         private decimal GetBankFlow(string[] splitedTransaction)
@@ -93,11 +110,11 @@ namespace BankingService.Core.Services
                 return decimal.Parse(splitedTransaction[2], CultureInfo.GetCultureInfo("fr-FR"));
         }
 
-        public void ImportPaypalFile(string paypalFilePath)
+        public string ImportPaypalFile(string paypalFilePath)
         {
             logger.Info($"Importing {paypalFilePath} paypal file");
             var csvTransactions = fileSystemService.ReadAllLines(paypalFilePath);
-            List<Transaction> completeTransactions = MatchPaypalDataToExistingTransactions(csvTransactions);
+            (var completeTransactions, var report) = MatchPaypalDataToExistingTransactions(csvTransactions);
             try
             {
                 bankDatabaseService.UpdateTransactions(completeTransactions.Select(o => mapper.Map<UpdatableTransactionDto>(o.ToUpdatableTransaction())).ToList());
@@ -107,10 +124,12 @@ namespace BankingService.Core.Services
                 throw new BusinessException(ex.Message, ex);
             }
             fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
+            return report;
         }
 
-        private List<Transaction> MatchPaypalDataToExistingTransactions(List<string> csvTransactions)
+        private (List<Transaction>, string) MatchPaypalDataToExistingTransactions(List<string> csvTransactions)
         {
+            StringBuilder stringBuilder = new StringBuilder();
             var paypalTransactionsQueue = new Queue<PaypalTransaction>(GetPaypalTransactionsFromCSV(csvTransactions).OrderBy(o => o.Date));
             var incompleteTransactions = mapper.Map<List<Transaction>>(bankDatabaseService.GetUnresolvedPaypalTransactions()).OrderBy(o => o.Date).ToList();
             var paypalCategories = bankDatabaseService.GetPaypalCategoriesKvp();
@@ -135,16 +154,25 @@ namespace BankingService.Core.Services
                 transactionToComplete.AutoComment = paypalTransaction.Nom;
                 transactionToComplete.ResolvePaypalCategory(paypalCategories);
                 completeTransactions.Add(transactionToComplete);
+                stringBuilder.AppendLine($"- {transactionToComplete.Date:yyyy-MM-dd} {transactionToComplete.Flow} <- {paypalTransaction.Date:yyyy-MM-dd} {paypalTransaction.Nom}");
             }
 
-            logger.Info(paypalTransactionsQueue.Count > 0 ? $"{paypalTransactionsQueue.Count} paypal transactions could not be matched" : "All paypal transactions were matched to data");
+            return (completeTransactions, PreparePaypalReport(stringBuilder, paypalTransactionsQueue));
+        }
+
+        private string PreparePaypalReport(StringBuilder stringBuilder, Queue<PaypalTransaction> paypalTransactionsQueue)
+        {
+            string message = paypalTransactionsQueue.Count > 0 ? $"{paypalTransactionsQueue.Count} paypal transactions could not be matched" : "All paypal transactions were matched to data";
+            stringBuilder.AppendLine(message);
+            logger.Info(message);
             while (paypalTransactionsQueue.Count > 0)
             {
-                var unmatchedOp = paypalTransactionsQueue.Dequeue();
-                logger.Debug($"Following paypal transaction could not be matched to data: '{unmatchedOp.Date};{unmatchedOp.Net};{unmatchedOp.Nom}'");
+                var unmatchedTransaction = paypalTransactionsQueue.Dequeue();
+                message = $"- Following paypal transaction could not be matched to data: '{unmatchedTransaction.Date:yyyy-MM-dd};{unmatchedTransaction.Net};{unmatchedTransaction.Nom}'";
+                stringBuilder.AppendLine(message);
+                logger.Debug(message);
             }
-
-            return completeTransactions;
+            return stringBuilder.ToString();
         }
 
         private List<PaypalTransaction> GetPaypalTransactionsFromCSV(List<string> csvTransactions)

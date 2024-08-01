@@ -2,8 +2,8 @@
 {
     public interface IImportService
     {
-        public int ImportBankFile(string bankFilePath);
-        public void ImportPaypalFile(string paypalFilePath);
+        public string ImportBankFile(string bankFilePath);
+        public string ImportPaypalFile(string paypalFilePath);
         public void RecomputeEveryTransactionAdditionalData();
     }
 }

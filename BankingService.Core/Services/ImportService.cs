@@ -6,6 +6,7 @@ using BankingService.Core.SPI.DTOs;
 using BankingService.Core.SPI.Interfaces;
 using NLog;
 using System.Globalization;
+using System.Text;
 
 namespace BankingService.Core.Services
 {
@@ -27,15 +28,15 @@ namespace BankingService.Core.Services
             this.mapper = mapper;
         }
 
-        public int ImportBankFile(string bankFilePath)
+        public string ImportBankFile(string bankFilePath)
         {
             logger.Info($"Importing {bankFilePath} bank file");
             var csvTransactions = fileSystemService.ReadAllLines(bankFilePath);
             List<Transaction> transactions = GetBankTransactionsFromCSV(csvTransactions);
-            ResolveTransactionsAutoFields(transactions);
+            var report = ResolveTransactionsAutoFields(transactions);
             int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(mapper.Map<TransactionDto>).ToList());
             fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
-            return nbImported;
+            return report + $"{nbImported} new transactions imported.";
         }
 
         private List<Transaction> GetBankTransactionsFromCSV(List<string> csvTransactions)
@@ -69,7 +70,7 @@ namespace BankingService.Core.Services
             return transactions;
         }
 
-        private void ResolveTransactionsAutoFields(List<Transaction> transactions)
+        private string ResolveTransactionsAutoFields(List<Transaction> transactions)
         {
             var transactionTypes = bankDatabaseService.GetTransactionTypesKvp();
             var transactionCategoriesAndAutoComment = mapper.Map<Dictionary<string, TransactionCategoryAndAutoComment>>(bankDatabaseService.GetTransactionCategoriesAndAutoCommentKvp());
@@ -80,9 +81,25 @@ namespace BankingService.Core.Services
                 transaction.ResolveCategoryAndAutoComment(transactionCategoriesAndAutoComment);
             }
 
-            logger.Info($"{transactions.Count(o => o.Type != "TODO")}/{transactions.Count} transaction types resolved");
-            transactions.Where(o => o.Type == "TODO").ToList().ForEach(o => logger.Debug($"Transaction needs a type: '{o.Date};{o.Flow};{o.Treasury};{o.Label}'"));
-            logger.Info($"{transactions.Count(o => o.Category != "TODO")}/{transactions.Count} transaction categories resolved");
+            return PrepareBankReport(transactions);
+        }
+
+        private string PrepareBankReport(List<Transaction> transactions)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            var message = $"{transactions.Count(o => o.Type != "TODO")}/{transactions.Count} transaction types resolved.";
+            stringBuilder.AppendLine(message);
+            logger.Info(message);
+            foreach (var transactionWithoutAType in transactions.Where(o => o.Type == "TODO"))
+            {
+                message = $"- Transaction needs a type: '{transactionWithoutAType.Date};{transactionWithoutAType.Flow};{transactionWithoutAType.Treasury};{transactionWithoutAType.Label}'";
+                stringBuilder.AppendLine(message);
+                logger.Debug(message);
+            }
+            message = $"{transactions.Count(o => o.Category != "TODO")}/{transactions.Count} transaction categories resolved.";
+            stringBuilder.AppendLine(message);
+            logger.Info(message);
+            return stringBuilder.ToString();
         }
 
         private decimal GetBankFlow(string[] splitedTransaction)

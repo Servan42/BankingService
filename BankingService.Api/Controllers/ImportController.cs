@@ -44,8 +44,7 @@ namespace BankingService.Api.Controllers
                 string result = string.Empty;
                 if (isBankFile)
                 {
-                    result = this.importService.ImportBankFile(tempFilePath) + " new transactions imported.";
-                    return Ok(result);
+                    return Ok(this.importService.ImportBankFile(tempFilePath));
                 }
                 else
                 {

@@ -3,7 +3,7 @@
     public interface IImportService
     {
         public string ImportBankFile(string bankFilePath);
-        public void ImportPaypalFile(string paypalFilePath);
+        public string ImportPaypalFile(string paypalFilePath);
         public void RecomputeEveryTransactionAdditionalData();
     }
 }

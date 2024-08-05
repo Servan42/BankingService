@@ -1,0 +1,54 @@
+name: package
+
+on:
+  push:
+    branches:
+      - master
+      
+jobs:
+  
+  Package_Backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish API
+        run: dotnet publish ./BankingService.Api/BankingService.Api.csproj -c Release --runtime win-x64 -o ./PublishBackend/API
+      
+      - name: Publish CLI
+        run: dotnet publish ./BankingService.ConsoleApp/BankingService.ConsoleApp.csproj -c Release --runtime win-x64 -o ./PublishBackend/CLI
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PublishBackend
+          path: ./PublishBackend
+
+  Package_Frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+      
+    - name: Build Frontend  
+      working-directory: ./BankingService.Api/ClientApp
+      run: | 
+        npm ci
+        npm run build
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: PublishFrontend
+        path: ./BankingService.Api/ClientApp/dist/client-app/browser

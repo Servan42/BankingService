@@ -1,0 +1,42 @@
+name: tests
+
+on: 
+  pull_request: 
+    branches:
+      - master
+      - develop
+
+jobs:
+
+  Tests_Backend:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Build Backend
+      run: dotnet build -c Debug
+    - name: Test Backend
+      run: dotnet test ./BankingService.Tests/BankingService.Tests.csproj -c Debug
+  
+  Build_Frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+      
+    - name: Build Frontend  
+      working-directory: ./BankingService.Api/ClientApp
+      run: | 
+        npm ci
+        npm run build

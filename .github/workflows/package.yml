@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/actions
-
+      
 jobs:
   
   Package_Backend:

@@ -1,11 +1,6 @@
 name: tests
 
 on: 
-  push:
-    branches:
-      - master
-      - develop
-      - feature/actions
   pull_request: 
     branches:
       - master

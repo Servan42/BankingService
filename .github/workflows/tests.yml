@@ -1,0 +1,31 @@
+name: tests
+
+on: 
+  push:
+    branches:
+      - master
+      - develop
+      - feature/actions
+  pull_request: 
+    branches:
+      - master
+      - develop
+
+jobs:
+
+  Tests_Backend:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Build Backend
+      run: dotnet build -c Debug
+    - name: Test Backend
+      run: dotnet test ./BankingService.Tests/BankingService.Tests.csproj -c Debug
+  

@@ -55,7 +55,7 @@ namespace BankingService.Core.Services
                 {
                     transactions.Add(new Transaction
                     {
-                        Date = DateTime.Parse(splitedTransaction[0]),
+                        Date = DateTime.Parse(splitedTransaction[0], CultureInfo.GetCultureInfo("fr-FR")),
                         Flow = GetBankFlow(splitedTransaction),
                         Label = splitedTransaction[4],
                         Treasury = decimal.Parse(splitedTransaction[5], CultureInfo.GetCultureInfo("fr-FR"))
@@ -192,7 +192,7 @@ namespace BankingService.Core.Services
                 {
                     paypalTransaction = new PaypalTransaction()
                     {
-                        Date = DateTime.Parse(transactionFeilds[0]),
+                        Date = DateTime.Parse(transactionFeilds[0], CultureInfo.GetCultureInfo("fr-FR")),
                         Net = decimal.Parse(transactionFeilds[7], CultureInfo.GetCultureInfo("fr-FR")),
                         Nom = transactionFeilds[11]
                     };

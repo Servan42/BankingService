@@ -1,39 +1,41 @@
-﻿using BankingService.Core.API.DTOs;
+﻿using AutoMapper;
+using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
+using BankingService.Core.Exceptions;
 using BankingService.Core.Model;
 using BankingService.Core.SPI.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Core.Services
 {
     public class ReportService : IReportService
     {
         private readonly IBankDatabaseService bankDatabaseService;
+        private readonly IMapper mapper;
 
-        public ReportService(IBankDatabaseService bankDatabaseService)
+        public ReportService(IBankDatabaseService bankDatabaseService, IMapper mapper)
         {
             this.bankDatabaseService = bankDatabaseService;
+            this.mapper = mapper;
         }
 
-        public OperationsReportDto GetOperationsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestOperationMinAmount = -100m)
+        public TransactionsReportDto GetTransactionsReport(DateTime startDateIncluded, DateTime endDateIncluded, decimal highestTransactionMinAmount = -100m)
         {
-            var reportResult = new OperationReport(startDateIncluded, endDateIncluded);
-            var operations = bankDatabaseService.GetOperationsBetweenDates(startDateIncluded, endDateIncluded);
-            reportResult.SetTreasuryGraphData(operations);
+            if (startDateIncluded >= endDateIncluded)
+                throw new BusinessException("The start date cannot be higher than the end date.");
 
-            foreach (var operation in operations)
+            var reportResult = new TransactionReport(startDateIncluded, endDateIncluded);
+            var transactions = mapper.Map<List<Transaction>>(bankDatabaseService.GetTransactionsBetweenDates(startDateIncluded, endDateIncluded));
+            reportResult.SetTreasuryGraphData(transactions);
+
+            foreach (var transaction in transactions)
             {
-                reportResult.AddToSumPerCategory(operation.Category, operation.Flow);
-                reportResult.AddToBalances(operation.Category, operation.Flow);
-                reportResult.AddToSums(operation.Category, operation.Flow);
-                reportResult.AddHighestOperation(operation, highestOperationMinAmount);
+                reportResult.AddToSumPerCategory(transaction.Category, transaction.Flow);
+                reportResult.AddToBalances(transaction.Category, transaction.Flow);
+                reportResult.AddToSums(transaction.Category, transaction.Flow);
+                reportResult.AddHighestTransaction(transaction, highestTransactionMinAmount);
             }
 
-            return reportResult.MapToDto();
+            return mapper.Map<TransactionsReportDto>(reportResult);
         }
     }
 }

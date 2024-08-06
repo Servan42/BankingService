@@ -11,7 +11,7 @@ export interface TransactionReport {
   negativeSum: number;
   positiveSumWithoutSavings: number;
   negativeSumWithoutSavings: number;
-  highestOperations: Transaction[];
+  highestTransactions: Transaction[];
   treasuryGraphData: DataTag[];
 }
 
@@ -29,7 +29,7 @@ function generateMockTransaction(id: number): Transaction {
   };
 }
 
-// Generate mock data for highestOperations array
+// Generate mock data for highestTransactions array
 const mockTransactions: Transaction[] = [];
 for (let i = 1; i <= 5; i++) {
   mockTransactions.push(generateMockTransaction(i));
@@ -65,6 +65,6 @@ export const mockReport: TransactionReport = {
   negativeSum: Math.random() * 1000,
   positiveSumWithoutSavings: Math.random() * 1000,
   negativeSumWithoutSavings: Math.random() * 1000,
-  highestOperations: mockTransactions,
+  highestTransactions: mockTransactions,
   treasuryGraphData: mockTreasuryGraphData,
 };

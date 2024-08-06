@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BankingService.Api\BankingService.Api.csproj" />
     <ProjectReference Include="..\BankingService.Core\BankingService.Core.csproj" />
     <ProjectReference Include="..\BankingService.Infra.Database\BankingService.Infra.Database.csproj" />
   </ItemGroup>

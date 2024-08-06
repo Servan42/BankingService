@@ -41,8 +41,8 @@
       <h3 class="misc-title">Highest Transactions</h3>
       <table>
         <tbody>
-          <tr *ngFor="let t of report?.highestOperations">
-            <td>{{ t.date | dateToString }}</td>
+          <tr *ngFor="let t of report?.highestTransactions">
+            <td>{{ t.date | date:'YYYY-MM-dd' }}</td>
             <td>{{ t.flow | numberToMoney }}</td>
             <td>{{ t.type }}<br>{{ t.category }}</td>
             <td>{{ t.autoComment }}<br>{{ t.comment }}</td>

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
-import { Transaction } from '../model/transaction';
+import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { TransactionReport, mockReport } from '../model/transaction-report';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ReportInput } from '../model/report-input';
+import { ErrorHandlerService } from './error-handler.service';
 
 const ENDPOINT = environment.apiUrl + '/api/Report/';
 
@@ -12,11 +12,10 @@ const ENDPOINT = environment.apiUrl + '/api/Report/';
   providedIn: 'root',
 })
 export class ReportService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private errorHandler: ErrorHandlerService) {}
 
   getReport(reportInput: ReportInput): Observable<TransactionReport> {
-    console.log('DB CALLED! (getReport)');
-    let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestOperationMinAmount=' + reportInput.highestOperationMinAmount;
+    let params = '?startDate=' + reportInput.startDate.toISOString() + '&endDate=' + reportInput.endDate.toISOString() + '&highestTransactionMinAmount=' + reportInput.highestTransactionMinAmount;
     return this.httpClient
       .get<TransactionReport>(ENDPOINT + params)
       .pipe(
@@ -24,9 +23,10 @@ export class ReportService {
           ...r,
           startDate: new Date(r.startDate),
           endDate: new Date(r.endDate),
-          highestOperations: r.highestOperations.map((t) => ({...t, date: new Date(t.date)})),
+          highestTransactions: r.highestTransactions.map((t) => ({...t, date: new Date(t.date)})),
           treasuryGraphData: r.treasuryGraphData.map((data) => ({...data, dateTime: new Date(data.dateTime)}))
-        }))
+        })),
+        catchError(err => this.errorHandler.handleError(err))
       );
     // return of(mockReport);
   }

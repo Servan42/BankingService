@@ -13,7 +13,9 @@ export class NumberToMoneyPipe implements PipeTransform {
     const roundedValue = Math.round(value * 100) / 100;
     const roundedString = roundedValue.toFixed(2);
     // Convert to string with thousands separator
-    const formattedValue = roundedString.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    let formattedValue = roundedString.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    if(value > 0)
+      formattedValue = '+' + formattedValue;
     return `${formattedValue} €`;
   }
 

@@ -1,7 +1,9 @@
 ﻿using BankingService.Core.API.Interfaces;
-using Microsoft.AspNetCore.Http;
+using BankingService.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using System.Diagnostics;
+using System.Text;
 
 namespace BankingService.Api.Controllers
 {
@@ -19,33 +21,39 @@ namespace BankingService.Api.Controllers
 
         [HttpPost]
         [Route("ImportFile")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType<string>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<string>> ImportFile(IFormFile formFile, bool isBankFile)
+        public ActionResult<string> ImportFile(IFormFile formFile, bool isBankFile)
         {
             string tempFilePath = string.Empty;
             try
             {
-                if (formFile == null || formFile.Length == 0)
-                {
+                if (formFile == null)
                     return BadRequest("No file uploaded.");
-                }
 
-                tempFilePath = formFile.FileName.Replace(' ', '_');
-                logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
-                using (var fileStream = System.IO.File.Create(tempFilePath))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
+                if (formFile.Length == 0)
+                    return BadRequest("Empty file uploaded.");
 
-                string result = string.Empty;
+                if (!string.Equals(Path.GetExtension(formFile.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest("Expected a CSV file.");
+                
+                tempFilePath = WriteUploadedFileToLocalFile(formFile);
+
                 if (isBankFile)
-                    result = this.importService.ImportBankFile(tempFilePath) + " new operations imported.";
+                {
+                    return Ok(this.importService.ImportBankFile(tempFilePath));
+                }
                 else
-                    this.importService.ImportPaypalFile(tempFilePath);
+                {
+                    return Ok(this.importService.ImportPaypalFile(tempFilePath));
+                }
 
-                return Ok(result);
+            }
+            catch (BusinessException ex)
+            {
+                logger.Error(ex);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -60,6 +68,19 @@ namespace BankingService.Api.Controllers
                     System.IO.File.Delete(tempFilePath);
                 }
             }
+        }
+
+        private string WriteUploadedFileToLocalFile(IFormFile formFile)
+        {
+            string tempFilePath = formFile.FileName.Replace(' ', '_');
+            logger.Debug($"Importing file from controller (length: {formFile.Length} bytes): {Path.GetFullPath(tempFilePath)}");
+            using (var formFileReader = new StreamReader(formFile.OpenReadStream(), Encoding.GetEncoding("iso-8859-1")))
+            {
+                using var fileStream = new StreamWriter(tempFilePath);
+                while (!formFileReader.EndOfStream)
+                    fileStream.WriteLine(formFileReader.ReadLine());
+            }
+            return tempFilePath;
         }
     }
 }

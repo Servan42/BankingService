@@ -6,7 +6,7 @@ import {
   provideNativeDateAdapter,
 } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
-import { DatabaseService } from '../../services/database.service';
+import { TransactionService } from '../../services/transaction.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionFilters } from '../../model/transaction-filters';
@@ -18,7 +18,7 @@ import { TransactionFilters } from '../../model/transaction-filters';
   standalone: true,
   providers: [
     provideNativeDateAdapter(),
-    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-CA' },
   ],
   imports: [
     CommonModule,
@@ -45,7 +45,7 @@ export class FiltersComponent implements OnInit {
   types: string[] = [];
   categories: string[] = [];
 
-  constructor(private dbService: DatabaseService) {}
+  constructor(private dbService: TransactionService) {}
 
   ngOnInit() {
     this.dbService.getTypesNames().subscribe((types) => (this.types = types));

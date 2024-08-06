@@ -3,19 +3,13 @@ using BankingService.Core.SPI.Interfaces;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingService.Tests
 {
     internal class BankDatabaseServiceTests
     {
         IBankDatabaseService bankDatabaseService_sut;
-        Mock<Infra.Database.SPI.Interfaces.IFileSystemService> mockFileSystemService;
+        Mock<IFileSystemServiceForFileDB> mockFileSystemService;
         Mock<IBankDatabaseConfiguration> mockDatabaseConfiguration;
         private readonly string KEY = "key";
         private readonly string DB_PATH = "dbPath";
@@ -31,7 +25,7 @@ namespace BankingService.Tests
         }
 
         [Test]
-        public void Should_get_operation_types()
+        public void Should_get_transaction_types()
         {
             // GIVEN
             var tFile = Path.Combine(DB_PATH, "Database", "Types.csv");
@@ -45,7 +39,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationTypesKvp();
+            var result = bankDatabaseService_sut.GetTransactionTypesKvp();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
@@ -55,7 +49,7 @@ namespace BankingService.Tests
         }
 
         [Test]
-        public void Should_get_operation_Categories_and_autoComment()
+        public void Should_get_transaction_Categories_and_autoComment()
         {
             // GIVEN
             var caFile = Path.Combine(DB_PATH, "Database", "CategoriesAndAutoComments.csv");
@@ -79,7 +73,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationCategoriesAndAutoCommentKvp();
+            var result = bankDatabaseService_sut.GetTransactionCategoriesAndAutoCommentKvp();
 
             // GIVEN
             Assert.That(result.Count, Is.EqualTo(2));
@@ -136,12 +130,12 @@ namespace BankingService.Tests
         public void Should_insert_line_if_new()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
 
-            var operations = new List<OperationDto>
+            var transactions = new List<TransactionDto>
             {
-                new OperationDto 
+                new TransactionDto 
                 {
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
@@ -149,7 +143,7 @@ namespace BankingService.Tests
                     Treasury = 20m,
                     Category = "TODO"
                 },
-                new OperationDto
+                new TransactionDto
                 {
                     Date = new DateTime(2024,03,24),
                     Flow = -10.01m,
@@ -177,7 +171,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            int count = bankDatabaseService_sut.InsertOperationsIfNew(operations);
+            int count = bankDatabaseService_sut.InsertTransactionsIfNew(transactions);
 
             // THEN
             var expected = new List<string>
@@ -186,17 +180,17 @@ namespace BankingService.Tests
                 "10;2024-03-24;-10,01;20,00;label1;;1;;",
                 "11;2024-03-24;-10,01;20,00;label2;;2;;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => o.IsEqualTo(expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
             Assert.That(count, Is.EqualTo(1));
         }
 
         [Test]
-        public void Should_get_unresolved_paypal_operations()
+        public void Should_get_unresolved_paypal_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -219,12 +213,12 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetUnresolvedPaypalOperations();
+            var result = bankDatabaseService_sut.GetUnresolvedPaypalTransactions();
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 3,
                     Date = new DateTime(2024,03,25),
@@ -237,21 +231,21 @@ namespace BankingService.Tests
                     Comment = ""
                 }
             };
-            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
-        public void Should_update_operations()
+        public void Should_update_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
 
-            var operations = new List<UpdatableOperationDto>
+            var transactions = new List<UpdatableTransactionDto>
             {
-                new UpdatableOperationDto
+                new UpdatableTransactionDto
                 {
                     Id = 2,
                     Type = "Paypal",
@@ -280,7 +274,7 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            bankDatabaseService_sut.UpdateOperations(operations);
+            bankDatabaseService_sut.UpdateTransactions(transactions);
 
             // THEN
             var expected = new List<string>
@@ -289,16 +283,16 @@ namespace BankingService.Tests
                 "1;2024-03-24;-10,01;20,00;label1;TODO;1;;",
                 "2;2024-03-25;-10,01;30,00;label1;Paypal;2;Spotify;"
             };
-            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => TestHelpers.CheckStringList(o, expected)), KEY));
+            mockFileSystemService.Verify(x => x.WriteAllLinesOverrideEncrypt(opFile, It.Is<List<string>>(o => o.IsEqualTo(expected)), KEY));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
-        public void Should_get_operation_that_need_manual_input()
+        public void Should_get_transaction_that_need_manual_input()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -319,12 +313,12 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationsThatNeedsManualInput();
+            var result = bankDatabaseService_sut.GetTransactionsThatNeedsManualInput();
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 1,
                     Date = new DateTime(2024,03,24),
@@ -337,16 +331,16 @@ namespace BankingService.Tests
                     Comment = ""
                 }
             };
-            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
 
         [Test]
-        public void Should_get_operation_all_operations()
+        public void Should_get_transaction_all_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -367,12 +361,12 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetAllOperations();
+            var result = bankDatabaseService_sut.GetAllTransactions();
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 1,
                     Date = new DateTime(2024,03,24),
@@ -384,7 +378,7 @@ namespace BankingService.Tests
                     AutoComment = "",
                     Comment = ""
                 },
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 2,
                     Date = new DateTime(2024,03,25),
@@ -398,7 +392,7 @@ namespace BankingService.Tests
                 }
             };
 
-            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }
@@ -424,10 +418,10 @@ namespace BankingService.Tests
         }
 
         [Test]
-        public void Should_get_operations_by_date()
+        public void Should_get_transactions_by_date()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Operations.table");
+            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
             var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
@@ -450,12 +444,12 @@ namespace BankingService.Tests
                 });
 
             // WHEN
-            var result = bankDatabaseService_sut.GetOperationsBetweenDates(new DateTime(2024,03,25), new DateTime(2024,03,26));
+            var result = bankDatabaseService_sut.GetTransactionsBetweenDates(new DateTime(2024,03,25), new DateTime(2024,03,26));
 
             // THEN
-            var expected = new List<OperationDto>
+            var expected = new List<TransactionDto>
             {
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 2,
                     Date = new DateTime(2024,03,25),
@@ -467,7 +461,7 @@ namespace BankingService.Tests
                     AutoComment = "Steam",
                     Comment = "Silksong"
                 },
-                new OperationDto
+                new TransactionDto
                 {
                     Id = 3,
                     Date = new DateTime(2024,03,26),
@@ -481,7 +475,7 @@ namespace BankingService.Tests
                 }
             };
 
-            Assert.That(TestHelpers.CheckOperationDtos(result, expected));
+            Assert.That(result.IsEqualTo(expected));
             mockFileSystemService.Verify(x => x.ReadAllLinesDecrypt(opFile, KEY), Times.Once());
             mockFileSystemService.Verify(x => x.ReadAllLines(cFile), Times.Once());
         }

@@ -1,0 +1,6 @@
+<div class="custom-snackbar" [ngClass]="{'snackbar-color-red': isInternalServerError, 'snackbar-color-orange' : isBusinessError}">
+  <span matSnackBarLabel><b>Error: </b>{{ message }}</span>
+  <span matSnackBarActions>
+    <button class="snackbar-button" mat-button matSnackBarAction (click)="snackBarRef.dismissWithAction()">✔</button>
+  </span>
+</div>

@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 using BankingService.Core.API.Interfaces;
 using BankingService.Core.API.MapperProfile;
 using BankingService.Core.Exceptions;
@@ -40,7 +40,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;{debit};{credit};PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
 
@@ -73,7 +73,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("folder/bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;-20,00;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
 
@@ -92,7 +92,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
@@ -131,7 +131,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
             bankDatabaseService
@@ -189,7 +189,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;-20,47;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
 
@@ -208,7 +208,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"2111/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
 
@@ -228,7 +228,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;{negative};{positive};PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;766,87"
                 });
 
@@ -248,7 +248,7 @@ namespace BankingService.Tests.ImportServiceTests
                 .Setup(x => x.ReadAllLines("bankFilePath.csv"))
                 .Returns(new List<string>
                 {
-                    "Date;Date de valeur;Débit;Crédit;Libellé;Solde",
+                    "Date;Date de valeur;DÃ©bit;CrÃ©dit;LibellÃ©;Solde",
                     $"21/11/2023;22/11/2023;-20,47;;PAIEMENT PSC 2011 GRENOBLE AUCHAN GRENOBLE CARTE 6888;76a6,87"
                 });
 

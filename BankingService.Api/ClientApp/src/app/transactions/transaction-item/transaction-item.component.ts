@@ -34,7 +34,8 @@ export class TransactionItemComponent implements OnInit {
     ['Virement', '../../../assets/bank_transfer.png'],
     ['Retrait', '../../../assets/withdraw.png'],
     ['Frais Bancaires', '../../../assets/bank_costs.png'],
-    ['Prelevement', '../../../assets/direct_debit.png']
+    ['Prelevement', '../../../assets/direct_debit.png'],
+    ['Paiement Mobile', '../../../assets/mobile.png']
   ]);
 
   constructor(private dbService: TransactionService, private snackBar: MatSnackBar) {}

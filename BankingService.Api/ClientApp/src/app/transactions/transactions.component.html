@@ -2,9 +2,12 @@
   <app-import (uploadComplete)="refreshList()"></app-import>
   <app-filters (filterOutput)="onFiltersChanged($event)"></app-filters>
   <!-- <app-transaction-headers></app-transaction-headers> -->
-  <ul>
-    <li *ngFor="let t of transactions | filterTransactions:filters">
-      <app-transaction-item [transaction]="t"></app-transaction-item>
-    </li>
-  </ul>
+  <div *ngIf="(transactions | filterTransactions:filters).length > 0; else noData">
+    <ul>
+      <li *ngFor="let t of transactions | filterTransactions:filters">
+        <app-transaction-item [transaction]="t"></app-transaction-item>
+      </li>
+    </ul>
+  </div>
+  <ng-template #noData><div class="no-data">No data to display.</div></ng-template>
 </div>

@@ -1,4 +1,4 @@
-# Banking Service [![package](https://github.com/Servan42/BankingService/actions/workflows/package.yml/badge.svg?branch=master)](https://github.com/Servan42/BankingService/actions/workflows/package.yml)
+# Banking Service [![package](https://github.com/Servan42/BankingService/actions/workflows/package.yml/badge.svg?branch=master&event=push)](https://github.com/Servan42/BankingService/actions/workflows/package.yml)
 
 ## Functionalities
 

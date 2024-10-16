@@ -18,11 +18,17 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Publish API
-        run: dotnet publish ./BankingService.Api/BankingService.Api.csproj -c Release --runtime win-x64 -o ./PublishBackend/API
+      - name: Publish API Win64
+        run: dotnet publish ./BankingService.Api/BankingService.Api.csproj -c Release --runtime win-x64 -o ./PublishBackend/API_win64
+
+      - name: Publish API Linux64
+        run: dotnet publish ./BankingService.Api/BankingService.Api.csproj -c Release --runtime linux-x64 -o ./PublishBackend/API_linux64
       
-      - name: Publish CLI
-        run: dotnet publish ./BankingService.ConsoleApp/BankingService.ConsoleApp.csproj -c Release --runtime win-x64 -o ./PublishBackend/CLI
+      - name: Publish CLI Win64
+        run: dotnet publish ./BankingService.ConsoleApp/BankingService.ConsoleApp.csproj -c Release --runtime win-x64 -o ./PublishBackend/CLI_win64
+
+      - name: Publish CLI Linux64
+        run: dotnet publish ./BankingService.ConsoleApp/BankingService.ConsoleApp.csproj -c Release --runtime linux-x64 -o ./PublishBackend/CLI_linux64
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

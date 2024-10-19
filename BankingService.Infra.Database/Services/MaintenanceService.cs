@@ -20,7 +20,7 @@ namespace BankingService.Infra.Database.Services
         {
             logger.Info("Export transactions table to CSV");
 
-            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TablePath), dbConfig.DatabaseKey);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TableName), dbConfig.DatabaseKey);
             File.WriteAllLines("transactions.export", csvLines);
         }
 
@@ -29,18 +29,18 @@ namespace BankingService.Infra.Database.Services
             logger.Info("Backuping database");
             this.fileSystemService.ZipBackupFilesToFolder(
                 [
-                    Path.Combine(dbConfig.DatabasePath, TypeTable.TablePath), 
-                    Path.Combine(dbConfig.DatabasePath, CategoriesAndAutoCommentsTable.TablePath), 
-                    Path.Combine(dbConfig.DatabasePath, TransactionTable.TablePath), 
-                    Path.Combine(dbConfig.DatabasePath, PaypalCategorieTable.TablePath), 
-                    Path.Combine(dbConfig.DatabasePath, CategorieTable.TablePath)
-                ], Path.Combine(dbConfig.DatabasePath, "Database", "Backups"));
+                    Path.Combine(dbConfig.DatabasePath, TypeTable.TableName), 
+                    Path.Combine(dbConfig.DatabasePath, CategoriesAndAutoCommentsTable.TableName), 
+                    Path.Combine(dbConfig.DatabasePath, TransactionTable.TableName), 
+                    Path.Combine(dbConfig.DatabasePath, PaypalCategorieTable.TableName), 
+                    Path.Combine(dbConfig.DatabasePath, CategorieTable.TableName)
+                ], Path.Combine(dbConfig.DatabasePath, "Backups"));
         }
 
         public void TransactionTableMigrationToIdVersion()
         {
             logger.Info("TransactionTableMigrationToIdVersion");
-            List<string> csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TablePath), dbConfig.DatabaseKey);
+            List<string> csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TableName), dbConfig.DatabaseKey);
 
             if (csvLines.Count < 2)
                 throw new Exception("No data to migrate");
@@ -60,7 +60,7 @@ namespace BankingService.Infra.Database.Services
             File.WriteAllLines("transactions.export.migrated", transactionsToWrite);
             Console.WriteLine("Review the file transactions.export.migrated before pressing enter to migrate the actual database. Kill the program if any anomaly is found");
             Console.ReadLine();
-            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TablePath), transactionsToWrite, dbConfig.DatabaseKey);
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(dbConfig.DatabasePath, TransactionTable.TableName), transactionsToWrite, dbConfig.DatabaseKey);
             Console.WriteLine("DB MIGRATED");
             logger.Info("DB MIGRATED");
         }
@@ -78,7 +78,7 @@ namespace BankingService.Infra.Database.Services
             Console.Write($"Changing password from \"{oldPassword}\" to \"{newPassword}\". Kill the program if it is incorrect. Press enter to continue.");
             _ = Console.ReadLine();
 
-            var tablePath = Path.Combine(dbConfig.DatabasePath, TransactionTable.TablePath);
+            var tablePath = Path.Combine(dbConfig.DatabasePath, TransactionTable.TableName);
             var backupTablePath = $"{tablePath}.backup_{DateTime.Now.Ticks}";
             File.Copy(tablePath, backupTablePath);
             Console.WriteLine($"{backupTablePath} created");

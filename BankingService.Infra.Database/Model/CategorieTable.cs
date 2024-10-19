@@ -4,7 +4,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class CategorieTable
     {
-        public static string TablePath => Path.Combine("Database", "Categories.csv");
+        public static string TableName => "Categories.csv";
         public static string Header => "Id;Name";
 
         public Dictionary<int, CategorieLine> Data { get; }
@@ -17,7 +17,7 @@ namespace BankingService.Infra.Database.Model
         {
             return new CategorieTable(
                 fileSystemService
-                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
+                .ReadAllLines(Path.Combine(config.DatabasePath, TableName))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => int.Parse(s[0]), s => new CategorieLine(int.Parse(s[0]), s[1]))

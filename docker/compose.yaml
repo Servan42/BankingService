@@ -1,0 +1,26 @@
+services:
+  backend:
+    image: bankingservice_backend:VERSIONTOREPLACE
+    build:
+      context: ./API_linux64
+    ports:
+      - "10001:8080"
+    networks: 
+      - app-network
+    volumes:
+      - /mnt/c/Servan/Production/BankingService/logs:/App/logs
+      - /mnt/c/Servan/Production/BankingService/DevDB:/App/DB
+      - /mnt/c/Servan/Production/BankingService/Archives:/App/Archives
+
+  frontend:
+    image: bankingservice_frontend:VERSIONTOREPLACE
+    build:
+      context: ./frontend
+    ports:
+      - "10000:80"
+    networks: 
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

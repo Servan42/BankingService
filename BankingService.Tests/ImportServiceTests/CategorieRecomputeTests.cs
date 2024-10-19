@@ -25,7 +25,7 @@ namespace BankingService.Tests.ImportServiceTests
             }));
             fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
-            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper);
+            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper, null);
         }
 
         [Test]

@@ -4,7 +4,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class TypeTable
     {
-        public static string TablePath => Path.Combine("Database", "Types.csv");
+        public static string TableName => "Types.csv";
         public static string Header => "StringToScan;AssociatedType";
 
         public Dictionary<string, TypeLine> Data { get; }
@@ -16,7 +16,7 @@ namespace BankingService.Infra.Database.Model
         public static TypeTable Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
             return new TypeTable(fileSystemService
-                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
+                .ReadAllLines(Path.Combine(config.DatabasePath, TableName))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new TypeLine(s[0], s[1])));

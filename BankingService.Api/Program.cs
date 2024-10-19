@@ -40,6 +40,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IFileSystemServiceForFileDB, FileSystemAdapter>();
 builder.Services.AddScoped<IFileSystemServiceForCore, FileSystemAdapter>();
 builder.Services.AddScoped<IBankDatabaseConfiguration, DatabaseConfiguration>();
+builder.Services.AddScoped<IImportConfiguration, ImportConfiguration>();
 builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IImportService, ImportService>();

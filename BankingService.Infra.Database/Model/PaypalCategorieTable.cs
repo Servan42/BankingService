@@ -4,7 +4,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class PaypalCategorieTable
     {
-        public static string TablePath => Path.Combine("Database", "PaypalCategories.csv");
+        public static string TableName => "PaypalCategories.csv";
         public static string Header => "StringToScan;AssociatedCategoryId";
 
         public Dictionary<string, PaypalCategorieLine> Data { get; }
@@ -17,7 +17,7 @@ namespace BankingService.Infra.Database.Model
         {
             return new PaypalCategorieTable(
                 fileSystemService
-                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
+                .ReadAllLines(Path.Combine(config.DatabasePath, TableName))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new PaypalCategorieLine(s[0], int.Parse(s[1])))

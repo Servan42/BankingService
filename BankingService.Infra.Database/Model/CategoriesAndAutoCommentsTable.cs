@@ -4,7 +4,7 @@ namespace BankingService.Infra.Database.Model
 {
     internal class CategoriesAndAutoCommentsTable
     {
-        public static string TablePath => Path.Combine("Database", "CategoriesAndAutoComments.csv");
+        public static string TableName => "CategoriesAndAutoComments.csv";
         public static string Header => "StringToScan;AssociatedCategoryId;AssociatedCommentAuto";
 
         public Dictionary<string, TransactionCategoryAndAutoCommentLine> Data { get; }
@@ -17,7 +17,7 @@ namespace BankingService.Infra.Database.Model
         {
             return new CategoriesAndAutoCommentsTable(
                 fileSystemService
-                .ReadAllLines(Path.Combine(config.DatabasePath, TablePath))
+                .ReadAllLines(Path.Combine(config.DatabasePath, TableName))
                 .Skip(1)
                 .Select(l => l.Split(";"))
                 .ToDictionary(s => s[0], s => new TransactionCategoryAndAutoCommentLine(s[0], int.Parse(s[1]), s[2]))

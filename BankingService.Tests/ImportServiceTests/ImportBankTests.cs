@@ -14,6 +14,7 @@ namespace BankingService.Tests.ImportServiceTests
     {
         Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
+        Mock<IImportConfiguration> mockImportConfiguration;
         IImportService importService_sut;
 
         [SetUp]
@@ -26,9 +27,14 @@ namespace BankingService.Tests.ImportServiceTests
             }));
             fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
+            mockImportConfiguration = new Mock<IImportConfiguration>();
+
             bankDatabaseService.Setup(x => x.GetTransactionTypesKvp()).Returns([]);
             bankDatabaseService.Setup(x => x.GetTransactionCategoriesAndAutoCommentKvp()).Returns([]);
-            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper);
+
+            mockImportConfiguration.Setup(x => x.ArchiveFolderPath).Returns("Archive");
+
+            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper, mockImportConfiguration.Object);
         }
 
         [TestCase("-20,45", "", -20.45)]
@@ -81,7 +87,7 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportBankFile("folder/bankFilePath.csv");
 
             // THEN
-            fileSystemService.Verify(x => x.ArchiveFile("folder/bankFilePath.csv", "Archive/Bank_Import"), Times.Once());
+            fileSystemService.Verify(x => x.ArchiveFile("folder/bankFilePath.csv", Path.Combine("Archive", "Bank_Import")), Times.Once());
         }
 
         [Test]

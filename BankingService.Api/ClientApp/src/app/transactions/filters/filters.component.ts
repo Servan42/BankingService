@@ -79,6 +79,14 @@ export class FiltersComponent implements OnInit {
     this.filterOutput.emit({... this.filters });
   }
 
+  isAnyFilterSelected(): boolean {
+    return this.filters.type != undefined
+      || this.filters.category != undefined
+      || this.filters.search != undefined
+      || this.filters.startDate != undefined
+      || this.filters.endDate != undefined;
+  }
+
   onSearchFilterInput(): void {
     this.filterOutput.emit({... this.filters });
   }

@@ -27,6 +27,10 @@
     padding: 8px;
 }
 
+.no-filter-button {
+  background: grey;
+}
+
 .dropdown-button {
     font-size: larger;
     background-color: rgb(42, 42, 42);

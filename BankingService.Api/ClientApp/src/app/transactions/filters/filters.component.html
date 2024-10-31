@@ -74,7 +74,11 @@
   </div>
 
   <div class="filter-clear">
-    <button class="big-button clear-button" (click)="onClearFilter()">
+    <button
+      class="big-button clear-button"
+      (click)="onClearFilter()"
+      [ngClass]="{'no-filter-button': !isAnyFilterSelected()}"
+      [disabled]="!isAnyFilterSelected()">
       Clear Filters
     </button>
   </div>

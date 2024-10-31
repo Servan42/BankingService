@@ -36,37 +36,17 @@
   </div>
 
   <div class="filter-input">
-    <button class="dropdown-button" mat-button [matMenuTriggerFor]="menuType">
-      {{ filterTypeButtonText }}
-    </button>
-    <mat-menu #menuType="matMenu">
-      <button
-        *ngFor="let t of types"
-        mat-menu-item
-        (click)="typesMenuItemClicked(t)"
-      >
-        {{ t }}
-      </button>
-    </mat-menu>
+    <select class="search-text-field" [(ngModel)]="filters.type" (ngModelChange)="onMenuItemClicked()">
+      <option [value]="NO_FILTER">Filter type...</option>
+      <option *ngFor="let t of types">{{ t }}</option>
+    </select>
   </div>
 
   <div class="filter-input">
-    <button
-      class="dropdown-button"
-      mat-button
-      [matMenuTriggerFor]="menuCategory"
-    >
-      {{ filterCategoryButtonText }}
-    </button>
-    <mat-menu #menuCategory="matMenu">
-      <button
-        *ngFor="let c of categories"
-        mat-menu-item
-        (click)="categoryMenuItemClicked(c)"
-      >
-        {{ c }}
-      </button>
-    </mat-menu>
+    <select class="search-text-field" [(ngModel)]="filters.category" (ngModelChange)="onMenuItemClicked()">
+      <option [value]="NO_FILTER">Filter category...</option>
+      <option *ngFor="let c of categories">{{ c }}</option>
+    </select>
   </div>
 
   <div class="result-counter">

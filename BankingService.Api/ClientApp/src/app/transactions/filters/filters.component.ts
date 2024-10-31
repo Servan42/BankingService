@@ -40,6 +40,8 @@ export class FiltersComponent implements OnInit {
   @Output() filterOutput = new EventEmitter<TransactionFilters>(undefined);
   @Input() resultCount: number = 0;
 
+  NO_FILTER: string = "NO_FILTER";
+
   filterCategoryButtonText: string = 'Filter category...';
   filterTypeButtonText: string = 'Filter type...';
 
@@ -55,33 +57,35 @@ export class FiltersComponent implements OnInit {
       .subscribe((categories) => (this.categories = categories));
   }
 
-  typesMenuItemClicked(type: string): void {
-    this.filters.type = type;
-    this.filterOutput.emit({... this.filters });
-    this.filterTypeButtonText = 'Filter: ' + type;
-  }
+  onMenuItemClicked(): void {
+    if(this.filters.type == this.NO_FILTER)
+      this.filters.type = undefined;
 
-  categoryMenuItemClicked(category: string): void {
-    this.filters.category = category;
-    this.filterCategoryButtonText = 'Filter: ' + category;
+    if(this.filters.category == this.NO_FILTER)
+      this.filters.category = undefined;
+
     this.filterOutput.emit({... this.filters });
+
+    if(this.filters.category == undefined)
+      this.filters.category = this.NO_FILTER;
+    if(this.filters.type == undefined)
+      this.filters.type = this.NO_FILTER;
   }
 
   onClearFilter(): void {
-    this.filterCategoryButtonText = 'Filter category...';
-    this.filterTypeButtonText = 'Filter type...';
-
     this.filters.type = undefined;
     this.filters.category = undefined;
     this.filters.search = undefined;
     this.filters.startDate = undefined;
     this.filters.endDate = undefined;
     this.filterOutput.emit({... this.filters });
+    this.filters.type = this.NO_FILTER;
+    this.filters.category = this.NO_FILTER;
   }
 
   isAnyFilterSelected(): boolean {
-    return this.filters.type != undefined
-      || this.filters.category != undefined
+    return (this.filters.type != undefined && this.filters.type != this.NO_FILTER)
+      || (this.filters.category != undefined && this.filters.category != this.NO_FILTER)
       || this.filters.search != undefined
       || this.filters.startDate != undefined
       || this.filters.endDate != undefined;

@@ -13,8 +13,12 @@
     margin: 0 15px;
 }
 
-.filter-clear{
-    margin-left: auto;
+.result-counter {
+  margin-left: auto;
+  font-family: inherit;
+  color: gray;
+  font-size: larger;
+
 }
 
 .clear-button {

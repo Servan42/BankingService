@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {
@@ -38,6 +38,7 @@ export class FiltersComponent implements OnInit {
   };
 
   @Output() filterOutput = new EventEmitter<TransactionFilters>(undefined);
+  @Input() resultCount: number = 0;
 
   filterCategoryButtonText: string = 'Filter category...';
   filterTypeButtonText: string = 'Filter type...';

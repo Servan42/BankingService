@@ -10,6 +10,9 @@
     />
   </div>
 
+  <mat-icon fontIcon="remove_circle_outline" class="time-management" (click)="decreaseMonth()"/>
+  <mat-icon fontIcon="add_circle_outline" class="time-management" (click)="increaseMonth()"/>
+  <mat-icon fontIcon="access_time" class="time-management"  (click)="setCurrentMonth(true)"/>
   <div class="filter-input">
     <mat-form-field>
       <mat-label>Enter a date range</mat-label>
@@ -28,8 +31,8 @@
       </mat-date-range-input>
       <mat-hint>YYYY-MM-DD – YYYY-MM-DD</mat-hint>
       <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
+      matIconSuffix
+      [for]="picker"
       ></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>

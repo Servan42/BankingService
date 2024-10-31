@@ -10,6 +10,7 @@ import { TransactionService } from '../../services/transaction.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionFilters } from '../../model/transaction-filters';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-filters',
@@ -26,6 +27,7 @@ import { TransactionFilters } from '../../model/transaction-filters';
     MatFormFieldModule,
     MatDatepickerModule,
     MatMenuModule,
+    MatIconModule
   ],
 })
 export class FiltersComponent implements OnInit {
@@ -42,9 +44,6 @@ export class FiltersComponent implements OnInit {
 
   NO_FILTER: string = "NO_FILTER";
 
-  filterCategoryButtonText: string = 'Filter category...';
-  filterTypeButtonText: string = 'Filter type...';
-
   types: string[] = [];
   categories: string[] = [];
 
@@ -55,32 +54,20 @@ export class FiltersComponent implements OnInit {
     this.dbService
       .getCategoriesNames()
       .subscribe((categories) => (this.categories = categories));
+    this.setCurrentMonth(true);
   }
 
   onMenuItemClicked(): void {
-    if(this.filters.type == this.NO_FILTER)
-      this.filters.type = undefined;
-
-    if(this.filters.category == this.NO_FILTER)
-      this.filters.category = undefined;
-
-    this.filterOutput.emit({... this.filters });
-
-    if(this.filters.category == undefined)
-      this.filters.category = this.NO_FILTER;
-    if(this.filters.type == undefined)
-      this.filters.type = this.NO_FILTER;
+    this.emitFilters();
   }
 
   onClearFilter(): void {
-    this.filters.type = undefined;
-    this.filters.category = undefined;
+    this.filters.type = this.NO_FILTER;
+    this.filters.category = this.NO_FILTER;
     this.filters.search = undefined;
     this.filters.startDate = undefined;
     this.filters.endDate = undefined;
-    this.filterOutput.emit({... this.filters });
-    this.filters.type = this.NO_FILTER;
-    this.filters.category = this.NO_FILTER;
+    this.emitFilters();
   }
 
   isAnyFilterSelected(): boolean {
@@ -92,10 +79,43 @@ export class FiltersComponent implements OnInit {
   }
 
   onSearchFilterInput(): void {
-    this.filterOutput.emit({... this.filters });
+    this.emitFilters();
   }
 
   onEndDateSelected() :void {
-    this.filterOutput.emit({ ...this.filters });
+    this.emitFilters();
+  }
+
+  decreaseMonth(): void {
+    if(!this.filters.startDate || !this.filters.endDate){
+      this.setCurrentMonth(false);
+    }
+    this.filters.endDate = new Date(this.filters.endDate!.getFullYear(), this.filters.startDate!.getMonth(), -1);
+    this.filters.startDate = new Date(this.filters.startDate!.getFullYear(), this.filters.startDate!.getMonth() - 1, 1);
+    this.emitFilters();
+  }
+
+  increaseMonth(): void {
+    if(!this.filters.startDate || !this.filters.endDate){
+      this.setCurrentMonth(false);
+    }
+    this.filters.endDate = new Date(this.filters.endDate!.getFullYear(), this.filters.startDate!.getMonth() + 2, -1);
+    this.filters.startDate = new Date(this.filters.startDate!.getFullYear(), this.filters.startDate!.getMonth() + 1, 1);
+    this.emitFilters();
+  }
+
+  setCurrentMonth(shouldEmit: boolean): void {
+    const currentDate = new Date();
+    this.filters.startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    this.filters.endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, -1);
+    if (shouldEmit) this.emitFilters();
+  }
+
+  private emitFilters() {
+    this.filterOutput.emit({
+      ...this.filters,
+      type: this.filters.type === this.NO_FILTER ? undefined : this.filters.type,
+      category: this.filters.category === this.NO_FILTER ? undefined : this.filters.category,
+    });
   }
 }

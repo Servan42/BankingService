@@ -55,6 +55,11 @@
     padding: 10px;
 }
 
+.time-management {
+  cursor: pointer;
+  padding: 1px;
+}
+
 ::ng-deep .mat-datepicker-toggle-default-icon {
     color: lightgray !important;
 }

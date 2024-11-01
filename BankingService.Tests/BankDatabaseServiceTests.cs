@@ -28,7 +28,7 @@ namespace BankingService.Tests
         public void Should_get_transaction_types()
         {
             // GIVEN
-            var tFile = Path.Combine(DB_PATH, "Database", "Types.csv");
+            var tFile = Path.Combine(DB_PATH, "Types.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLines(tFile))
                 .Returns(new List<string>
@@ -52,8 +52,8 @@ namespace BankingService.Tests
         public void Should_get_transaction_Categories_and_autoComment()
         {
             // GIVEN
-            var caFile = Path.Combine(DB_PATH, "Database", "CategoriesAndAutoComments.csv");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            var caFile = Path.Combine(DB_PATH, "CategoriesAndAutoComments.csv");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLines(caFile))
                 .Returns(new List<string>
@@ -92,8 +92,8 @@ namespace BankingService.Tests
         public void Should_get_Paypal_Categories()
         {
             // GIVEN
-            var pcFile = Path.Combine(DB_PATH, "Database", "PaypalCategories.csv");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            var pcFile = Path.Combine(DB_PATH, "PaypalCategories.csv");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLines(pcFile))
                 .Returns(new List<string>
@@ -130,8 +130,8 @@ namespace BankingService.Tests
         public void Should_insert_line_if_new()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
 
             var transactions = new List<TransactionDto>
             {
@@ -190,8 +190,8 @@ namespace BankingService.Tests
         public void Should_get_unresolved_paypal_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
@@ -240,8 +240,8 @@ namespace BankingService.Tests
         public void Should_update_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
 
             var transactions = new List<UpdatableTransactionDto>
             {
@@ -292,8 +292,8 @@ namespace BankingService.Tests
         public void Should_get_transaction_that_need_manual_input()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
@@ -340,8 +340,8 @@ namespace BankingService.Tests
         public void Should_get_transaction_all_transactions()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>
@@ -402,7 +402,7 @@ namespace BankingService.Tests
         {
             // GIVEN
             mockFileSystemService
-                .Setup(x => x.ReadAllLines(Path.Combine(DB_PATH, "Database", "Categories.csv")))
+                .Setup(x => x.ReadAllLines(Path.Combine(DB_PATH, "Categories.csv")))
                 .Returns(new List<string>
                 {
                     "Id;Name",
@@ -421,8 +421,8 @@ namespace BankingService.Tests
         public void Should_get_transactions_by_date()
         {
             // GIVEN
-            string opFile = Path.Combine(DB_PATH, "Database", "Transactions.table");
-            var cFile = Path.Combine(DB_PATH, "Database", "Categories.csv");
+            string opFile = Path.Combine(DB_PATH, "Transactions.table");
+            var cFile = Path.Combine(DB_PATH, "Categories.csv");
             mockFileSystemService
                 .Setup(x => x.ReadAllLinesDecrypt(opFile, KEY))
                 .Returns(new List<string>

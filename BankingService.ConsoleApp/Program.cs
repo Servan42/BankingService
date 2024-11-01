@@ -33,10 +33,11 @@ internal class Program
 
             FileSystemAdapter fileSystemAdapter = new FileSystemAdapter();
             IBankDatabaseConfiguration dbConfig = new DatabaseConfiguration(config);
+            IImportConfiguration importConfig = new ImportConfiguration(config);
             IBankDatabaseService bankDataBaseService = new BankDatabaseService(fileSystemAdapter, dbConfig);
             ITransactionService transactionService = new TransactionService(bankDataBaseService, mapper);
             IReportService reportService = new ReportService(bankDataBaseService, mapper);
-            IImportService importService = new ImportService(fileSystemAdapter, bankDataBaseService, mapper);
+            IImportService importService = new ImportService(fileSystemAdapter, bankDataBaseService, mapper, importConfig);
             MaintenanceService maintenanceService = new MaintenanceService(fileSystemAdapter, dbConfig);
 
             Console.WriteLine("Backup database");

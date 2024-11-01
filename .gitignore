@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 BankingService.Api/Archive/
+!backup-confirmation*

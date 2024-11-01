@@ -14,6 +14,7 @@ namespace BankingService.Tests.ImportServiceTests
     {
         Mock<IFileSystemServiceForCore> fileSystemService;
         Mock<IBankDatabaseService> bankDatabaseService;
+        Mock<IImportConfiguration> mockImportConfiguration;
         IImportService importService_sut;
 
         [SetUp]
@@ -26,8 +27,13 @@ namespace BankingService.Tests.ImportServiceTests
             }));
             fileSystemService = new Mock<IFileSystemServiceForCore>();
             bankDatabaseService = new Mock<IBankDatabaseService>();
+            mockImportConfiguration = new Mock<IImportConfiguration>();
+
             bankDatabaseService.Setup(x => x.GetUnresolvedPaypalTransactions()).Returns([]);
-            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper);
+
+            mockImportConfiguration.Setup(x => x.ArchiveFolderPath).Returns("Archive");
+
+            importService_sut = new ImportService(fileSystemService.Object, bankDatabaseService.Object, mapper, mockImportConfiguration.Object);
         }
 
         [Test]
@@ -47,7 +53,7 @@ namespace BankingService.Tests.ImportServiceTests
             importService_sut.ImportPaypalFile("folder/paypal.csv");
 
             // THEN
-            fileSystemService.Verify(x => x.ArchiveFile("folder/paypal.csv", "Archive/Paypal_Import"), Times.Once());
+            fileSystemService.Verify(x => x.ArchiveFile("folder/paypal.csv", Path.Combine("Archive", "Paypal_Import")), Times.Once());
         }
 
         [Test]

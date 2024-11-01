@@ -1,0 +1,27 @@
+.container {
+  padding: 15px;
+  font-family: Ubuntu;
+}
+
+.diag-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+button {
+  padding: 7px;
+  border-radius: 6px;
+  font-weight: bold;
+  border: None;
+}
+
+.cancel {
+  background-color: #2a2a2a;
+  color: lightgrey
+}
+
+.backup {
+  background-color: #710606;
+  color: lightgrey;
+}

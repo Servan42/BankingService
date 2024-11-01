@@ -4,6 +4,7 @@ import { ImportService } from '../../services/import.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from "@angular/material/dialog";
 import { ImportDialogComponent } from './import-dialog/import-dialog.component';
+import { BackupConfirmationComponent } from './backup-confirmation-dialog/backup-confirmation.component';
 
 @Component({
   selector: 'app-import',
@@ -30,7 +31,7 @@ export class ImportComponent implements OnInit {
       this.importService
         .importBankFile(file)
         .subscribe({
-          next: (s) => this.openDialog(s),
+          next: (s) => this.openImportDialog(s),
           complete: () => {
             this.snackBar.open('Bank file imported successfully.', '✔', { duration: 5000 });
             this.uploadComplete.emit();
@@ -49,7 +50,7 @@ export class ImportComponent implements OnInit {
       this.importService
         .importPaypalFile(file)
         .subscribe({
-          next: (s) => this.openDialog(s),
+          next: (s) => this.openImportDialog(s),
           complete: () => {
             this.snackBar.open('Paypal file imported successfully.', '✔', { duration: 5000 });
             this.uploadComplete.emit();
@@ -58,9 +59,13 @@ export class ImportComponent implements OnInit {
     }
   }
 
-  openDialog(reportData: string) {
+  openImportDialog(reportData: string) {
     this.dialog.open(ImportDialogComponent, {
       data: { report: reportData },
     });
+  }
+
+  onBackupButtonClicked() {
+    this.dialog.open(BackupConfirmationComponent);
   }
 }

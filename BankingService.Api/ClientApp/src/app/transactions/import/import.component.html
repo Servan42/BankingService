@@ -1,4 +1,5 @@
 <div class="import-button-section">
+  <mat-icon fontIcon="storage" class="backup-icon" (click)="onBackupButtonClicked()" title="Backup Database"/>
   <button class="import-button big-button" (click)="bankFileInput.click()">Import Bank File</button>
   <input type="file" #bankFileInput (change)="onBankFileSelected($event)"/>
   <button class="import-button big-button" (click)="paypalFileInput.click()">Import Paypal File</button>

@@ -12,20 +12,22 @@ namespace BankingService.Core.Services
 {
     public class ImportService : IImportService
     {
-        private const string BANK_ARCHIVE_FOLDER = "Archive/Bank_Import";
-        private const string PAYPAL_ARCHIVE_FOLDER = "Archive/Paypal_Import";
+        private const string BANK_ARCHIVE_FOLDER = "Bank_Import";
+        private const string PAYPAL_ARCHIVE_FOLDER = "Paypal_Import";
 
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private readonly IFileSystemServiceForCore fileSystemService;
         private readonly IBankDatabaseService bankDatabaseService;
         private readonly IMapper mapper;
+        private readonly IImportConfiguration importConfiguration;
 
-        public ImportService(IFileSystemServiceForCore fileSystemService, IBankDatabaseService bankDatabaseService, IMapper mapper)
+        public ImportService(IFileSystemServiceForCore fileSystemService, IBankDatabaseService bankDatabaseService, IMapper mapper, IImportConfiguration importConfiguration)
         {
             this.fileSystemService = fileSystemService;
             this.bankDatabaseService = bankDatabaseService;
             this.mapper = mapper;
+            this.importConfiguration = importConfiguration;
         }
 
         public string ImportBankFile(string bankFilePath)
@@ -35,7 +37,7 @@ namespace BankingService.Core.Services
             List<Transaction> transactions = GetBankTransactionsFromCSV(csvTransactions);
             var report = ResolveTransactionsAutoFields(transactions);
             int nbImported = bankDatabaseService.InsertTransactionsIfNew(transactions.Select(mapper.Map<TransactionDto>).ToList());
-            fileSystemService.ArchiveFile(bankFilePath, BANK_ARCHIVE_FOLDER);
+            fileSystemService.ArchiveFile(bankFilePath, Path.Combine(importConfiguration.ArchiveFolderPath, BANK_ARCHIVE_FOLDER));
             return report + $"{nbImported} new transactions imported.";
         }
 
@@ -123,7 +125,7 @@ namespace BankingService.Core.Services
             {
                 throw new BusinessException(ex.Message, ex);
             }
-            fileSystemService.ArchiveFile(paypalFilePath, PAYPAL_ARCHIVE_FOLDER);
+            fileSystemService.ArchiveFile(paypalFilePath, Path.Combine(importConfiguration.ArchiveFolderPath, PAYPAL_ARCHIVE_FOLDER));
             return report;
         }
 

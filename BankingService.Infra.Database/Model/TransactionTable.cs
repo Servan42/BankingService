@@ -9,7 +9,7 @@ namespace BankingService.Infra.Database.Model
         private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration config;
 
-        public static string TablePath => Path.Combine("Database", "Transactions.table");
+        public static string TableName => "Transactions.table";
         public static string Header => "Id;Date;Flow;Treasury;Label;Type;CategoryId;AutoComment;Comment";
 
         public Dictionary<int, TransactionLine> Data { get; }
@@ -22,7 +22,7 @@ namespace BankingService.Infra.Database.Model
 
         public static TransactionTable Load(IFileSystemServiceForFileDB fileSystemService, IBankDatabaseConfiguration config)
         {
-            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TablePath), config.DatabaseKey);
+            var csvLines = fileSystemService.ReadAllLinesDecrypt(Path.Combine(config.DatabasePath, TableName), config.DatabaseKey);
             return new TransactionTable(csvLines.Skip(1).ToDictionary(TransactionLine.GetIdFromCSV, TransactionLine.BuildFromCsv), fileSystemService, config);
         }
 
@@ -30,7 +30,7 @@ namespace BankingService.Infra.Database.Model
         {
             List<string> transactionsToWrite = [Header];
             transactionsToWrite.AddRange(this.Data.Select(o => o.Value).OrderBy(o => o.Date).Select(o => o.GetCSV()));
-            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(config.DatabasePath, TablePath), transactionsToWrite, this.config.DatabaseKey);
+            fileSystemService.WriteAllLinesOverrideEncrypt(Path.Combine(config.DatabasePath, TableName), transactionsToWrite, this.config.DatabaseKey);
         }
 
         internal List<string> GetUniqueIdentifiersFromData()

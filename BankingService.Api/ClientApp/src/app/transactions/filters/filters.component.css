@@ -13,14 +13,22 @@
     margin: 0 15px;
 }
 
-.filter-clear{
-    margin-left: auto;
+.result-counter {
+  margin-left: auto;
+  font-family: inherit;
+  color: gray;
+  font-size: larger;
+
 }
 
 .clear-button {
     font-size: larger;
     font-weight: 450;
     padding: 8px;
+}
+
+.no-filter-button {
+  background: grey;
 }
 
 .dropdown-button {
@@ -45,6 +53,11 @@
     font-size: larger;
     border: none;
     padding: 10px;
+}
+
+.time-management {
+  cursor: pointer;
+  padding: 1px;
 }
 
 ::ng-deep .mat-datepicker-toggle-default-icon {

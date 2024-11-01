@@ -43,4 +43,7 @@ export class TransactionsComponent implements OnInit {
     this.filters = filters;
   }
 
+  sumFlow(transactions: Transaction[]): number {
+    return transactions.reduce((acc, item) => acc + item.flow, 0);
+  }
 }

@@ -10,9 +10,9 @@
     />
   </div>
 
-  <mat-icon fontIcon="remove_circle_outline" class="time-management" (click)="decreaseMonth()"/>
-  <mat-icon fontIcon="add_circle_outline" class="time-management" (click)="increaseMonth()"/>
-  <mat-icon fontIcon="access_time" class="time-management"  (click)="setCurrentMonth(true)"/>
+  <mat-icon fontIcon="remove_circle_outline" class="time-management" (click)="decreaseMonth()" title="Minus one month"/>
+  <mat-icon fontIcon="add_circle_outline" class="time-management" (click)="increaseMonth()" title="Plus one month"/>
+  <mat-icon fontIcon="access_time" class="time-management"  (click)="setCurrentMonth(true)" title="Set to current month"/>
   <div class="filter-input">
     <mat-form-field>
       <mat-label>Enter a date range</mat-label>

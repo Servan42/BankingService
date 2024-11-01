@@ -1,10 +1,11 @@
-﻿using BankingService.Infra.Database.Model;
+﻿using BankingService.Infra.Database.API.Interfaces;
+using BankingService.Infra.Database.Model;
 using BankingService.Infra.Database.SPI.Interfaces;
 using NLog;
 
 namespace BankingService.Infra.Database.Services
 {
-    public class MaintenanceService
+    public class MaintenanceService : IMaintenanceService
     {
         private readonly IFileSystemServiceForFileDB fileSystemService;
         private readonly IBankDatabaseConfiguration dbConfig;

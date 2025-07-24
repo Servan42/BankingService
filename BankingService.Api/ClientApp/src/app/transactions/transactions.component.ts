@@ -18,7 +18,6 @@ import { TransactionService } from '../services/transaction.service';
     CommonModule,
     ImportComponent,
     FiltersComponent,
-    TransactionHeadersComponent,
     TransactionItemComponent,
     FilterTransactionsPipe
   ]

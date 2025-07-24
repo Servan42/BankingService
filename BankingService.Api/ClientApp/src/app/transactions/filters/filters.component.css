@@ -21,7 +21,7 @@
 
 }
 
-.clear-button {
+.line-end-button {
     font-size: larger;
     font-weight: 450;
     padding: 8px;
@@ -58,6 +58,11 @@
 .time-management {
   cursor: pointer;
   padding: 1px;
+}
+
+.refresh-icon {
+  cursor: pointer;
+  padding-right: 5px;
 }
 
 ::ng-deep .mat-datepicker-toggle-default-icon {

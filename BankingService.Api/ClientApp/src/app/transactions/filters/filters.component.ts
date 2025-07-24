@@ -60,7 +60,7 @@ export class FiltersComponent implements OnInit {
     this.setCurrentMonth(true);
   }
 
-  onMenuItemClicked(): void {
+  onEmitFilters(): void {
     this.emitFilters();
   }
 

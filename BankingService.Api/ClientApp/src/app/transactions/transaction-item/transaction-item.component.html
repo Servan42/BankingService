@@ -9,12 +9,13 @@
         <span *ngIf="areEditableFieldsDisabled; else commentInput">{{ transaction.autoComment }}{{ separator }}{{transaction.comment }}</span>
         <ng-template #commentInput>
           {{ transaction.autoComment }}{{ separator }}
-          <input
+            <input
             type="text"
             class="editable-text-field"
             [(ngModel)]="transaction.comment"
             [disabled]="areEditableFieldsDisabled"
-          />
+            (keydown.enter)="onSaveTransactionClicked()"
+            />
         </ng-template>
       </span>
       <span>

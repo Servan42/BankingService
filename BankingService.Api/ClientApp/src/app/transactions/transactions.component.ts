@@ -25,7 +25,13 @@ import { TransactionService } from '../services/transaction.service';
 export class TransactionsComponent implements OnInit {
 
   transactions: Transaction[] = [];
-  filters: TransactionFilters | undefined;
+  filters: TransactionFilters  = {
+    category: undefined,
+    type: undefined,
+    search: undefined,
+    startDate: undefined,
+    endDate: undefined,
+  };
 
   constructor(private dbService: TransactionService) { }
 

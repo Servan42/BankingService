@@ -17,11 +17,12 @@ export class FilterTransactionsPipe implements PipeTransform {
 
     const search = filters.search;
     if (search !== undefined && search !== '') {
+      const normalizedSearch = this.normalize(search);
       newTransactions = newTransactions.filter(
         (x) =>
-          x.label.toLowerCase().includes(search.toLowerCase()) ||
-          x.comment.toLowerCase().includes(search.toLowerCase()) ||
-          x.autoComment.toLowerCase().includes(search.toLowerCase())
+          this.normalize(x.label).includes(normalizedSearch) ||
+          this.normalize(x.comment).includes(normalizedSearch) ||
+          this.normalize(x.autoComment).includes(normalizedSearch)
       );
     }
 
@@ -42,5 +43,9 @@ export class FilterTransactionsPipe implements PipeTransform {
     }
 
     return newTransactions;
+  }
+
+  private normalize (str: string) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   }
 }

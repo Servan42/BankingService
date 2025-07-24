@@ -18,7 +18,6 @@ import { TransactionService } from '../services/transaction.service';
     CommonModule,
     ImportComponent,
     FiltersComponent,
-    TransactionHeadersComponent,
     TransactionItemComponent,
     FilterTransactionsPipe
   ]
@@ -26,7 +25,13 @@ import { TransactionService } from '../services/transaction.service';
 export class TransactionsComponent implements OnInit {
 
   transactions: Transaction[] = [];
-  filters: TransactionFilters | undefined;
+  filters: TransactionFilters  = {
+    category: undefined,
+    type: undefined,
+    search: undefined,
+    startDate: undefined,
+    endDate: undefined,
+  };
 
   constructor(private dbService: TransactionService) { }
 
@@ -43,4 +48,7 @@ export class TransactionsComponent implements OnInit {
     this.filters = filters;
   }
 
+  sumFlow(transactions: Transaction[]): number {
+    return transactions.reduce((acc, item) => acc + item.flow, 0);
+  }
 }

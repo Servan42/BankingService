@@ -41,7 +41,7 @@
   color: lightgray;
   font-family: Ubuntu;
   font-size: large;
-  margin-right: 15px
+  margin-right: 15px;
 }
 
 .header-link-current {
@@ -50,4 +50,9 @@
 
 .link-active {
   color: red;
+}
+
+.octicon-link {
+  fill: lightgray;
+  margin-left: auto;
 }

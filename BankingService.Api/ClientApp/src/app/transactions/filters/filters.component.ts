@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionFilters } from '../../model/transaction-filters';
 import { MatIconModule } from '@angular/material/icon';
+import { NumberToMoneyPipe } from "../../pipe/number-to-money.pipe";
 
 @Component({
   selector: 'app-filters',
@@ -27,8 +28,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatDatepickerModule,
     MatMenuModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    NumberToMoneyPipe
+],
 })
 export class FiltersComponent implements OnInit {
   filters: TransactionFilters = {
@@ -41,6 +43,7 @@ export class FiltersComponent implements OnInit {
 
   @Output() filterOutput = new EventEmitter<TransactionFilters>(undefined);
   @Input() resultCount: number = 0;
+  @Input() filteredAmount: number = 0;
 
   NO_FILTER: string = "NO_FILTER";
 

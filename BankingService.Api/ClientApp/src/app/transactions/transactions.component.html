@@ -1,6 +1,10 @@
 <div class="card main-card">
   <app-import (uploadComplete)="refreshList()"></app-import>
-  <app-filters (filterOutput)="onFiltersChanged($event)" [resultCount]="(transactions | filterTransactions:filters).length"></app-filters>
+  <app-filters
+    (filterOutput)="onFiltersChanged($event)"
+    [resultCount]="(transactions | filterTransactions:filters).length"
+    [filteredAmount]="sumFlow(transactions | filterTransactions:filters)">
+  </app-filters>
   <!-- <app-transaction-headers></app-transaction-headers> -->
   <div *ngIf="(transactions | filterTransactions:filters).length > 0; else noData">
     <ul>

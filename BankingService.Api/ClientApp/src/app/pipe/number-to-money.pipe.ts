@@ -8,7 +8,7 @@ export class NumberToMoneyPipe implements PipeTransform {
 
   transform(value: number | undefined): string {
     if (!value || isNaN(value))
-      return 'Invalid input';
+      return '0 €';
 
     const roundedValue = Math.round(value * 100) / 100;
     const roundedString = roundedValue.toFixed(2);

@@ -6,12 +6,15 @@
     [filteredAmount]="sumFlow(transactions | filterTransactions:filters)">
   </app-filters>
   <!-- <app-transaction-headers></app-transaction-headers> -->
-  <div *ngIf="(transactions | filterTransactions:filters).length > 0; else noData">
+  @if ((transactions | filterTransactions:filters).length > 0) {
     <ul>
-      <li *ngFor="let t of transactions | filterTransactions:filters">
-        <app-transaction-item [transaction]="t"></app-transaction-item>
-      </li>
+      @for (t of transactions | filterTransactions:filters; track t.id) {
+        <li>
+          <app-transaction-item [transaction]="t"></app-transaction-item>
+        </li>
+      }
     </ul>
-  </div>
-  <ng-template #noData><div class="no-data">No data to display.</div></ng-template>
+  } @else {
+    <div class="no-data">No data to display.</div>
+  }
 </div>

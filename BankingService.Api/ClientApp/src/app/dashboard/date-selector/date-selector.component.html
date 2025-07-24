@@ -2,7 +2,9 @@
   <div class="month-selection">
     <h3>Quick Select Month</h3>
     <ul>
-      <li *ngFor="let m of months" (click)="onMonthSelected(m)" [id]="m" [ngClass]="{'selected': selectedMonth === m}">{{ m | monthToText }}</li>
+      @for (m of months; track m) {
+        <li (click)="onMonthSelected(m)" [id]="m" [ngClass]="{'selected': selectedMonth === m}">{{ m | monthToText }}</li>
+      }
     </ul>
   </div>
   <div class="custom-selection">

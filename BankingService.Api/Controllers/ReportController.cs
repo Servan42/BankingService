@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingService.Api.Controllers
@@ -18,7 +19,7 @@ namespace BankingService.Api.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType<TransactionsReportApiDto>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

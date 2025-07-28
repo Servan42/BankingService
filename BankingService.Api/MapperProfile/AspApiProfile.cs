@@ -13,6 +13,7 @@ namespace BankingService.Api.MapperProfile
             CreateMap<HighestTransactionDto, HighestTransactionApiDto>();
             CreateMap<UpdatableTransactionApiDto, UpdatableTransactionDto>();
             CreateMap<TransactionDto, TransactionApiDto>();
+            CreateMap<LoginTokenDto, LoginTokenApiDto>();
         }
     }
 }

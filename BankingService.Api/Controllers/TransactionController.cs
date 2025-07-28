@@ -2,6 +2,7 @@
 using BankingService.Api.Controllers.ApiDTOs;
 using BankingService.Core.API.DTOs;
 using BankingService.Core.API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingService.Api.Controllers
@@ -19,7 +20,7 @@ namespace BankingService.Api.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [Route("GetAllTransactions")]
         [ProducesResponseType<IEnumerable<TransactionApiDto>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -28,7 +29,7 @@ namespace BankingService.Api.Controllers
             return Ok(mapper.Map<List<TransactionApiDto>>(this.transactionService.GetAllTransactions()));
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [Route("GetTransactionCategoriesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -37,7 +38,7 @@ namespace BankingService.Api.Controllers
             return Ok(this.transactionService.GetTransactionCategoriesNames());
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [Route("GetTransactionTypesNames")]
         [ProducesResponseType<IEnumerable<string>>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -46,7 +47,7 @@ namespace BankingService.Api.Controllers
             return Ok(this.transactionService.GetTransactionTypesNames());
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route("UpdateTransactions")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

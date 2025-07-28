@@ -1,4 +1,5 @@
 ﻿using BankingService.Infra.Database.API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingService.Api.Controllers
@@ -14,7 +15,7 @@ namespace BankingService.Api.Controllers
             this.maintenanceService = maintenanceService;
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route("BackupDB")]
         [ProducesResponseType<string>(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

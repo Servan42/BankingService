@@ -10,6 +10,11 @@ using BankingService.Infra.Database.API.Interfaces;
 using BankingService.Infra.Database.Services;
 using BankingService.Infra.Database.SPI.Interfaces;
 using BankingService.Infra.FileSystem.Adapters;
+using BankingService.SharedTechnical;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +23,31 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/docs/configure-and-customize-swaggergen.md#add-security-definitions-and-requirements-for-bearer-authentication
+    options.AddSecurityDefinition("BearerAuth", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="BearerAuth"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 var allowSpecificOrigin = builder.Configuration.GetSection("AllowSpecificOrigin").Value ?? "";
 
@@ -33,10 +62,11 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddAutoMapper(
-    typeof(CoreApiProfile), 
+    typeof(CoreApiProfile),
     typeof(CoreSpiProfile),
     typeof(AspApiProfile));
 
+// TODO use module pattern to register services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IFileSystemServiceForFileDB, FileSystemAdapter>();
 builder.Services.AddScoped<IFileSystemServiceForCore, FileSystemAdapter>();
@@ -46,7 +76,34 @@ builder.Services.AddScoped<IBankDatabaseService, BankDatabaseService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IImportService, ImportService>();
 builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
+builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ExceptionMiddleware>();
+
+// Authentication
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(jwtOptions =>
+    {
+        //jwtOptions.Authority = "https://{--your-authority--}";
+        //jwtOptions.Audience = "https://{--your-audience--}";
+        jwtOptions.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidAudiences = ["BankingService"],
+            ValidIssuers = ["BankingService"],
+
+            //// Specify the key used to sign the token
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("authentication_is_not_really_enabled_this_is_just_an_example")),
+            RequireSignedTokens = true,
+
+            //// Ensure token's expiration mgt
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+        };
+    });
 
 var app = builder.Build();
 
@@ -61,6 +118,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowSpecificOrigin");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

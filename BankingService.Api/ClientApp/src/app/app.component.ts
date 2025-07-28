@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { environment } from '../environments/environment';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,6 @@ import { environment } from '../environments/environment';
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    TransactionsComponent,
-    DashboardComponent,
     CommonModule,
     MatIconModule
   ],
@@ -24,4 +23,10 @@ import { environment } from '../environments/environment';
 export class AppComponent {
   title = 'ClientApp';
   version = environment.version;
+
+  constructor(private readonly authService: AuthService) {}
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 }

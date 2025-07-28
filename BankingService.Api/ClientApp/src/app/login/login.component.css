@@ -1,0 +1,23 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20px;
+}
+
+.login-card {
+  margin: 10px;
+  padding: 50px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-button {
+  font-size: larger;
+  font-weight: 450;
+  padding: 8px;
+}

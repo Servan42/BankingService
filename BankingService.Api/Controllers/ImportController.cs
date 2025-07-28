@@ -1,5 +1,6 @@
 ﻿using BankingService.Core.API.Interfaces;
 using BankingService.Core.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace BankingService.Api.Controllers
             this.importService = importService;
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         [Route("ImportFile")]
         [ProducesResponseType<string>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

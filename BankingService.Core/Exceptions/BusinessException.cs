@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingService.Core.Exceptions
 {
+    [Obsolete("Use the pattern result instead")]
     public class BusinessException : Exception
     {
         public BusinessException(string? message) : base(message)
